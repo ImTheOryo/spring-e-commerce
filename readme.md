@@ -1,12 +1,14 @@
-## Description du projet et objectifs. 
+## Description du projet et objectifs
 TechZone
 
-## Stack technique utilisée. 
+## Stack technique utilisée
 
-## Architecture du projet (packages, couches). 
+## Architecture du projet 
+(packages, couches)
 
 ## Instructions de lancement 
-(prérequis, commandes, URL principales). 
+Lancement docker: docker build -t e-commerce-app .
+(prérequis, commandes, URL principales)
 
 ## Comptes de test 
 
