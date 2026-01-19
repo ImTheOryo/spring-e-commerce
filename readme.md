@@ -1,24 +1,42 @@
-## Description du projet et objectifs
-TechZone
+![logo.png](readme-assets/logo.png)
 
-## Stack technique utilisée
+## Description du projet et objectifs
+TechZone est une plateforme e-commerce conçue pour répondre aux besoins d'une boutique spécialisée dans les produits high-tech (PC, smartphones, accessoires). L'application gère un catalogue complexe de plusieurs centaines de références, tout en assurant le suivi des commandes et la gestion des stocks pour l'équipe interne.
+
+L'enjeu principal est de fournir une expérience fluide pour les clients, tout en offrant une interface de gestion sécurisée et performante pour les administrateurs.
+## Stack technique utilis
+| Catégorie   | Outils                | Rôle |
+|-------------|-----------------------| --- |
+| Langage     | Java 24               | Langage principal |
+| Framework   | Spring Boot           | Auto-configuration et gestion des dépendances |
+| Persistence | 	Spring Data JPA / H2 | Gestion de la BDD (H2) |
+| Sécurité    | Spring Security + JWT | Protection des routes et gestion des rôles ADMIN/USER |
+| Frontend    | Thymeleaf             | Moteur de templates pour l'affichage dynamique |
+| Build       | Maven                 | Gestion du cycle de vie et du build |
 
 ## Architecture du projet 
-(packages, couches)
+
+src/</br>
+├── main/</br>
+├────  controller/</br>
+├────  model/</br>
+A FINIR
 
 ## Instructions de lancement 
+A FINIR
 Lancement docker: docker build -t e-commerce-app .
+docker run -p 8080:8080 e-commerce-app
 (prérequis, commandes, URL principales)
 
 ## Comptes de test 
 
-Compte admin: 
-Adresse email: A REMPLIR
-Mot de passe: A REMPLIR
+### Compte admin: <br/>
+&emsp; Adresse email: A REMPLIR<br/>
+&emsp; Mot de passe: A REMPLIR
 
-Compte utilisateur:
-Adresse email: A REMPLIR
-Mot de passe: A REMPLIR
+### Compte utilisateur:<br/>
+&emsp; Adresse email: A REMPLIR<br/>
+&emsp; Mot de passe: A REMPLIR
 
 ## Diagramme de classes UML 
 
@@ -32,9 +50,7 @@ Mot de passe: A REMPLIR
 
 ## Schéma de base de données 
 
-<img width="1512" alt="Shéma de la base de données" src="https://github.com/user-attachments/assets/MODIFIERICILELIEN" />
-
-
+![bdd.png](readme-assets/bdd.png)
 
 
 
