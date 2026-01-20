@@ -1,4 +1,4 @@
-package com.techzone.ecommerce.entity;
+package com.techzone.ecommerce.shared.repository.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -9,14 +9,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class OrderProduct extends BaseEntity {
+public class CartProduct extends BaseEntity{
     @ManyToOne
-    @JoinColumn(name = "order_id")
-    private Order order;
+    @JoinColumn(name = "cart_id")
+    private Cart cart;
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
     private int quantity;
-    private byte promotionPourcent;
-    private boolean isPromotion;
 }

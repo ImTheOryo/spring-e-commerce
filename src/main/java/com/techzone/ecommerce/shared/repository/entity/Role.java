@@ -1,4 +1,4 @@
-package com.techzone.ecommerce.entity;
+package com.techzone.ecommerce.shared.repository.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
