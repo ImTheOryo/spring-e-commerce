@@ -12,12 +12,11 @@ import java.util.List;
 @Entity
 @Table(name = "orders")
 public class Order extends BaseEntity {
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-    private LocalDateTime validation_date;
-    private boolean isPayed;
-    private boolean isDelivered;
+    private LocalDateTime validationDate;
+    private OrderStatus status;
     private String address;
     private String phone;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
