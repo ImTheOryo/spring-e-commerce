@@ -1,4 +1,4 @@
-package com.techzone.ecommerce.shared.repository.entity;
+package com.techzone.ecommerce.shared.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
