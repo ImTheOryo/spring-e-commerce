@@ -1,9 +1,8 @@
-package com.techzone.ecommerce.entity;
+package com.techzone.ecommerce.shared.repository.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.Setter;
 
