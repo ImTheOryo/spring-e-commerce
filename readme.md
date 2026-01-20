@@ -24,8 +24,8 @@ A FINIR
 
 ## Instructions de lancement 
 A FINIR
-Lancement docker: docker build -t e-commerce-app .
-docker run -p 8080:8080 e-commerce-app
+Lancement docker: 
+docker build -t e-commerce-app . && docker run -p 8080:8080 e-commerce-app
 (prérequis, commandes, URL principales)
 
 ## Comptes de test 
