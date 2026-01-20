@@ -1,4 +1,4 @@
-package com.techzone.ecommerce.shared.repository.entity;
+package com.techzone.ecommerce.shared.entity;
 
 import java.time.LocalDateTime;
 
