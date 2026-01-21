@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>TechZone - Accueil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="../../assets/css/style_global.css">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=AR+One+Sans:wght@400..700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1057B9',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="w-full h-full">
+        <div  class="px-3.5 flex flex-row justify-between items-center w-[1440px] h-[50px] bg-[#E0E5F0]">
+            <ul class="flex flew-row">
+                <li class="pr-16 text-black text-lg font-semibold text-base">PC</li>
+                <li class="pr-16 text-black text-lg font-semibold text-base">Portable</li>
+                <li class="pr-16 text-black text-lg font-semibold text-base">Accessoires</li>
+                <li class="pr-16 text-black text-lg font-semibold text-base">En Promotion</li>
+                <li class="pr-16 text-black text-lg font-semibold text-base">En stock uniquement</li>
+            </ul>
+            <div class=" flex flex-row items-center w-[360px] h-[28px] bg-[#F6F7F9] rounded-[5px]">
+                <input class="w-[90%] bg-[transparent]"  type="text">
+                <i class="fa-solid fa-magnifying-glass "></i>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
