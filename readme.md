@@ -24,7 +24,7 @@ A FINIR
 
 ## Instructions de lancement 
 Pour le lancement avec docker :<br/>
-```docker-compose jp --build```
+```docker-compose up --build```
 
 Pour la connexion a la BDD H2 utiliser les settings suivants : <br/>
 ``` 
