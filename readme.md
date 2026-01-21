@@ -23,11 +23,15 @@ src/</br>
 A FINIR
 
 ## Instructions de lancement 
-A FINIR
-Lancement docker: 
-docker build -t e-commerce-app . && docker run -p 8080:8080 e-commerce-app
-(prérequis, commandes, URL principales)
+Pour le lancement avec docker :<br/>
+```docker-compose jp --build```
 
+Pour la connexion a la BDD H2 utiliser les settings suivants : <br/>
+``` 
+database : jdbc:h2:file:/app/data/ecommerce_db
+username: sa
+password: 
+```
 ## Comptes de test 
 
 ### Compte admin: <br/>
