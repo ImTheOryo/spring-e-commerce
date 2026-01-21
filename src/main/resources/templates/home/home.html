@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>TechZone - Accueil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e40af',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+
+<div class="h-screen flex flex-col justify-around">
+    <h1 class="text-3xl text-center mx-12">Phrase très percutante qui donne envie d’acheter nos produits !</h1>
+
+    <div class="flex flex-wrap">
+        <div class="bg-zinc-100 shadow-md m-4 p-4 rounded-3xl" th:each="product : ${products}">
+            <img th:src="${product.getUrlPhoto()}" class="w-[200px] h-[200px] object-cover rounded-xl"
+                 th:alt="${product.getName()}">
+            <div class="flex flex-col justify-between h-[150px] w-[200px]">
+                <div class="flex justify-between items-center">
+                    <h5 th:text="${product.getName()}">Nom du produit</h5>
+                    <span th:if="${product.isPromotion}" class="h-4 w-4 rounded-3xl bg-green-500"></span>
+                    <span th:unless="${product.isPromotion}" class="h-4 w-4 rounded-3xl bg-red-500"></span>
+                </div>
+                <p th:text="${product.getDescription()}" class="truncate">Description du produit</p>
+                <p th:text="${product.getPrice() + '€'}">Prix</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
