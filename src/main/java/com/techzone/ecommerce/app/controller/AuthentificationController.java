@@ -16,9 +16,6 @@ public class AuthentificationController {
     public String loginPage(
             @RequestParam(value = "error", required = false) String error
     ) {
-        if (error != null) {
-            return errorPage();
-        }
         return "security/login";
     }
 
