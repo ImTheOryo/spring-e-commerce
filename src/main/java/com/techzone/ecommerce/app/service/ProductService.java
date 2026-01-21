@@ -11,7 +11,7 @@ public class ProductService {
     private ProductRepository productRepository;
 
     public Model getAll(Model model){
-        model.addAttribute(productRepository.findAll());
+        model.addAttribute("products", productRepository.findAll());
         return model;
     }
 }
