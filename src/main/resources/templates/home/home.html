@@ -18,25 +18,58 @@
 </head>
 <body>
 
-<div class="h-screen flex flex-col justify-around">
-    <h1 class="text-3xl text-center mx-12">Phrase très percutante qui donne envie d’acheter nos produits !</h1>
+<div class="h-screen flex flex-col justify-around items-center">
+    <h1 class="text-3xl text-center m-12">Phrase très percutante qui donne envie d’acheter nos produits !</h1>
 
-    <div class="flex flex-wrap">
-        <div class="bg-zinc-100 shadow-md m-4 p-4 rounded-3xl" th:each="product : ${products}">
-            <img th:src="${product.getUrlPhoto()}" class="w-[200px] h-[200px] object-cover rounded-xl"
+    <div class="flex flex-wrap justify-around">
+        <div class="bg-zinc-100 shadow-md p-4 my-4 rounded-3xl" th:each="product : ${products}">
+            <img th:src="${product.getUrlPhoto()}" class="w-[20vw] h-[15vw] object-cover rounded-xl"
                  th:alt="${product.getName()}">
-            <div class="flex flex-col justify-between h-[150px] w-[200px]">
-                <div class="flex justify-between items-center">
-                    <h5 th:text="${product.getName()}">Nom du produit</h5>
-                    <span th:if="${product.isPromotion}" class="h-4 w-4 rounded-3xl bg-green-500"></span>
-                    <span th:unless="${product.isPromotion}" class="h-4 w-4 rounded-3xl bg-red-500"></span>
+            <div class="flex flex-col justify-between h-[15vw] w-[20vw]">
+                <div class="flex justify-between items-center mt-4">
+                    <h5 th:text="${product.getName()}" class="font-semibold text-xl">Nom du produit</h5>
+                    <span th:if="${product.isInStock()}" class="h-4 w-4 rounded-3xl bg-green-500"></span>
+                    <span th:unless="${product.isInStock()}" class="h-4 w-4 rounded-3xl bg-red-500"></span>
                 </div>
-                <p th:text="${product.getDescription()}" class="truncate">Description du produit</p>
-                <p th:text="${product.getPrice() + '€'}">Prix</p>
+                <p th:text="${product.getDescription()}" class="h-[10vw] overflow-hidden text-ellipsis">Description du
+                    produit</p>
+                <div th:with="finalPrice=${product.price * (1 - product.promotionPourcent / 100.0)}">
+                    <div class="flex items-center gap-2">
+                        <p class="text-lg"
+                           th:text="${(product.isPromotion ? #numbers.formatDecimal(finalPrice, 1, 2) : product.price) + '€'}">
+                            Prix
+                        </p>
+
+                        <p th:if="${product.isPromotion}"
+                           class="text-lg line-through"
+                           th:text="${product.price + '€'}">
+                            Ancien Prix
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+    <div class="flex justify-center items-center space-x-4 mt-12 py-6">
 
+        <a th:if="${hasPrevious}"
+           th:href="@{/(page=${currentPage - 1})}"
+           class="px-4 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
+            Précédent
+        </a>
+
+        <span class="text-sm text-gray-600">
+        Page <span class="font-bold text-gray-900" th:text="${currentPage + 1}">1</span>
+        sur <span class="font-bold text-gray-900" th:text="${totalPages}">10</span>
+    </span>
+
+        <a th:if="${hasNext}"
+           th:href="@{/(page=${currentPage + 1})}"
+           class="px-4 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
+            Suivant
+        </a>
+
+    </div>
 </div>
 </body>
 </html>
