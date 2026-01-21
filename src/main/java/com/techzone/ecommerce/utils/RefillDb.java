@@ -4,6 +4,8 @@ import com.github.javafaker.Faker;
 import com.techzone.ecommerce.shared.entity.*;
 import com.techzone.ecommerce.shared.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.ZoneId;
@@ -23,6 +25,9 @@ public class RefillDb {
     private final Faker faker = new Faker();
     private final byte[] promotion = {5, 10, 15, 20, 30, 40, 50, 60, 70};
     private final OrderStatus[] statuses = {OrderStatus.DELIVERED, OrderStatus.IN_PROCESS, OrderStatus.DELIVERED, OrderStatus.REFUNDED, OrderStatus.RETURNED, OrderStatus.IN_TRANSIT};
+
+    @Autowired
+    BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public void init() {
         createUser(10);
@@ -82,15 +87,23 @@ public class RefillDb {
     }
 
     public void createUser(int quantity) {
+            String password = bCryptPasswordEncoder.encode("password");
         for (int i = 0; i < quantity; i++) {
             User user = new User();
             user.setRole(RoleEnum.USER);
             user.setFirstname(faker.name().firstName());
             user.setLastname(faker.name().lastName());
             user.setEmail(faker.internet().safeEmailAddress());
-            user.setPassword(faker.internet().password());
+            user.setPassword(password);
             userRepository.save(user);
         }
+        User user = new User();
+        user.setRole(RoleEnum.USER);
+        user.setFirstname(faker.name().firstName());
+        user.setLastname(faker.name().lastName());
+        user.setEmail("test@test.com");
+        user.setPassword(password);
+        userRepository.save(user);
     }
 
     public void createProduct(Category category, int quantity) {

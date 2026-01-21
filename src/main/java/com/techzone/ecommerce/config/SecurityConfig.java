@@ -10,7 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 public class SecurityConfig {
 
     @Bean
@@ -29,8 +29,11 @@ public class SecurityConfig {
                 .httpBasic(Customizer.withDefaults())
                 .formLogin((form) -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/")
-                        .failureUrl("/")
+                        .loginProcessingUrl("/perform_login")
+                        .usernameParameter("email")
+                        .passwordParameter("password")
+                        .defaultSuccessUrl("/login_sucess")
+                        .failureUrl("/login?error=true")
                         .permitAll()
                 )
                 .csrf(AbstractHttpConfigurer::disable)
