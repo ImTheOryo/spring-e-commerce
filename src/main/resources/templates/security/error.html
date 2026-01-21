@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Erreur - TechZone</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 h-screen flex items-center justify-center">
+
+<div class="max-w-lg w-full text-center p-8">
+  <div class="mb-8">
+    <h1 class="text-9xl font-extrabold text-indigo-600 tracking-widest" th:text="${status}">404</h1>
+    <div class="bg-white px-2 text-sm rounded rotate-12 absolute transform -translate-y-12 translate-x-20 shadow-sm border border-indigo-100">
+      Oups ! Quelque chose a glissé...
+    </div>
+  </div>
+
+  <h2 class="text-2xl font-bold text-gray-800 mb-4"
+      th:text="${error == 'Not Found' ? 'Page introuvable' : 'Une erreur est survenue'}">
+    Erreur détectée
+  </h2>
+
+  <p class="text-gray-600 mb-8" th:text="${message}">
+    Désolé, nous ne trouvons pas ce que vous cherchez ou le serveur a rencontré un problème.
+  </p>
+
+  <div class="flex flex-col sm:flex-row justify-center gap-4">
+    <a th:href="@{/}"
+       class="px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition duration-200">
+      Retour à l'accueil
+    </a>
+    <a th:href="@{/login}"
+       class="px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition duration-200">
+      Se reconnecter
+    </a>
+  </div>
+
+  <div th:if="${param.debug}" class="mt-10 text-left bg-gray-800 text-green-400 p-4 rounded-md text-xs overflow-auto">
+    <p class="font-bold border-b border-gray-700 mb-2 pb-1">Détails techniques :</p>
+    <p th:text="${'Path: ' + path}"></p>
+    <p th:text="${'Timestamp: ' + timestamp}"></p>
+  </div>
+</div>
+
+</body>
+</html>
