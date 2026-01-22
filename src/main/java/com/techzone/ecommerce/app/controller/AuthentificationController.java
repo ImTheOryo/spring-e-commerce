@@ -28,4 +28,9 @@ public class AuthentificationController {
     public String errorPage() {
         return "security/error";
     }
+
+    @GetMapping("/register")
+    public String registerPage() {
+        return "register/register";
+    }
 }
