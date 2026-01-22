@@ -75,7 +75,6 @@
 </div>
 
 <script>
-    // Fonction pour fermer la modal
     function closeModal() {
         const modal = document.getElementById('errorModal');
         const content = document.getElementById('modalContent');
@@ -89,7 +88,6 @@
         }, 200);
     }
 
-    // Détection de l'erreur dans l'URL au chargement
     window.onload = function() {
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('error') === 'true') {
@@ -99,7 +97,6 @@
             modal.classList.remove('hidden');
             document.body.classList.add('modal-active');
 
-            // Petit délai pour l'animation d'entrée
             setTimeout(() => {
                 content.classList.replace('scale-95', 'scale-100');
                 content.classList.replace('opacity-0', 'opacity-100');

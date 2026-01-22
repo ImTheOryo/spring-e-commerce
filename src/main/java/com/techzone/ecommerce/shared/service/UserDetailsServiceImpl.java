@@ -27,4 +27,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .roles(appUser.getRole().toString())
                 .build();
     }
+
+    public boolean existsByEmail(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
+
 }
