@@ -40,54 +40,21 @@ public class RefillDb {
         Category ordinateur = new Category();
         ordinateur.setName("ordinateur");
         ordinateur = categoryRepository.save(ordinateur);
-
-        Category ordinateurPortable = new Category();
-        ordinateurPortable.setName("ordinateur portable");
-        ordinateurPortable.setParent(ordinateur);
-        ordinateurPortable = categoryRepository.save(ordinateurPortable);
-        createProduct(ordinateurPortable, 15);
-
-        Category ordinateurFixe = new Category();
-        ordinateurFixe.setName("ordinateur fixe");
-        ordinateurFixe.setParent(ordinateur);
-        ordinateurFixe = categoryRepository.save(ordinateurFixe);
-        createProduct(ordinateurFixe, 30);
+        createProduct(ordinateur, 20);
 
         Category telephone = new Category();
         telephone.setName("téléphone");
         telephone = categoryRepository.save(telephone);
-
-        Category telephonePortable = new Category();
-        telephonePortable.setName("téléphone portable");
-        telephonePortable.setParent(telephone);
-        telephonePortable = categoryRepository.save(telephonePortable);
-        createProduct(telephonePortable, 20);
-
-        Category telephoneFixe = new Category();
-        telephoneFixe.setName("téléphone fixe");
-        telephoneFixe.setParent(telephone);
-        telephoneFixe = categoryRepository.save(telephoneFixe);
-        createProduct(telephoneFixe, 2);
+        createProduct(telephone, 10);
 
         Category accesoires = new Category();
         accesoires.setName("accessoires");
         accesoires = categoryRepository.save(accesoires);
-
-        Category montreConnectee = new Category();
-        montreConnectee.setName("montre connectée");
-        montreConnectee.setParent(accesoires);
-        montreConnectee = categoryRepository.save(montreConnectee);
-        createProduct(montreConnectee, 13);
-
-        Category peripheriques = new Category();
-        peripheriques.setName("périphériques");
-        peripheriques.setParent(accesoires);
-        peripheriques = categoryRepository.save(peripheriques);
-        createProduct(peripheriques, 40);
+        createProduct(accesoires, 76);
     }
 
     public void createUser(int quantity) {
-            String password = bCryptPasswordEncoder.encode("password");
+        String password = bCryptPasswordEncoder.encode("password");
         for (int i = 0; i < quantity; i++) {
             User user = new User();
             user.setRole(RoleEnum.USER);
