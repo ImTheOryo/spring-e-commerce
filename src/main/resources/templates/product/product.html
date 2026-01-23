@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${'TechZone - ' + product.getName()}">TechZone - Produit</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=AR+One+Sans:wght@400..700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1057B9',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 font-['AR_One_Sans'] text-slate-800 antialiased">
+<div th:replace="~{component/navbar}"></div>
+
+<main class="container mx-auto px-4 py-8 md:py-16">
+    <div th:replace="~{component/breadcrumb}"></div>
+    <div class="bg-white rounded-3xl shadow-xl shadow-slate-200/60 overflow-hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-2">
+
+            <div class="relative bg-white p-6 flex items-center justify-center border-b lg:border-b-0 lg:border-r border-slate-100">
+                <div th:if="${product.isPromotion}" class="absolute top-10 left-8 z-10">
+                    <span class="bg-red-500 text-white font-bold px-4 py-2 rounded-full shadow-md shadow-red-200">
+                        OFFRE SPÉCIALE
+                    </span>
+                </div>
+                <img th:src="${product.getUrlPhoto()}"
+                     class="w-full max-w-md h-auto object-contain"
+                     th:alt="${product.getName()}">
+            </div>
+
+            <div class="p-8 md:p-12 flex flex-col justify-center">
+
+                <div class="mb-6">
+                    <h1 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4" th:text="${product.getName()}">Nom du
+                        produit</h1>
+
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-sky-50 text-sky-600 border border-sky-100 rounded-lg text-sm font-medium capitalize"
+                              th:text="${product.category.name}">Categorie</span>
+                        <span class="px-3 py-1 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-lg text-sm font-medium"
+                              th:text="${product.brand}">Marque</span>
+                        <span class="px-3 py-1 bg-amber-50 text-amber-600 border border-amber-100 rounded-lg text-sm font-medium"
+                              th:text="${product.model}">Modèle</span>
+                    </div>
+                </div>
+
+                <div class="prose prose-slate mb-8">
+                    <h3 class="text-sm uppercase tracking-wider text-slate-400 font-bold mb-2">Description</h3>
+                    <p class="text-slate-600 leading-relaxed" th:text="${product.description}">Description détaillée du
+                        produit.</p>
+                </div>
+
+                <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                    <div class="flex flex-col gap-6">
+
+                        <div class="flex flex-col md:flex-row md:items-center justify-center md:justify-between gap-6">
+                            <div th:with="finalPrice=${product.price * (1 - product.promotionPourcent / 100.0)}">
+                                <span class="text-sm text-slate-400 font-medium block mb-1">Prix total</span>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-4xl font-black text-slate-900" th:text="${(product.isPromotion ? #numbers.formatDecimal(finalPrice, 1, 2) : product.price) + '€'}">29.99€</span>
+                                    <div th:if="${product.isPromotion}" class="flex flex-col">
+                                        <span class="text-sm line-through text-slate-400"
+                                              th:text="${product.price + '€'}">39.99€</span>
+                                        <span class="text-xs font-bold text-red-500"
+                                              th:text="${'-' + product.promotionPourcent + '%'}">-25%</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center">
+                                <div th:if="${product.isInStock()}"
+                                     class="flex items-center gap-2 bg-emerald-100 text-emerald-700 px-4 py-2 rounded-full text-sm font-bold">
+                    <span class="relative flex h-3 w-3">
+                      <span class="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                    </span>
+                                    En stock
+                                </div>
+                                <div th:unless="${product.isInStock()}"
+                                     class="flex items-center gap-2 bg-red-100 text-red-700 px-4 py-2 rounded-full text-sm font-bold">
+                                    <i class="fa-solid fa-circle-xmark"></i>
+                                    Rupture de stock
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col md:flex-row items-center gap-4 border-t border-slate-200 pt-6"
+                             th:if="${product.isInStock()}">
+                            <label>
+                                <input type="number" min="1" th:max="${product.getStock()}" placeholder="Quantité">
+                            </label>
+
+                            <button class="flex-grow bg-primary hover:bg-blue-700 text-white px-8 py-4 rounded-2xl font-bold flex items-center justify-center">
+                                <i class="fa-solid fa-cart-shopping mr-3"></i>
+                                Ajouter au panier
+                            </button>
+                        </div>
+
+                        <div th:unless="${product.isInStock()}"
+                             class="text-center p-4 bg-slate-200 text-slate-500 rounded-xl font-medium">
+                            Ce produit sera bientôt de retour.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 flex flex-col md:flex-row items-center gap-6 text-xs text-slate-400 font-medium px-2">
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-truck"></i> Livraison gratuite</div>
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-shield-halved"></i> Garantie 2 ans</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{component/footer}"></div>
+</body>
+</html>
