@@ -65,7 +65,7 @@ public class RefillDb {
             userRepository.save(user);
         }
         User user = new User();
-        user.setRole(RoleEnum.USER);
+        user.setRole(RoleEnum.ADMIN);
         user.setFirstname(faker.name().firstName());
         user.setLastname(faker.name().lastName());
         user.setEmail("test@test.com");
