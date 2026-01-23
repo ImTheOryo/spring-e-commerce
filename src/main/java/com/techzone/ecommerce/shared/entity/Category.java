@@ -10,8 +10,5 @@ import lombok.Setter;
 @Setter
 @Entity
 public class Category extends BaseEntity {
-    @ManyToOne
-    @JoinColumn(name = "parent_id")
-    private Category parent;
     private String name;
 }
