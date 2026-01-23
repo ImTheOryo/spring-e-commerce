@@ -1,5 +1,6 @@
 package com.techzone.ecommerce.shared.repository;
 
+import com.techzone.ecommerce.shared.entity.Category;
 import com.techzone.ecommerce.shared.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,4 +12,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long>, PagingAndSortingRepository<Product, Long>, JpaSpecificationExecutor<Product> {
     Page<Product> findAllByIsAvailableTrue(Pageable pageable);
+    Page<Product> findAllByIsAvailableTrueAndCategory(Pageable pageable, Category category);
+
 }
