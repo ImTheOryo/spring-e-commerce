@@ -2,14 +2,20 @@ services:
   app:
     build: .
     container_name: ecommerce-app
+    restart: always
     ports:
       - "8080:8080"
     volumes:
       - ./h2data:/app/data
     environment:
-      # On indique à Spring de stocker le fichier H2 dans le dossier monté
-      - SPRING_DATASOURCE_URL=jdbc:h2:file:/app/data/ecommerce_db
+      - SPRING_DATASOURCE_URL=jdbc:h2:mem:test
       - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.h2.Driver
       - SPRING_DATASOURCE_USERNAME=sa
       - SPRING_DATASOURCE_PASSWORD=
       - SPRING_H2_CONSOLE_ENABLED=true
+    develop:
+      watch:
+        - action: rebuild
+          path: pom.xml
+        - action: rebuild
+          path: src
