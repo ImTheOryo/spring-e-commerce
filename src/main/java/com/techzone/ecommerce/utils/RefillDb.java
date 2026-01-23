@@ -68,16 +68,24 @@ public class RefillDb {
         user.setRole(RoleEnum.ADMIN);
         user.setFirstname(faker.name().firstName());
         user.setLastname(faker.name().lastName());
-        user.setEmail("test@test.com");
+        user.setEmail("admin@test.com");
         user.setPassword(password);
         userRepository.save(user);
+
+        User user2 = new User();
+        user2.setRole(RoleEnum.USER);
+        user2.setFirstname(faker.name().firstName());
+        user2.setLastname(faker.name().lastName());
+        user2.setEmail("user@test.com");
+        user2.setPassword(password);
+        userRepository.save(user2);
     }
 
     public void createProduct(Category category, int quantity) {
         for (int i = 0; i < quantity; i++) {
             Product product = new Product();
             product.setCategory(category);
-            product.setName(faker.commerce().productName());
+            product.setName(faker.friends().character());
             product.setPrice(Double.parseDouble(faker.commerce().price()));
             product.setStock(getRandom(0, 400));
             product.setDescription(faker.chuckNorris().fact());

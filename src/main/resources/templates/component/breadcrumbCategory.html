@@ -1,0 +1,4 @@
+<nav th:fragment="breadcrumb(catName)" class="text-sm text-slate-400 m-6 px-2 space-x-1">
+  <a href="/" class="hover:text-primary">Accueil</a> /
+  <span th:text="${catName}" class="capitalize text-slate-900 font-medium">Nom Catégorie</span>
+</nav>
