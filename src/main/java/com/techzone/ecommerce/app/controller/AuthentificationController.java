@@ -43,9 +43,9 @@ public class AuthentificationController {
         return "security/login_succes";
     }
 
-    @GetMapping("/error")
+    @GetMapping("/404")
     public String errorPage() {
-        return "security/error";
+        return "security/404";
     }
 
     @GetMapping("/register")
@@ -97,5 +97,7 @@ public class AuthentificationController {
             model.addAttribute("error", "Une erreur technique est survenue.");
             return "register/register";
         }
+
+
     }
 }
