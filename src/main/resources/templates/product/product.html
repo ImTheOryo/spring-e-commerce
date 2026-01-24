@@ -75,7 +75,10 @@
                                           th:text="${(product.isPromotion ? #numbers.formatDecimal(finalPrice, 1, 2) : product.price) + '€'}">29.99€</span>
                                     <div th:if="${product.isPromotion}" class="flex flex-col">
                                         <span class="text-sm line-through text-slate-400"
-                                              th:text="${product.price + '€'}">39.99€</span>
+                                              th:text="${product.price + '€'}"
+                                              id="price-base"
+                                              th:data-unit-base-price="${product.getPrice()}"
+                                        >39.99€</span>
                                         <span class="text-xs font-bold text-red-500"
                                               th:text="${'-' + product.promotionPourcent + '%'}">-25%</span>
                                     </div>
@@ -134,15 +137,19 @@
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         const priceDisplay = document.getElementById("price")
+        const priceBaseDisplay = document.getElementById("price-base")
         const qtyElement = document.getElementById("qty")
 
         const unitPrice = parseFloat(priceDisplay.getAttribute("data-unit-price"))
+        const unitBasePrice = parseFloat(priceBaseDisplay.getAttribute("data-unit-base-price"))
 
         qtyElement.addEventListener("change", (event) => {
             const quantity = parseInt(event.target.value)
             const totalPrice = unitPrice * quantity
+            const totalBasePrice = unitBasePrice * quantity
 
             priceDisplay.innerText = totalPrice.toFixed(2).replace('.', ',') + "€"
+            priceBaseDisplay.innerText = totalBasePrice.toFixed(2).replace('.', ',') + "€"
 
             priceDisplay.classList.add('scale-110', 'text-primary')
             setTimeout(() => {
@@ -169,6 +176,7 @@
                     quantity: Number(qtyElement.value)
                 })
             });
+            //TODO ajout de toast
             console.log(response)
         })
     })

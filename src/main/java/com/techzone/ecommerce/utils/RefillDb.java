@@ -114,7 +114,7 @@ public class RefillDb {
                 CartProduct cartProduct = new CartProduct();
                 cartProduct.setCart(cart);
                 cartProduct.setProduct(products.get(getRandom(0, products.size() - 1)));
-                cartProduct.setQuantity(getRandom(1, cartProduct.getProduct().getStock()));
+                cartProduct.setQuantity(Math.min(getRandom(1, 10),cartProduct.getProduct().getStock()));
                 cartProductRepository.save(cartProduct);
             }
         }

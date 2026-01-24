@@ -3,87 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TechZone - Panier</title>
+    <title>TechZone - Mon Panier</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=AR+One+Sans:wght@400..700&display=swap" rel="stylesheet">
-
     <script>
         tailwind.config = {
             theme: {
-                extend: {
-                    colors: {
-                        primary: '#1057B9',
-                    }
-                }
+                extend: {colors: {primary: '#1057B9'}}
             }
         }
     </script>
 </head>
-<body class="bg-slate-50 font-['AR_One_Sans'] text-slate-800 antialiased">
+<body class="bg-slate-50 font-['AR_One_Sans'] text-slate-800 antialiased min-h-screen flex flex-col">
 <div th:replace="~{component/navbar}"></div>
 
-<main class="container mx-auto px-4 py-8 md:py-16">
+<main class="container mx-auto px-4 py-12 flex-grow">
+    <h1 class="text-3xl font-bold mb-10 text-slate-900"><i class="fa-solid fa-cart-shopping mr-4 text-primary"></i>Votre
+        panier</h1>
 
-    <H1 class="text-2xl text-center py-8">Votre panier:</H1>
-    <ul class="grid grid-cols-[15vw_1fr_0.5fr_0.5fr_0.5fr_50px] py-4 text-xl m-auto">
-        <li></li>
-        <li>Designation</li>
-        <li class="m-auto">Prix</li>
-        <li class="m-auto">Quantité</li>
-        <li class="m-auto">Sous-total</li>
-        <li class="m-auto"><i class="fa-regular fa-trash-can"></i></li>
-    </ul>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-    <div class="grid grid-cols-[15vw_1fr_0.5fr_0.5fr_0.5fr_50px] py-4 border-t-2 border-grey-600 items-center"
-         th:each="product : ${products}">
+        <div class="lg:col-span-2 space-y-4">
+            <div class="hidden md:grid grid-cols-[100px_1fr_120px_120px_120px_50px] gap-4 px-6 py-2 text-sm font-bold text-slate-400 uppercase tracking-wider">
+                <span>Produit</span>
+                <span>Désignation</span>
+                <span class="text-center">Prix</span>
+                <span class="text-center">Qté</span>
+                <span class="text-center">Sous-total</span>
+                <span></span>
+            </div>
 
+            <div th:each="item : ${products}"
+                 th:with="p=${item.product}, uPrice=${p.isPromotion ? p.price * (1 - p.promotionPourcent / 100.0) : p.price}"
+                 class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 grid grid-cols-1 md:grid-cols-[100px_1fr_120px_120px_120px_50px] gap-4 items-center transition-all hover:shadow-md">
 
-        <img th:src="${product.getProduct().getUrlPhoto()}"
-             class="rounded-xl mb-4 w-[10vw] h-[10vw] cover-fit"
-             th:alt="${product.getProduct().getName()}">
+                <img th:src="${p.urlPhoto}" class="rounded-2xl w-24 h-24 object-cover mx-auto md:mx-0 shadow-sm"
+                     th:alt="${p.name}">
 
-        <a th:href="@{/product/{id}(id=${product.getProduct().id})}">
-            <h5 th:text="${product.getProduct().getName()}"
-                class="font-semibold text-lg leading-tight group-hover:text-primary transition-colors">
-                Nom du produit
-            </h5>
-        </a>
+                <div>
+                    <a th:href="@{/product/{id}(id=${p.id})}"
+                       class="font-bold text-lg hover:text-primary transition-colors block" th:text="${p.name}">Nom</a>
+                    <span class="text-xs text-slate-400 uppercase font-bold tracking-tighter" th:text="${p.brand}">Marque</span>
+                </div>
 
+                <div class="text-center font-medium text-slate-500"
+                     th:text="${#numbers.formatDecimal(p.price, 1, 2) + ' €'}">29.99€
+                </div>
 
-        <div class="m-auto"  th:text="${product.getProduct().getPrice()+'€'}">
-            29.99€
-        </div>
+                <div class="flex items-center justify-center">
+                    <div class="flex items-center border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                        <input class="w-12 py-2 text-center font-bold focus:outline-none qty-input"
+                               th:id="'qty-' + ${p.id}" type="number" min="1"
+                               th:max="${p.stock}" th:value="${item.quantity}">
+                    </div>
+                </div>
 
-        <div class="m-auto" th:text="${product.getQuantity()}">
-            1
-        </div>
+                <div class="text-center flex flex-col justify-center">
+                        <span class="text-xl font-black text-slate-900"
+                              th:id="'price-' + ${p.id}"
+                              th:data-unit-price="${uPrice}"
+                              th:text="${#numbers.formatDecimal(uPrice * item.quantity, 1, 2) + ' €'}">0.00€</span>
+                    <span th:if="${p.isPromotion}"
+                          class="text-xs line-through text-red-400 font-bold"
+                          th:id="'price-base-' + ${p.id}"
+                          th:data-unit-base-price="${p.price}"
+                          th:text="${#numbers.formatDecimal(p.price * item.quantity, 1, 2) + ' €'}">0.00€</span>
+                </div>
 
-        <div class="flex flex-col m-auto"
-             th:with="finalPrice=${product.getProduct().getPrice() * product.getQuantity() * (1 - product.getProduct().getPromotionPourcent() / 100.0)}">
-
-            <div class="flex items-baseline gap-2">
-                <p class="text-2xl font-extrabold tracking-tight text-slate-900"
-                   th:text="${(product.getProduct().isPromotion() ? #numbers.formatDecimal(finalPrice, 1, 2) : product.getProduct().getPrice()) + '€'}">
-                    29.99€
-                </p>
-
-                <p th:if="${product.getProduct().isPromotion()}"
-                   class="text-sm line-through text-gray-400 decoration-red-500/50"
-                   th:text="${product.getProduct().getPrice() + '€'}">
-                    39.99€
-                </p>
+                <button class="cart-btn text-slate-300 hover:text-red-500 hover:scale-110 transition-all text-2xl"
+                        th:data-product-id="${p.id}">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                </button>
             </div>
         </div>
 
-        <button class="cart-btn hover:scale-110 transition-transform mx-4 m-auto"
-                th:data-product-id="${product.getId()}">
-            <i class="fa-solid fa-xmark text-3xl"></i>
-        </button>
+        <div class="lg:col-span-1">
+            <div class="bg-white rounded-3xl p-8 shadow-xl shadow-slate-200/50 border border-slate-100 sticky top-8">
+                <h2 class="text-xl font-bold mb-6 pb-4 border-b border-slate-100">Résumé</h2>
+
+                <div class="space-y-4 mb-8">
+                    <div class="flex justify-between text-slate-500">
+                        <span th:text="'Articles (' + ${qty} + ')'">Articles</span>
+                        <span id="cart-total-display" class="font-bold text-slate-900"
+                              th:text="${#numbers.formatDecimal(total, 1, 2)} + ' €'">0.00€</span>
+                    </div>
+                    <div class="flex justify-between text-slate-500">
+                        <span>Livraison</span>
+                        <span class="text-emerald-500 font-bold uppercase text-xs">Gratuite</span>
+                    </div>
+                </div>
+
+                <div class="pt-6 border-t border-slate-100 mb-8">
+                    <div class="flex justify-between items-end">
+                        <span class="text-lg font-bold">Total TTC</span>
+                        <span class="text-3xl font-black text-primary"
+                              th:text="${#numbers.formatDecimal(total, 1, 2)} + ' €'">0.00€</span>
+                    </div>
+                </div>
+
+                <button class="w-full bg-primary hover:bg-blue-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-blue-200 transition-all hover:-translate-y-1 active:scale-95">
+                    Passer la commande
+                </button>
+
+                <p class="text-center text-xs text-slate-400 mt-6">
+                    <i class="fa-solid fa-shield-check mr-1"></i> Paiement sécurisé SSL
+                </p>
+            </div>
+        </div>
     </div>
 </main>
 
 <div th:replace="~{component/footer}"></div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const inputs = document.querySelectorAll(".qty-input")
+
+        inputs.forEach(input => {
+            input.addEventListener("change", async (e) => {
+                const qty = parseInt(e.target.value) || 1
+                const id = e.target.id.replace("qty-", "")
+
+                const priceEl = document.getElementById(`price-${id}`)
+                const priceBaseEl = document.getElementById(`price-base-${id}`)
+
+                const unitPrice = parseFloat(priceEl.getAttribute("data-unit-price"))
+
+                priceEl.innerText = (unitPrice * qty).toFixed(2).replace('.', ',') + " €"
+
+                if (priceBaseEl) {
+                    const unitBase = parseFloat(priceBaseEl.getAttribute("data-unit-base-price"))
+                    priceBaseEl.innerText = (unitBase * qty).toFixed(2).replace('.', ',') + " €"
+                }
+
+                priceEl.classList.add('scale-110', 'text-primary', 'transition-transform')
+                setTimeout(() => priceEl.classList.remove('scale-110', 'text-primary'), 200)
+// TODO faire un refresh du montant total et corrigé le add
+                try {
+                    await fetch("/cart", {
+                        method: "PUT",
+                        headers: {"Content-Type": "application/json"},
+                        body: JSON.stringify({
+                            product: {id: Number(id)},
+                            quantity: Number(qty)
+                        })
+                    })
+                } catch (err) {
+                    console.error("Erreur sync:", err)
+                }
+            })
+        })
+    })
+</script>
 </body>
 </html>
