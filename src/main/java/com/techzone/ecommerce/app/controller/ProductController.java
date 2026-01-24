@@ -59,7 +59,7 @@ public class ProductController {
         model.addAttribute("hasPrevious", productPage.hasPrevious());
         model.addAttribute("pageSize", pageable.getPageSize());
         model.addAttribute("category", category);
-
+        //TODO regler le probleme de pagination (ça bug au 1er chargelent de category)
         return "product/category";
     }
 }
