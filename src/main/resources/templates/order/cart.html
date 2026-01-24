@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TechZone - Accueil</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/style_global.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=AR+One+Sans:wght@400..700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#1057B9',
+            grey: '#'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-gray-50 font-['AR_One_Sans']">
+<div th:replace="~{component/navbar}"></div>
+
+<main class="container mx-auto px-4">
+  <h1 class="text-xl md:text-3xl lg:text-4xl text-center my-8 md:my-12 font-bold px-4">
+    Phrase très percutante qui donne envie d’acheter nos produits !
+  </h1>
+
+  <div>
+
+  </div>
+
+  <nav aria-label="Page navigation"
+       class="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4 my-12">
+    <ul class="flex -space-x-px text-sm overflow-x-auto" th:if="${totalPages > 0}">
+      <li>
+        <a th:if="${hasPrevious}" th:href="@{/(page=${currentPage - 1})}"
+           class="flex items-center justify-center px-4 w-10 h-10 py-2 border border-gray-300 rounded-s-lg bg-white hover:bg-gray-100">
+          <i class="fa-solid fa-chevron-left"></i>
+        </a>
+      </li>
+
+      <li th:each="i : ${#numbers.sequence(0, (totalPages > 5 ? 4 : totalPages - 1))}">
+        <a th:href="@{/(page=${i})}"
+           th:text="${i + 1}"
+           th:classappend="${currentPage == i} ? 'bg-primary text-white border-primary' : 'bg-white text-gray-700 border-gray-300'"
+           class="flex items-center justify-center w-10 h-10 border hover:bg-gray-50 transition-colors">
+        </a>
+      </li>
+
+      <li>
+        <a th:if="${hasNext}" th:href="@{/(page=${currentPage + 1})}"
+           class="flex items-center w-10 h-10 justify-center px-4 py-2 border border-gray-300 rounded-e-lg bg-white hover:bg-gray-100">
+          <i class="fa-solid fa-chevron-right"></i>
+        </a>
+      </li>
+    </ul>
+
+    <div class="flex items-center">
+      <select id="pageSize"
+              name="size"
+              onchange="window.location.href = '/?page=0&size=' + this.value"
+              class="block w-20 px-3 py-2 bg-white border border-gray-300 text-sm rounded-md focus:ring-primary focus:border-primary outline-none">
+        <option value="12" th:selected="${pageSize == 12}">12</option>
+        <option value="24" th:selected="${pageSize == 24}">24</option>
+        <option value="48" th:selected="${pageSize == 48}">48</option>
+      </select>
+    </div>
+  </nav>
+
+</main>
+
+<div th:replace="~{component/footer}"></div>
+
+</body>
+</html>
