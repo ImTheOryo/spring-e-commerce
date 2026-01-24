@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechZone - Panier</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=AR+One+Sans:wght@400..700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1057B9',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 font-['AR_One_Sans'] text-slate-800 antialiased">
+<div th:replace="~{component/navbar}"></div>
+
+<main class="container mx-auto px-4 py-8 md:py-16">
+
+    <H1 class="text-2xl text-center py-8">Votre panier:</H1>
+    <ul class="grid grid-cols-[15vw_1fr_0.5fr_0.5fr_0.5fr_50px] py-4 text-xl m-auto">
+        <li></li>
+        <li>Designation</li>
+        <li class="m-auto">Prix</li>
+        <li class="m-auto">Quantité</li>
+        <li class="m-auto">Sous-total</li>
+        <li class="m-auto"><i class="fa-regular fa-trash-can"></i></li>
+    </ul>
+
+    <div class="grid grid-cols-[15vw_1fr_0.5fr_0.5fr_0.5fr_50px] py-4 border-t-2 border-grey-600 items-center"
+         th:each="product : ${products}">
+
+
+        <img th:src="${product.getProduct().getUrlPhoto()}"
+             class="rounded-xl mb-4 w-[10vw] h-[10vw] cover-fit"
+             th:alt="${product.getProduct().getName()}">
+
+        <a th:href="@{/product/{id}(id=${product.getProduct().id})}">
+            <h5 th:text="${product.getProduct().getName()}"
+                class="font-semibold text-lg leading-tight group-hover:text-primary transition-colors">
+                Nom du produit
+            </h5>
+        </a>
+
+
+        <div class="m-auto"  th:text="${product.getProduct().getPrice()+'€'}">
+            29.99€
+        </div>
+
+        <div class="m-auto" th:text="${product.getQuantity()}">
+            1
+        </div>
+
+        <div class="flex flex-col m-auto"
+             th:with="finalPrice=${product.getProduct().getPrice() * product.getQuantity() * (1 - product.getProduct().getPromotionPourcent() / 100.0)}">
+
+            <div class="flex items-baseline gap-2">
+                <p class="text-2xl font-extrabold tracking-tight text-slate-900"
+                   th:text="${(product.getProduct().isPromotion() ? #numbers.formatDecimal(finalPrice, 1, 2) : product.getProduct().getPrice()) + '€'}">
+                    29.99€
+                </p>
+
+                <p th:if="${product.getProduct().isPromotion()}"
+                   class="text-sm line-through text-gray-400 decoration-red-500/50"
+                   th:text="${product.getProduct().getPrice() + '€'}">
+                    39.99€
+                </p>
+            </div>
+        </div>
+
+        <button class="cart-btn hover:scale-110 transition-transform mx-4 m-auto"
+                th:data-product-id="${product.getId()}">
+            <i class="fa-solid fa-xmark text-3xl"></i>
+        </button>
+    </div>
+</main>
+
+<div th:replace="~{component/footer}"></div>
+</body>
+</html>

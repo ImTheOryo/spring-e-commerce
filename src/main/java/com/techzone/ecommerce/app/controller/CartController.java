@@ -12,9 +12,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -22,6 +26,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class CartController {
     private final CartService cartService;
     private final UserService userService;
+
+    @GetMapping
+    public String cartView(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        User user = userService.getUser(userDetails.getUsername());
+
+        if(user == null){
+            return "error/404";
+        }
+
+        List<CartProduct> productPages = user.getCart().getCartProductList();
+
+        model.addAttribute("products", productPages);
+
+        return "cart/cart";
+    }
 
     @PutMapping
     public ResponseEntity<String> addProduct(@Valid @RequestBody CartProduct cartProduct, @AuthenticationPrincipal UserDetails userDetails) {
