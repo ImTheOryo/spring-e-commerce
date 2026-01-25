@@ -8,8 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -22,15 +25,25 @@ public class RefillDb {
     private final OrderRepository orderRepository;
     private final OrderProductRepository orderProductRepository;
     private final UserRepository userRepository;
-    private final Faker faker = new Faker();
+    private final Faker faker = new Faker(new Locale("fr"));
     private final byte[] promotion = {5, 10, 15, 20, 30, 40, 50, 60, 70};
     private final OrderStatus[] statuses = {OrderStatus.DELIVERED, OrderStatus.IN_PROCESS, OrderStatus.DELIVERED, OrderStatus.REFUNDED, OrderStatus.RETURNED, OrderStatus.IN_TRANSIT};
+    private String[] brands;
+    private final int qtyBrands = 10;
+
 
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public void init() {
-        createUser(10);
+
+        brands = new String[qtyBrands];
+
+        for (int i = 0; i < qtyBrands; i++) {
+            brands[i] = faker.pokemon().name();
+        }
+
+        createUser(100);
         createCategoryAndProduct();
         createCarts();
         createOrders();
@@ -85,12 +98,12 @@ public class RefillDb {
         for (int i = 0; i < quantity; i++) {
             Product product = new Product();
             product.setCategory(category);
-            product.setName(faker.friends().character());
+            product.setName(faker.commerce().productName());
             product.setPrice(Double.parseDouble(faker.commerce().price()));
             product.setStock(getRandom(0, 400));
-            product.setDescription(faker.chuckNorris().fact());
-            product.setBrand(faker.pokemon().name());
-            product.setModel(faker.zelda().character());
+            product.setDescription(faker.lorem().paragraph(getRandom(2, 6)));
+            product.setBrand(brands[getRandom(0, qtyBrands - 1)]);
+            product.setModel(faker.company().name());
             product.setAvailable(faker.bool().bool());
             product.setInStock(product.getStock() > 0);
             product.setUrlPhoto("https://picsum.photos/seed/" + getRandom(1, 1000) + "/400/500");
@@ -114,7 +127,7 @@ public class RefillDb {
                 CartProduct cartProduct = new CartProduct();
                 cartProduct.setCart(cart);
                 cartProduct.setProduct(products.get(getRandom(0, products.size() - 1)));
-                cartProduct.setQuantity(getRandom(1, cartProduct.getProduct().getStock()));
+                cartProduct.setQuantity(Math.min(getRandom(1, 10), cartProduct.getProduct().getStock()));
                 cartProductRepository.save(cartProduct);
             }
         }
@@ -128,7 +141,7 @@ public class RefillDb {
             for (int i = 0; i < getRandom(0, 20); i++) {
                 Order order = new Order();
                 order.setUser(user);
-                order.setValidationDate((faker.date().past(100, TimeUnit.DAYS)).toInstant()
+                order.setCreatedAt((faker.date().past(100, TimeUnit.DAYS)).toInstant()
                         .atZone(ZoneId.systemDefault())
                         .toLocalDateTime());
                 order.setAddress(faker.address().fullAddress());
@@ -146,6 +159,14 @@ public class RefillDb {
                     orderProductRepository.save(orderProduct);
                 }
             }
+        }
+
+        List<Order> orders = orderRepository.findAll();
+        for (Order order : orders) {
+            Date date = faker.date().past(120, TimeUnit.DAYS);
+            LocalDateTime dateTime = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+            order.setCreatedAt(dateTime);
+            orderRepository.save(order);
         }
     }
 
