@@ -55,7 +55,6 @@ public class SecurityConfig {
                         headers -> headers
                                 .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
                 )
-                .httpBasic(Customizer.withDefaults())
                 .formLogin((form) -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/perform_login")
