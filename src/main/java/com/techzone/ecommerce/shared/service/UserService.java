@@ -17,4 +17,8 @@ public class UserService {
         Optional<User> user = userRepository.findByEmail(email);
         return user.orElse(null);
     }
+
+    public int getUsersCount() {
+        return userRepository.findAll().size();
+    }
 }

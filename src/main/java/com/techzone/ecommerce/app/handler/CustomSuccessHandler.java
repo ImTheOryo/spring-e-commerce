@@ -20,10 +20,8 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
         System.out.println(roles.contains("ROLE_ADMIN"));
 
         if (roles.contains("ROLE_ADMIN")) {
-            System.out.println("Je suis admin");
-            response.sendRedirect("/admin");
+            response.sendRedirect("/admin/dashboard");
         } else {
-            System.out.println("Je suis utilisateur");
             response.sendRedirect("/");
         }
     }
