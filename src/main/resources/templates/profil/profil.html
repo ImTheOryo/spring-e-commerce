@@ -82,7 +82,7 @@
                                 <div>
                                     <p class="font-bold text-slate-900" th:text="'Commande #TZ-'+${order.getId()}">
                                         Commande #TZ-8942</p>
-                                    <p class="text-xs text-slate-400">Passée le 22 Janvier 2026</p>
+                                    <p class="text-xs text-slate-400" th:text="'Passée le '+${order.getCreatedAt().getDayOfMonth()} + ' ' + ${order.getCreatedAt().getMonth().name()} + ' ' + ${order.getCreatedAt().getYear()}">Passée le 22 Janvier 2026</p>
                                 </div>
                             </div>
 
