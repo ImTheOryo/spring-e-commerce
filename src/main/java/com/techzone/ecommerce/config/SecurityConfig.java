@@ -55,7 +55,6 @@ public class SecurityConfig {
                         headers -> headers
                                 .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
                 )
-                .httpBasic(Customizer.withDefaults())
                 .formLogin((form) -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/perform_login")
@@ -63,6 +62,13 @@ public class SecurityConfig {
                         .passwordParameter("password")
                         .successHandler(new CustomSuccessHandler())
                         .failureUrl("/login?error=true")
+                        .permitAll()
+                )
+                .logout((logout) -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
                         .permitAll()
                 )
                 .csrf(AbstractHttpConfigurer::disable)
