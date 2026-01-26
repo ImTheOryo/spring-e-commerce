@@ -19,7 +19,7 @@
                 </span>
             </div>
             <p class="text-sm text-gray-500">Chiffres d'affaire</p>
-            <h3 class="text-2xl font-bold text-gray-900" th:text="${#numbers.formatDecimal(totalRevenus, 1, 'WHITESPACE', 2, 'COMMA') + '€'}">724.239,34€</h3>
+            <h3 class="text-2xl font-bold text-gray-900" th:text="${#numbers.formatDecimal(totalRevenus, 1, 'POINT', 2, 'COMMA') + '€'}">724.239,34€</h3>
         </div>
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <div class="flex justify-between items-start mb-4">
@@ -30,7 +30,7 @@
                 </span>
             </div>
             <p class="text-sm text-gray-500">Commandes</p>
-            <h3 class="text-2xl font-bold text-gray-900" th:text="${#numbers.formatInteger(totalCommandes, 0, 'WHITESPACE')}">1.521</h3>
+            <h3 class="text-2xl font-bold text-gray-900" th:text="${#numbers.formatInteger(totalCommandes, 0, 'POINT')}">1.521</h3>
         </div>
 
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
@@ -42,7 +42,7 @@
                 </span>
             </div>
             <p class="text-sm text-gray-500">Utilisateurs</p>
-            <h3 class="text-2xl font-bold text-gray-900" th:text="${#numbers.formatInteger(totalUtilisateurs, 0, 'WHITESPACE')}">2.410</h3>
+            <h3 class="text-2xl font-bold text-gray-900" th:text="${#numbers.formatInteger(totalUtilisateurs, 0, 'POINT')}">2.410</h3>
         </div>
 
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
@@ -50,7 +50,7 @@
                 <div class="p-2 bg-purple-50 text-purple-500 rounded-lg"><i class="fa-solid fa-box-open"></i></div>
             </div>
             <p class="text-sm text-gray-500">Produits</p>
-            <h3 class="text-2xl font-bold text-gray-900" th:text="${#numbers.formatInteger(totalProduits, 0, 'WHITESPACE')}">5.987</h3>
+            <h3 class="text-2xl font-bold text-gray-900" th:text="${#numbers.formatInteger(totalProduits, 0, 'POINT')}">5.987</h3>
         </div>
     </div>
 
@@ -64,10 +64,12 @@
                 </div>
 
                 <div class="flex-1 space-y-4 w-full">
-                    <div th:each="entry, iter : ${chartInfos}" class="flex justify-between items-center p-2">
+                    <div th:each="entry : ${chartInfos}" class="flex justify-between items-center p-2">
                         <div class="flex items-center gap-3">
-                            <span class="w-3 h-3 rounded-full" th:style="'background-color: ' + ${colors[iter.index]}"></span>
-                            <span class="text-sm font-medium text-gray-700" th:text="${entry.key}">Label</span>
+                            <span class="w-3 h-3 rounded-full"
+                                  th:style="'background-color: #' + ${colors.get(entry.key)}"></span>
+                            <span class="text-sm font-medium text-gray-700"
+                                  th:text="${entry.key.label}">Label</span>
                         </div>
                         <span class="text-sm font-bold text-gray-900" th:text="${entry.value}">0</span>
                     </div>
@@ -81,15 +83,21 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script th:inline="javascript">
         const statsData = [[${chartInfos}]] || {};
-        const palette = [[${colors}]];
+        const colorMap = [[${colors}]];
+
+        const labels = Object.keys(statsData).map(key => {
+            return statsData[key] && statsData[key].label ? statsData[key].label : key;
+        });
+
+        const backgroundColors = Object.keys(statsData).map(key => '#' + colorMap[key]);
 
         const config = {
             type: 'doughnut',
             data: {
-                labels: Object.keys(statsData),
+                labels: labels,
                 datasets: [{
                     data: Object.values(statsData),
-                    backgroundColor: palette,
+                    backgroundColor: backgroundColors,
                     borderWidth: 0,
                     cutout: '75%'
                 }]

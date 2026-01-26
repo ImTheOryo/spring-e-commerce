@@ -2,16 +2,16 @@ package com.techzone.ecommerce.shared.service;
 
 import com.techzone.ecommerce.shared.dto.OrderStatusCount;
 import com.techzone.ecommerce.shared.entity.Order;
-import com.techzone.ecommerce.shared.entity.OrderProduct;
 import com.techzone.ecommerce.shared.entity.OrderStatus;
 import com.techzone.ecommerce.shared.repository.OrderProductRepository;
 import com.techzone.ecommerce.shared.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -25,6 +25,10 @@ public class OrderService {
 
     @Autowired
     private OrderProductRepository orderProductRepository;
+
+    public List<Order> getAllOrders() {
+        return orderRepository.findAll();
+    }
 
     public long getOrdersCount() {
         return orderRepository.count();
@@ -46,11 +50,11 @@ public class OrderService {
                 .sum();
     }
 
-    public Map<String, Long> getOrdersStats() {
+    public Map<OrderStatus, Long> getOrdersStats() {
         List<OrderStatusCount> results = orderRepository.countOrdersByStatus();
         return results.stream()
                 .collect(Collectors.toMap(
-                        result -> result.getStatus().getLabel(),
+                        result -> result.getStatus(), // On garde l'Enum comme clé
                         OrderStatusCount::getCount
                 ));
     }
@@ -83,6 +87,10 @@ public class OrderService {
     private double getRevenueBetween(LocalDateTime start, LocalDateTime end) {
         Double revenue = orderRepository.sumRevenueBetweenDates(start, end);
         return (revenue != null) ? revenue : 0.0;
+    }
+
+    public Page<Order> findAllByIsAvailableTrue(String search, OrderStatus status, Pageable page){
+        return orderRepository.findFilteredOrders(search, status, page);
     }
 
 }

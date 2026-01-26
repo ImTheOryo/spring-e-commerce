@@ -1,7 +1,11 @@
 package com.techzone.ecommerce.shared.service;
 
+import com.techzone.ecommerce.shared.entity.Order;
+import com.techzone.ecommerce.shared.entity.OrderStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -32,7 +36,41 @@ public class AdminService {
         return dashboardInfos;
     }
 
-    public List<String> getStatusColor() {
-        return List.of("#fed7aa", "#e9d5ff", "#fce7f3", "#bbf7d0", "#fecaca", "#93c5fd");
+    public Map<String, Object> getCommandsInfos (String search, OrderStatus status ,Pageable page) {
+        Map<String, Object> commandsInfos = new HashMap<>();
+        Page<Order> allCommands = orderService.findAllByIsAvailableTrue(search, status, page);
+
+        allCommands.forEach(order -> {
+            double total = order.getOrderProductList().stream()
+                    .mapToDouble(op -> {
+                        double price = op.getProduct().getPrice();
+                        if (op.isPromotion()) {
+                            price = price * (1 - (op.getPromotionPourcent() / 100.0));
+                        }
+                        return price * op.getQuantity();
+                    })
+                    .sum();
+
+            order.setTotal(total);
+        });
+        commandsInfos.put("allCommands", allCommands);
+        commandsInfos.put("currentPage", allCommands.getNumber());
+        commandsInfos.put("totalPages", allCommands.getTotalPages());
+        commandsInfos.put("hasNext", allCommands.hasNext());
+        commandsInfos.put("hasPrevious", allCommands.hasPrevious());
+        commandsInfos.put("colors",  getStatusColor());
+        commandsInfos.put("status", OrderStatus.values());
+        return  commandsInfos;
+    }
+
+    public Map<OrderStatus, String> getStatusColor() {
+        Map<OrderStatus, String> colors = new HashMap<>();
+        colors.put(OrderStatus.IN_PROCESS, "fed7aa");
+        colors.put(OrderStatus.IN_TRANSIT, "e9d5ff");
+        colors.put(OrderStatus.DELIVERED, "fce7f3");
+        colors.put(OrderStatus.RETURN_ASK, "bbf7d0");
+        colors.put(OrderStatus.RETURNED, "fecaca");
+        colors.put(OrderStatus.REFUNDED, "93c5fd");
+        return colors;
     }
 }
