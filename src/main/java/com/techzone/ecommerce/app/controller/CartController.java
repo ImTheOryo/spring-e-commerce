@@ -1,6 +1,9 @@
 package com.techzone.ecommerce.app.controller;
 
-import ch.qos.logback.core.model.Model;
+//import com.techzone.ecommerce.shared.entity.Product;
+//import com.techzone.ecommerce.shared.repository.CartProductRepository;
+//import org.springframework.data.domain.Page;
+import org.springframework.ui.Model;
 import com.techzone.ecommerce.shared.entity.Cart;
 import com.techzone.ecommerce.shared.entity.CartProduct;
 import com.techzone.ecommerce.shared.entity.User;
@@ -19,12 +22,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.awt.print.Pageable;
+import org.springframework.data.domain.Pageable;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/cart")
 public class CartController {
+//    private final CartProductRepository cartProductRepository;
     private final CartService cartService;
     private final UserService userService;
 
@@ -41,10 +45,19 @@ public class CartController {
         return new ResponseEntity<>("Produit ajouter avec succés", HttpStatus.OK);
     }
 
-    @GetMapping("/cartview")
+    @GetMapping
     public String cartView(Model model, @PageableDefault(size = 12) Pageable pageable) {
+//        Page<CartProduct> cartPage = cartProductRepository.findAllByIsAvailableTrue(pageable);
+
+
 
         return "order/cart";
+    }
+
+    @GetMapping("/payment")
+    public String cartToOrder(Model model, @PageableDefault(size = 12) Pageable pageable) {
+
+        return "order/order";
     }
 
 }
