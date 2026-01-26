@@ -13,16 +13,21 @@
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <div class="flex justify-between items-start mb-4">
                 <div class="p-2 bg-blue-50 text-blue-500 rounded-lg"><i class="fa-solid fa-money-bill-wave"></i></div>
-                <span class="text-xs font-medium text-red-500"><i class="fa-solid fa-arrow-trend-down"></i> -5,76% / 7j</span>
+                <span th:class="${revenueGrowth >= 0 ? 'text-green-500' : 'text-red-500'}" class="text-xs font-medium">
+                    <i th:class="${revenueGrowth >= 0 ? 'fa-solid fa-arrow-trend-up' : 'fa-solid fa-arrow-trend-down'}"></i>
+                    <span th:text="${#numbers.formatDecimal(revenueGrowth, 1, 2) + '% / 7j'}"></span>
+                </span>
             </div>
             <p class="text-sm text-gray-500">Chiffres d'affaire</p>
             <h3 class="text-2xl font-bold text-gray-900" th:text="${#numbers.formatDecimal(totalRevenus, 1, 'WHITESPACE', 2, 'COMMA') + '€'}">724.239,34€</h3>
         </div>
-
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <div class="flex justify-between items-start mb-4">
                 <div class="p-2 bg-green-50 text-green-500 rounded-lg"><i class="fa-solid fa-cart-shopping"></i></div>
-                <span class="text-xs font-medium text-green-500"><i class="fa-solid fa-arrow-trend-up"></i> +12,5% / 7j</span>
+                <span th:class="${commandsGrowth >= 0 ? 'text-green-500' : 'text-red-500'}" class="text-xs font-medium">
+                    <i th:class="${commandsGrowth >= 0 ? 'fa-solid fa-arrow-trend-up' : 'fa-solid fa-arrow-trend-down'}"></i>
+                    <span th:text="${#numbers.formatDecimal(commandsGrowth, 1, 2) + '% / 7j'}"></span>
+                </span>
             </div>
             <p class="text-sm text-gray-500">Commandes</p>
             <h3 class="text-2xl font-bold text-gray-900" th:text="${#numbers.formatInteger(totalCommandes, 0, 'WHITESPACE')}">1.521</h3>
@@ -31,7 +36,10 @@
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <div class="flex justify-between items-start mb-4">
                 <div class="p-2 bg-orange-50 text-orange-500 rounded-lg"><i class="fa-solid fa-users"></i></div>
-                <span class="text-xs font-medium text-green-500"><i class="fa-solid fa-arrow-trend-up"></i> +3% / 7j</span>
+                <span th:class="${userGrowth >= 0 ? 'text-green-500' : 'text-red-500'}" class="text-xs font-medium">
+                    <i th:class="${userGrowth >= 0 ? 'fa-solid fa-arrow-trend-up' : 'fa-solid fa-arrow-trend-down'}"></i>
+                    <span th:text="${#numbers.formatDecimal(userGrowth, 1, 2) + '% / 7j'}"></span>
+                </span>
             </div>
             <p class="text-sm text-gray-500">Utilisateurs</p>
             <h3 class="text-2xl font-bold text-gray-900" th:text="${#numbers.formatInteger(totalUtilisateurs, 0, 'WHITESPACE')}">2.410</h3>

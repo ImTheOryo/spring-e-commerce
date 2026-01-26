@@ -26,6 +26,9 @@ public class AdminService {
         dashboardInfos.put("totalRevenus", orderService.getTotalRevenue());
         dashboardInfos.put("chartInfos", orderService.getOrdersStats());
         dashboardInfos.put("colors", getStatusColor());
+        dashboardInfos.put("revenueGrowth", orderService.getRevenueGrowth());
+        dashboardInfos.put("commandsGrowth", orderService.getOrdersGrowth());
+        dashboardInfos.put("userGrowth", userService.getUserGrowth());
         return dashboardInfos;
     }
 
