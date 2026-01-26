@@ -1,5 +1,8 @@
 package com.techzone.ecommerce.shared.entity;
 
+import lombok.Getter;
+
+@Getter
 public enum OrderStatus {
     IN_PROCESS("IN_PROCESS", "En préparation"),
     IN_TRANSIT("IN_TRANSIT", "En cours de livraison"),
@@ -14,4 +17,5 @@ public enum OrderStatus {
         this.code = code;
         this.label = label;
     }
+
 }

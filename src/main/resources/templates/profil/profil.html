@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechZone - Mon Profil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=AR+One+Sans:wght@400..700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {colors: {primary: '#1057B9'}}
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 font-['AR_One_Sans'] text-slate-800 antialiased">
+<div class=" min-h-screen">
+    <div th:replace="~{component/navbar}"></div>
+
+    <main class="container mx-auto px-4 py-12">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-6">
+            <div class="flex items-center gap-6">
+                <div class="h-20 w-20 bg-primary text-white rounded-full flex items-center justify-center text-3xl font-bold shadow-lg shadow-blue-200">
+                    <span th:text="${#strings.substring(user.getFirstname(),0,1) + #strings.substring(user.getLastname(),0,1)}">JD</span>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-bold text-slate-900"
+                        th:text="${user.getFirstname() + ' ' + user.getLastname()}">John Doe</h1>
+                    <p class="text-slate-500" th:text="${user.getEmail()}">john.doe@example.com</p>
+                </div>
+            </div>
+
+            <form th:action="@{/logout}" method="post">
+                <button type="submit"
+                        class="flex items-center gap-2 px-6 py-3 bg-white border border-red-100 text-red-600 rounded-2xl font-bold hover:bg-red-50 transition-colors shadow-sm">
+                    <i class="fa-solid fa-power-off"></i>
+                    Déconnexion
+                </button>
+            </form>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            <div class="space-y-6">
+                <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
+                    <h2 class="text-lg font-bold mb-6 flex items-center gap-3">
+                        <i class="fa-solid fa-user-gear text-primary"></i>
+                        Informations
+                    </h2>
+                    <div class="space-y-4 text-sm">
+                        <div>
+                            <label class="text-slate-400 block mb-1">Téléphone</label>
+                            <p class="font-medium"
+                               th:text="${user.getOrders().get(user.getOrders().size() -1).getPhone()?: 'Non renseigné'}">
+                                +33 6 00 00 00 00</p>
+                        </div>
+                        <div>
+                            <label class="text-slate-400 block mb-1">Adresse de livraison</label>
+                            <p class="font-medium"
+                               th:text="${user.getOrders().get(user.getOrders().size() -1).getAddress() ?: 'Aucune adresse enregistrée'}">
+                                123 Rue de la Tech, 75000 Paris</p>
+                        </div>
+                        <button class="text-primary font-bold hover:underline pt-2">Modifier mes infos</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-2 space-y-6">
+                <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
+                    <div class="flex justify-between items-center mb-8">
+                        <h2 class="text-xl font-bold">Mes dernières commandes</h2>
+                    </div>
+
+                    <div class="space-y-4" th:each="order : ${user.getOrders()}">
+                        <div class="group flex flex-col md:flex-row md:items-center justify-between p-6 border border-slate-100 rounded-2xl hover:bg-slate-50 transition-colors">
+                            <div class="flex items-center gap-4 mb-4 md:mb-0">
+                                <div class="h-12 w-12 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400">
+                                    <i class="fa-solid fa-box-open text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-slate-900" th:text="'Commande #TZ-'+${order.getId()}">
+                                        Commande #TZ-8942</p>
+                                    <p class="text-xs text-slate-400" th:text="'Passée le '+${order.getCreatedAt().getDayOfMonth()} + ' ' + ${order.getCreatedAt().getMonth().name()} + ' ' + ${order.getCreatedAt().getYear()}">Passée le 22 Janvier 2026</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between md:gap-12">
+                                <div class="text-right">
+                                    <p class="font-black text-slate-900">156,90 €</p>
+                                    <p class="text-xs text-slate-400">3 articles</p>
+                                </div>
+                                <span class="px-4 py-1.5 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold">
+                                    Livrée
+                                </span>
+                                <button class="h-10 w-10 flex items-center justify-center rounded-xl bg-slate-100 group-hover:bg-primary group-hover:text-white transition-all">
+                                    <i class="fa-solid fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div th:if="${user.getOrders().isEmpty()}" class="text-center py-10">
+                            <i class="fa-solid fa-bag-shopping text-4xl text-slate-200 mb-4 block"></i>
+                            <p class="text-slate-400">Vous n'avez pas encore passé de commande.</p>
+                            <a href="/" class="text-primary font-bold mt-2 inline-block">Découvrir nos produits</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<div th:replace="~{component/footer}"></div>
+</body>
+</html>

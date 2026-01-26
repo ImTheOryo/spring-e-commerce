@@ -15,7 +15,6 @@ public class Order extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-    private LocalDateTime validationDate;
     private OrderStatus status;
     private String address;
     private String phone;
