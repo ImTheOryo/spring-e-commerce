@@ -48,7 +48,11 @@ public class ProductController {
     }
 
     @GetMapping("/category/{id}")
-    public String getProductPerCategory(Model model,@PageableDefault(size =12) Pageable pageable, @PathVariable("id") Long categoryId){
+    public String getProductPerCategory(
+            Model model,
+            @PageableDefault(size =12) Pageable pageable,
+            @PathVariable("id") Long categoryId
+    ){
         Category category = categoryService.getCategory(categoryId);
         Page<Product> productPage = productRepository.findAllByIsAvailableTrueAndCategory(pageable, category);
 

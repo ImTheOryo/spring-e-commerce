@@ -20,4 +20,6 @@ public class Order extends BaseEntity {
     private String phone;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderProduct> orderProductList;
+    @Transient
+    private double total;
 }
