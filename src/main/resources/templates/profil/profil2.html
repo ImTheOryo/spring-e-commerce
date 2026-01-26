@@ -68,20 +68,16 @@
             </div>
 
             <div class="lg:col-span-2 space-y-6">
-                <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
-                    <div class="flex justify-between items-center mb-8">
-                        <h2 class="text-xl font-bold">Mes dernières commandes</h2>
-                        <label>
-                            <select id="year" onchange="updateList()">
-                                <option th:each="year : ${orderYears}" th:text="${year}" th:value="${year}">
-                                    Année
-                                </option>
-                            </select>
-                        </label>
+                <main class="container mx-auto px-4 py-12">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="space-y-6">
+                        </div>
+
+                        <div class="lg:col-span-2 space-y-6">
+                            <div th:replace="~{__${viewContent}__}"></div>
+                        </div>
                     </div>
-                    <div class="space-y-4" id="order-container" th:fragment="order-component">
-                    </div>
-                </div>
+                </main>
             </div>
         </div>
     </main>
@@ -89,8 +85,24 @@
 <div th:replace="~{component/footer}"></div>
 <script>
     document.addEventListener("DOMContentLoaded", () => {
+        fillYearOptions()
         updateList();
     })
+
+    async function fillYearOptions() {
+        const yearSelect = document.getElementById("year")
+        const response = await fetch(`/order/years`)
+        const years = await response.json()
+
+        yearSelect.innerHTML = ""
+
+        for (const year of years) {
+            const option = document.createElement("option")
+            option.value = year
+            option.text = year
+            yearSelect.appendChild(option)
+        }
+    }
 
     async function updateList() {
         const year = document.getElementById("year").value;
@@ -126,7 +138,7 @@
         return `Passée le ${resDate.getDate()} ${mounths[resDate.getMonth()]} ${resDate.getFullYear()}`
     }
 
-    function emptyList(){
+    function emptyList() {
         return ` <div class="text-center py-10">
                                 <i class="fa-solid fa-bag-shopping text-4xl text-slate-200 mb-4 block"></i>
                                 <p class="text-slate-400">Vous n'avez pas encore passé de commande.</p>

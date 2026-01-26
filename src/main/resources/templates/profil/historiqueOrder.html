@@ -1,0 +1,130 @@
+<div th:fragment="order-detail">
+    <a href="/user/profile" class="text-sm font-bold text-slate-400 hover:text-primary mb-4 block">
+        <i class="fa-solid fa-arrow-left"></i> Retour à la liste
+    </a>
+    <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
+        <h2 class="text-xl font-bold mb-6" th:text="'Détail commande #' + ${order.id}">Détail</h2>
+    </div>
+
+
+    <div class="mb-8">
+        <a href="/profile"
+           class="text-slate-400 hover:text-primary transition-colors text-sm font-bold flex items-center gap-2 mb-4">
+            <i class="fa-solid fa-arrow-left"></i> Retour au profil
+        </a>
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <h1 class="text-3xl font-bold text-slate-900">
+                Commande <span class="text-primary" th:text="'#' + ${order.orderNumber}">#TZ-8942</span>
+            </h1>
+            <span class="px-6 py-2 bg-emerald-100 text-emerald-700 rounded-full text-sm font-black uppercase tracking-widest"
+                  th:text="${order.status}">LIVRÉE</span>
+        </div>
+        <p class="text-slate-400 mt-2">Passée le <span
+                th:text="${#temporals.format(order.date, 'dd MMMM yyyy à HH:mm')}">22 Janvier 2026</span>
+        </p>
+    </div>
+
+    <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 mb-8">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 relative">
+            <div class="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-slate-100 -translate-y-1/2 z-0"></div>
+
+            <div class="relative z-10 flex items-center gap-4 md:flex-col md:text-center">
+                <div class="h-10 w-10 bg-primary text-white rounded-full flex items-center justify-center shadow-lg shadow-blue-200">
+                    <i class="fa-solid fa-check text-sm"></i>
+                </div>
+                <div>
+                    <p class="font-bold text-slate-900 text-sm">Confirmée</p>
+                    <p class="text-xs text-slate-400">22/01/2026</p>
+                </div>
+            </div>
+
+            <div class="relative z-10 flex items-center gap-4 md:flex-col md:text-center">
+                <div class="h-10 w-10 bg-primary text-white rounded-full flex items-center justify-center shadow-lg shadow-blue-200">
+                    <i class="fa-solid fa-box text-sm"></i>
+                </div>
+                <div>
+                    <p class="font-bold text-slate-900 text-sm">En préparation</p>
+                    <p class="text-xs text-slate-400">23/01/2026</p>
+                </div>
+            </div>
+
+            <div class="relative z-10 flex items-center gap-4 md:flex-col md:text-center">
+                <div class="h-10 w-10 bg-white border-2 border-slate-100 text-slate-200 rounded-full flex items-center justify-center">
+                    <i class="fa-solid fa-truck-fast text-sm"></i>
+                </div>
+                <div>
+                    <p class="font-bold text-slate-300 text-sm">En cours de livraison</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-2 space-y-4">
+            <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
+                <h2 class="text-xl font-bold mb-6">Articles commandés</h2>
+                <div class="divide-y divide-slate-100">
+                    <div th:each="item : ${order.items}" class="py-6 flex gap-6 items-center">
+                        <img th:src="${item.product.urlPhoto}" class="w-20 h-20 rounded-2xl object-cover bg-slate-50"
+                             th:alt="${item.product.name}">
+                        <div class="flex-grow">
+                            <h3 class="font-bold text-slate-900" th:text="${item.product.name}">Smartphone Galaxy
+                                S24</h3>
+                            <p class="text-sm text-slate-400" th:text="'Quantité : ' + ${item.quantity}">Quantité :
+                                1</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-black text-slate-900"
+                               th:text="${#numbers.formatDecimal(item.priceAtPurchase * item.quantity, 1, 2) + ' €'}">
+                                899,00
+                                €</p>
+                            <p class="text-xs text-slate-400"
+                               th:text="${#numbers.formatDecimal(item.priceAtPurchase, 1, 2) + ' € / unité'}">899,00 € /
+                                unité</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="space-y-8">
+            <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
+                <h2 class="text-lg font-bold mb-4 flex items-center gap-3">
+                    <i class="fa-solid fa-location-dot text-primary"></i> Livraison
+                </h2>
+                <div class="text-sm text-slate-600 space-y-1">
+                    <p class="font-bold text-slate-900" th:text="${user.firstName + ' ' + user.lastName}">John Doe</p>
+                    <p th:text="${order.shippingAddress}">123 Rue de la République</p>
+                    <p>75001 Paris, France</p>
+                </div>
+            </div>
+
+            <div class="bg-slate-900 rounded-3xl p-8 text-white shadow-xl shadow-slate-200">
+                <h2 class="text-lg font-bold mb-6 pb-4 border-b border-white/10 text-white">Récapitulatif</h2>
+                <div class="space-y-4 mb-6 text-sm">
+                    <div class="flex justify-between opacity-70">
+                        <span>Sous-total</span>
+                        <span th:text="${#numbers.formatDecimal(order.subTotal, 1, 2) + ' €'}">150,00 €</span>
+                    </div>
+                    <div class="flex justify-between opacity-70">
+                        <span>Livraison</span>
+                        <span>Gratuit</span>
+                    </div>
+                    <div class="flex justify-between opacity-70">
+                        <span>TVA (20%)</span>
+                        <span th:text="${#numbers.formatDecimal(order.tax, 1, 2) + ' €'}">30,00 €</span>
+                    </div>
+                </div>
+                <div class="flex justify-between items-end pt-4 border-t border-white/10">
+                    <span class="font-bold">Total Payé</span>
+                    <span class="text-3xl font-black text-primary"
+                          th:text="${#numbers.formatDecimal(order.total, 1, 2) + ' €'}">180,00 €</span>
+                </div>
+
+                <button class="w-full mt-8 py-3 bg-white/10 hover:bg-white/20 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-file-invoice"></i> Télécharger la facture
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
