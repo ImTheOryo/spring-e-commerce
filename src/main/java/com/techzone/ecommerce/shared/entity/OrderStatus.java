@@ -1,5 +1,6 @@
 package com.techzone.ecommerce.shared.entity;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
 @Getter
@@ -11,6 +12,7 @@ public enum OrderStatus {
     RETURNED("RETURNED", "Retour reçu"),
     REFUNDED("REFUNDED", "Remboursé");
     private final String code;
+    @JsonValue
     private final String label;
 
     OrderStatus(String code, String label) {

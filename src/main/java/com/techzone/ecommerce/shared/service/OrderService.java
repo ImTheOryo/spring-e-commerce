@@ -2,7 +2,9 @@ package com.techzone.ecommerce.shared.service;
 
 import com.techzone.ecommerce.shared.dto.OrderStatusCount;
 import com.techzone.ecommerce.shared.entity.Order;
+import com.techzone.ecommerce.shared.entity.OrderProduct;
 import com.techzone.ecommerce.shared.entity.OrderStatus;
+import com.techzone.ecommerce.shared.entity.User;
 import com.techzone.ecommerce.shared.repository.OrderProductRepository;
 import com.techzone.ecommerce.shared.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +14,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -20,11 +25,13 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class OrderService {
-    @Autowired
-    private OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
+    private final OrderProductRepository orderProductRepository;
 
-    @Autowired
-    private OrderProductRepository orderProductRepository;
+    public List<Integer> getYears(Long userId){
+
+        return orderRepository.findDistinctYearsByUserId(userId);
+    }
 
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
@@ -50,6 +57,7 @@ public class OrderService {
                 .sum();
     }
 
+    //risque de petage avant merge c'etait String, long
     public Map<OrderStatus, Long> getOrdersStats() {
         List<OrderStatusCount> results = orderRepository.countOrdersByStatus();
         return results.stream()
@@ -91,6 +99,19 @@ public class OrderService {
 
     public Page<Order> findAllByIsAvailableTrue(String search, OrderStatus status, Pageable page){
         return orderRepository.findFilteredOrders(search, status, page);
+    }
+
+    public List<Order> getUserOrderByYear(int year, User user){
+        try{
+            LocalDateTime start= LocalDateTime.of(year,1,1,0,0);
+            start = start.minusSeconds(1);
+            LocalDateTime end= LocalDateTime.of(year,12,31,23,59);
+            end = end.plusSeconds(1);
+            return orderRepository.findByCreatedAtBetweenAndUserOrderByCreatedAt(start, end, user);
+        }catch (Exception e){
+            System.out.println(e);
+        }
+        return null;
     }
 
 }
