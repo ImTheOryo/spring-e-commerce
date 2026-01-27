@@ -40,19 +40,6 @@ public class AdminService {
         Map<String, Object> commandsInfos = new HashMap<>();
         Page<Order> allCommands = orderService.findAllByIsAvailableTrue(search, status, page);
 
-        allCommands.forEach(order -> {
-            double total = order.getOrderProductList().stream()
-                    .mapToDouble(op -> {
-                        double price = op.getProduct().getPrice();
-                        if (op.isPromotion()) {
-                            price = price * (1 - (op.getPromotionPourcent() / 100.0));
-                        }
-                        return price * op.getQuantity();
-                    })
-                    .sum();
-
-            order.setTotal(total);
-        });
         commandsInfos.put("allCommands", allCommands);
         commandsInfos.put("currentPage", allCommands.getNumber());
         commandsInfos.put("totalPages", allCommands.getTotalPages());
@@ -61,6 +48,15 @@ public class AdminService {
         commandsInfos.put("colors",  getStatusColor());
         commandsInfos.put("status", OrderStatus.values());
         return  commandsInfos;
+    }
+
+    public Map<String, Object> getCommandInfos (Long id) {
+        Map<String, Object> commandInfos = new HashMap<>();
+
+        commandInfos.put("commande",orderService.findById(id));
+        commandInfos.put("colors",   getStatusColor());
+        commandInfos.put("status", OrderStatus.values());
+        return  commandInfos;
     }
 
     public Map<OrderStatus, String> getStatusColor() {
