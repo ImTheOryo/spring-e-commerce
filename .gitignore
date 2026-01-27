@@ -33,3 +33,7 @@ build/
 .vscode/
 
 .gitattributes
+
+# macOS ###
+.DS_Store
+**/.DS_Store
