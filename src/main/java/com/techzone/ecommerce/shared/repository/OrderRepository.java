@@ -40,7 +40,10 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     @Query("SELECT o FROM Order o WHERE " +
             "(:status IS NULL OR o.status = :status) AND " +
-            "(:search IS NULL OR LOWER(o.user.firstname) LIKE LOWER(CONCAT('%', :search, '%')) OR CAST(o.id AS string) LIKE CONCAT('%', :search, '%'))")
+            "(:search IS NULL OR " +
+            "LOWER(o.user.firstname) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+            "LOWER(o.user.lastname) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+            "LOWER(o.user.email) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+            "CAST(o.id AS string) LIKE CONCAT('%', :search, '%'))")
     Page<Order> findFilteredOrders(@Param("search") String search, @Param("status") OrderStatus status, Pageable pageable);
-
 }
