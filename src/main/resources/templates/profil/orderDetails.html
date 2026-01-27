@@ -5,9 +5,7 @@
             <i class="fa-solid fa-arrow-left"></i> Retour au profil
         </a>
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <h1 class="text-3xl font-bold text-slate-900">
-                Commande <span class="text-primary" th:text="'Commande #TZ-'+ ${order.id}">#TZ-8942</span>
-            </h1>
+            <h1 class="text-3xl font-bold text-slate-900" th:text="'Commande #TZ-'+ ${order.id}">#TZ-8942</h1>
             <span class="px-6 py-2  rounded-full text-sm font-black"
                   th:classappend="'bg-'+${order.getStatus().getColor()}+'-100 text-'+${order.getStatus().getColor()}+'-700'"
                   th:text="${order.status.getLabel()}">LIVRÉE</span>
@@ -60,16 +58,16 @@
                 <div class="space-y-4 mb-6 text-sm">
                     <div class="flex justify-between opacity-70">
                         <span>Sous-total</span>
-                        <span th:text="${order.getPrice()}">150,00 €</span>
+                        <span th:text="${order.getPrice()}+'€'">150,00 €</span>
                     </div>
                     <div class="flex justify-between opacity-70">
                         <span>Livraison</span>
                         <span>Gratuit</span>
                     </div>
                 </div>
-                <div class="flex justify-between items-end pt-4 border-t border-white/10">
+                <div class="flex flex-col justify-between items-end pt-4 border-t border-white/10">
                     <span class="font-bold">Total Payé</span>
-                    <span class="text-3xl font-black text-primary" th:text="${order.getPrice()}">180,00 €</span>
+                    <span class="text-3xl font-black text-primary" th:text="${order.getPrice()} + '€'">180,00 €</span>
                 </div>
             </div>
         </div>

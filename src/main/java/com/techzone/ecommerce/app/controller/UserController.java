@@ -1,18 +1,19 @@
 package com.techzone.ecommerce.app.controller;
 
 import com.techzone.ecommerce.shared.dto.PartialOrderDTO;
+import com.techzone.ecommerce.shared.dto.UserDTO;
 import com.techzone.ecommerce.shared.entity.Order;
 import com.techzone.ecommerce.shared.entity.User;
 import com.techzone.ecommerce.shared.service.OrderService;
 import com.techzone.ecommerce.shared.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Comparator;
 
@@ -65,6 +66,21 @@ public class UserController {
         user.getOrders().sort(Comparator.comparing(Order::getCreatedAt).reversed());
         model.addAttribute("user", user);
         model.addAttribute("viewContent", "profil/edit :: profile-edit");
-        return "profil/orderDetails";
+        return "profil/edit";
+    }
+
+    @PostMapping("update")
+    public String updateUser(@AuthenticationPrincipal UserDetails userDetails, @ModelAttribute UserDTO userDTO) {
+        User user = userService.getUser(userDetails.getUsername());
+        user.setLastname(userDTO.getLastname());
+        user.setFirstname(userDTO.getFirstname());
+        user.setAddress(userDTO.getAddress());
+        user.setPhone(userDTO.getPhone());
+
+        if (!userService.updateUser(user)) {
+            return "error/404";
+        }
+
+        return "redirect:/user";
     }
 }

@@ -39,4 +39,14 @@ public class UserService {
         }
         return ((current - previous) / previous) * 100;
     }
+
+    public boolean updateUser(User user){
+        try {
+            userRepository.save(user);
+            return true;
+        }catch (Exception e){
+            System.out.println(e);
+        }
+        return false;
+    }
 }
