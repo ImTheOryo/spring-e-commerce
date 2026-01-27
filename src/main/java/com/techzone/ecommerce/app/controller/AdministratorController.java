@@ -2,14 +2,13 @@ package com.techzone.ecommerce.app.controller;
 
 import com.techzone.ecommerce.shared.entity.OrderStatus;
 import com.techzone.ecommerce.shared.service.AdminService;
+import com.techzone.ecommerce.shared.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/admin")
@@ -17,6 +16,9 @@ public class AdministratorController {
 
     @Autowired
     private AdminService adminService;
+
+    @Autowired
+    private OrderService orderService;
 
     @GetMapping("/dashboard")
     public String getDashboard(Model model) {
@@ -36,5 +38,28 @@ public class AdministratorController {
         model.addAllAttributes(adminService.getCommandsInfos(search, status, pageable));
 
         return "admin/commands";
+    }
+
+    @GetMapping("/commands/{id}")
+    public String getCommand(
+            Model model,
+            @PathVariable Long id
+    ) {
+        if (orderService.findById(id) == null){
+            return "error/404";
+        }
+
+        model.addAllAttributes(adminService.getCommandInfos(id));
+        return "admin/command";
+    }
+
+    @PostMapping("/commands/{id}/status")
+    public String updateStatus(
+            Model model,
+            @PathVariable Long id,
+            @RequestParam OrderStatus status
+    ){
+        orderService.changeStatus(id, status);
+        return getCommand(model, id);
     }
 }
