@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Optional;
 
@@ -40,7 +41,7 @@ public class ProductController {
     public String getProduct(Model model, @PathVariable Long id) {
         Optional<Product> product = productRepository.findById(id);
 
-        if(product.isEmpty()){
+        if (product.isEmpty()) {
             return "product/home";
         }
         model.addAttribute("product", product.get());
@@ -50,9 +51,9 @@ public class ProductController {
     @GetMapping("/category/{id}")
     public String getProductPerCategory(
             Model model,
-            @PageableDefault(size =12) Pageable pageable,
+            @PageableDefault(size = 12) Pageable pageable,
             @PathVariable("id") Long categoryId
-    ){
+    ) {
         Category category = categoryService.getCategory(categoryId);
         Page<Product> productPage = productRepository.findAllByIsAvailableTrueAndCategory(pageable, category);
 
@@ -65,5 +66,24 @@ public class ProductController {
         model.addAttribute("category", category);
         //TODO regler le probleme de pagination (ça bug au 1er chargelent de category)
         return "product/category";
+    }
+
+    @GetMapping("/search")
+    public String getProductPerCategory(
+            Model model,
+            @PageableDefault(size = 12) Pageable pageable,
+            @RequestParam("query") String search
+    ) {
+        Page<Product> productPage = productRepository.searchProduct(pageable, search);
+
+        model.addAttribute("products", productPage.getContent());
+        model.addAttribute("search", search);
+        model.addAttribute("currentPage", productPage.getNumber());
+        model.addAttribute("totalPages", productPage.getTotalPages());
+        model.addAttribute("hasNext", productPage.hasNext());
+        model.addAttribute("hasPrevious", productPage.hasPrevious());
+        model.addAttribute("pageSize", pageable.getPageSize());
+
+        return "product/search";
     }
 }

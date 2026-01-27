@@ -2,12 +2,12 @@
     <a th:href="@{/}" href="#" class="col-start-1 col-span-1">
         <img class="w-[220px] h-[70px] object-cover" th:src="@{/images/Logo-TechZone-Blue.png}" alt="logo TechZone page accueil"/>
     </a>
-<!--    <h2 class="w-[150px] font-normal text-white col-start-2 col-span-1" >Entrez dans la zone du high-tech.</h2>-->
-    <form class="flex items-center p-4 w-full h-[35px] bg-zinc-100 rounded-md row-start-2 col-span-2 md:row-start-1 md:col-start-2 md:col-span-3">
-        <input class="w-full h-[32px] bg-transparent" type="text">
-        <a href="#" type="submit">
-            <i class="fa-solid fa-magnifying-glass "></i>
-        </a>
+
+    <form onsubmit="performSearch(); return false" class="flex items-center p-4 w-full h-[35px] bg-zinc-100 rounded-md row-start-2 col-span-2 md:row-start-1 md:col-start-2 md:col-span-3">
+        <input id="searchInput" class="w-full h-[32px] bg-transparent outline-none" type="text" placeholder="Rechercher un produit...">
+        <button type="button" onclick="performSearch()">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
     </form>
     <div class="text-end space-x-6 col-start-2 md:col-start-5 col-span-1">
         <a th:href="@{/user}" href="#"> <i class="text-3xl fa-regular fa-user text-white"></i></a>
@@ -23,3 +23,16 @@
         <li class="pr-14 text-black font-semibold text-base">En stock</li>
     </ul>
 </div>
+<script>
+    function performSearch() {
+        console.log("ok")
+        const query = document.getElementById('searchInput').value
+        if (query.trim() !== "") {
+            window.location.href = `/search?query=${encodeURIComponent(query)}`
+        }
+    }
+
+    document.getElementById('searchInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') performSearch()
+    })
+</script>
