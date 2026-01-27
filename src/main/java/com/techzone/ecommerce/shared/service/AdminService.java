@@ -53,7 +53,7 @@ public class AdminService {
     public Map<String, Object> getCommandInfos (Long id) {
         Map<String, Object> commandInfos = new HashMap<>();
 
-        commandInfos.put("commande",orderService.findById(id));
+        commandInfos.put("commande",orderService.getOrder(id));
         commandInfos.put("colors",   getStatusColor());
         commandInfos.put("status", OrderStatus.values());
         return  commandInfos;

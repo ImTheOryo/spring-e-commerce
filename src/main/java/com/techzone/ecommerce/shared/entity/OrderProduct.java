@@ -7,6 +7,8 @@ import jakarta.persistence.PrePersist;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.text.DecimalFormat;
+
 @Getter
 @Setter
 @Entity
@@ -24,12 +26,14 @@ public class OrderProduct extends BaseEntity {
 
     @PrePersist
     public void calculatePrice() {
+        DecimalFormat df = new DecimalFormat("#.00");
+
         if (product != null) {
             double basePrice = product.getPrice();
             if (isPromotion && promotionPourcent > 0) {
-                this.price = basePrice * (1 - this.promotionPourcent / 100.0);
+                this.price = Double.parseDouble(df.format(basePrice * (1 - this.promotionPourcent / 100.0)));
             } else {
-                this.price = basePrice;
+                this.price = Double.parseDouble(df.format(basePrice));
             }
         }
     }

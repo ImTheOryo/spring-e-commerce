@@ -35,12 +35,12 @@ password:
 ## Comptes de test 
 
 ### Compte admin: <br/>
-&emsp; Adresse email: A REMPLIR<br/>
-&emsp; Mot de passe: A REMPLIR
+&emsp; Adresse email: admin@test.com<br/>
+&emsp; Mot de passe: password
 
 ### Compte utilisateur:<br/>
-&emsp; Adresse email: A REMPLIR<br/>
-&emsp; Mot de passe: A REMPLIR
+&emsp; Adresse email: test@test.com<br/>
+&emsp; Mot de passe: password
 
 ## Diagramme de classes UML 
 

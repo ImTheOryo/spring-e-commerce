@@ -19,6 +19,7 @@ import java.time.temporal.TemporalUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -28,7 +29,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderProductRepository orderProductRepository;
 
-    public List<Integer> getYears(Long userId){
+    public List<Integer> getYears(Long userId) {
 
         return orderRepository.findDistinctYearsByUserId(userId);
     }
@@ -57,7 +58,6 @@ public class OrderService {
                 .sum();
     }
 
-    //risque de petage avant merge c'etait String, long
     public Map<OrderStatus, Long> getOrdersStats() {
         List<OrderStatusCount> results = orderRepository.countOrdersByStatus();
         return results.stream()
@@ -97,28 +97,32 @@ public class OrderService {
         return (revenue != null) ? revenue : 0.0;
     }
 
-    public Page<Order> findAllByIsAvailableTrue(String search, OrderStatus status, Pageable page){
+    public Page<Order> findAllByIsAvailableTrue(String search, OrderStatus status, Pageable page) {
         return orderRepository.findFilteredOrders(search, status, page);
     }
 
-    public List<Order> getUserOrderByYear(int year, User user){
-        try{
-            LocalDateTime start= LocalDateTime.of(year,1,1,0,0);
+    public List<Order> getUserOrderByYear(int year, User user) {
+        try {
+            LocalDateTime start = LocalDateTime.of(year, 1, 1, 0, 0);
             start = start.minusSeconds(1);
-            LocalDateTime end= LocalDateTime.of(year,12,31,23,59);
+            LocalDateTime end = LocalDateTime.of(year, 12, 31, 23, 59);
             end = end.plusSeconds(1);
             return orderRepository.findByCreatedAtBetweenAndUserOrderByCreatedAt(start, end, user);
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e);
         }
         return null;
     }
 
-    public Order findById(Long id){
-        if (orderRepository.findById(id).isPresent()){
-            return orderRepository.findById(id).get();
+    public Order getOrder(long id) {
+        try {
+            Optional<Order> order = orderRepository.findById(id);
+            return order.orElse(null);
+        } catch (Exception e) {
+            System.out.println(e.toString());
         }
         return null;
+
     }
 
     public void changeStatus(Long id, OrderStatus status){

@@ -29,6 +29,4 @@ public class Product extends BaseEntity {
     private String urlPhoto;
     private byte promotionPourcent;
     private boolean isPromotion;
-
-
 }

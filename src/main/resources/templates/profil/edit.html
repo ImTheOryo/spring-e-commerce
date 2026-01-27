@@ -1,0 +1,65 @@
+<div th:fragment="profile-edit" class="animate-fade-in">
+  <div class="mb-8">
+    <button onclick="window.location.reload()" class="text-slate-400 hover:text-primary transition-colors text-sm font-bold flex items-center gap-2 mb-4">
+      <i class="fa-solid fa-arrow-left"></i> Annuler et retourner
+    </button>
+    <h1 class="text-3xl font-bold text-slate-900">Modifier mon <span class="text-primary">Profil</span></h1>
+    <p class="text-slate-400 mt-2">Mettez à jour vos informations personnelles et votre adresse de livraison.</p>
+  </div>
+
+  <form th:action="@{/user/update}" method="post" class="space-y-6">
+    <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
+      <h2 class="text-xl font-bold mb-6 flex items-center gap-3 text-slate-900">
+        <i class="fa-solid fa-id-card text-primary"></i> Identité
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label for="firstname" class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2 ml-1">Prénom</label>
+          <input type="text" id="firstname" name="firstname" th:value="${user.firstname}"
+                 class="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-medium">
+        </div>
+        <div>
+          <label for="lastname" class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2 ml-1">Nom</label>
+          <input type="text" id="lastname" name="lastname" th:value="${user.lastname}"
+                 class="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-medium">
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
+      <h2 class="text-xl font-bold mb-6 flex items-center gap-3 text-slate-900">
+        <i class="fa-solid fa-map-location-dot text-primary"></i> Coordonnées
+      </h2>
+
+      <div class="space-y-6">
+        <div>
+          <label for="email" class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2 ml-1">Adresse Email (non modifiable)</label>
+          <input type="email" id="email" th:value="${user.email}" disabled
+                 class="w-full px-5 py-4 bg-slate-100 border border-slate-200 rounded-2xl text-slate-400 font-medium cursor-not-allowed">
+        </div>
+
+        <div>
+          <label for="phone" class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2 ml-1">Téléphone</label>
+          <input type="tel" id="phone" name="phone" th:value="${user.phone}" placeholder="+33 6 ..."
+                 class="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-medium">
+        </div>
+
+        <div>
+          <label for="address" class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2 ml-1">Adresse de livraison complète</label>
+          <textarea id="address" name="address" rows="3" th:text="${user.address}"
+                    class="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-medium resize-none"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col sm:flex-row gap-4 pt-4">
+      <button type="submit" class="flex-grow bg-primary text-white font-bold py-4 rounded-2xl shadow-lg shadow-blue-200 hover:bg-blue-700 hover:-translate-y-1 transition-all active:scale-95">
+        Enregistrer les modifications
+      </button>
+      <button type="button" onclick="window.location.reload()" class="px-8 py-4 bg-white border-2 border-slate-100 text-slate-400 font-bold rounded-2xl hover:bg-slate-50 transition-all">
+        Annuler
+      </button>
+    </div>
+  </form>
+</div>
