@@ -13,5 +13,6 @@ import org.springframework.stereotype.Repository;
 public interface ProductRepository extends JpaRepository<Product, Long>, PagingAndSortingRepository<Product, Long>, JpaSpecificationExecutor<Product> {
     Page<Product> findAllByIsAvailableTrue(Pageable pageable);
     Page<Product> findAllByIsAvailableTrueAndCategory(Pageable pageable, Category category);
+    Page<Product> findAllByIsAvailableTrueAndStockGreaterThan(Pageable pageable, int stock);
 
 }

@@ -66,4 +66,21 @@ public class ProductController {
         //TODO regler le probleme de pagination (ça bug au 1er chargelent de category)
         return "product/category";
     }
+
+    @GetMapping("/inStock")
+    public String getProductInCategory(
+            Model model,
+            @PageableDefault(size =12) Pageable pageable
+    ){
+        Page<Product> productPage = productRepository.findAllByIsAvailableTrueAndStockGreaterThan(pageable, 0);
+
+        model.addAttribute("products", productPage.getContent());
+        model.addAttribute("currentPage", productPage.getNumber());
+        model.addAttribute("totalPages", productPage.getTotalPages());
+        model.addAttribute("hasNext", productPage.hasNext());
+        model.addAttribute("hasPrevious", productPage.hasPrevious());
+        model.addAttribute("pageSize", pageable.getPageSize());
+
+        return "product/in_stock";
+    }
 }
