@@ -1,8 +1,5 @@
 package com.techzone.ecommerce.app.controller;
 
-//import com.techzone.ecommerce.shared.entity.Product;
-//import com.techzone.ecommerce.shared.repository.CartProductRepository;
-//import org.springframework.data.domain.Page;
 import org.springframework.ui.Model;
 import com.techzone.ecommerce.shared.entity.Cart;
 import com.techzone.ecommerce.shared.entity.CartProduct;
@@ -12,7 +9,6 @@ import com.techzone.ecommerce.shared.service.CartService;
 import com.techzone.ecommerce.shared.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,14 +18,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/cart")
 public class CartController {
-//    private final CartProductRepository cartProductRepository;
     private final CartService cartService;
     private final UserService userService;
 
@@ -54,9 +48,8 @@ public class CartController {
         }
 
         model.addAttribute("products", cartProducts);
-        model.addAttribute("total", total);
+        model.addAttribute("total", Math.round(total * 100.0) / 100.0);
         model.addAttribute("qty", qty);
-
 
         return "cart/cart";
     }
@@ -73,20 +66,4 @@ public class CartController {
         }
         return new ResponseEntity<>("Produit ajouter avec succés", HttpStatus.OK);
     }
-
-    @GetMapping
-    public String cartView(Model model, @PageableDefault(size = 12) Pageable pageable) {
-//        Page<CartProduct> cartPage = cartProductRepository.findAllByIsAvailableTrue(pageable);
-
-
-
-        return "order/cart";
-    }
-
-    @GetMapping("/payment")
-    public String cartToOrder(Model model, @PageableDefault(size = 12) Pageable pageable) {
-
-        return "order/order";
-    }
-
 }
