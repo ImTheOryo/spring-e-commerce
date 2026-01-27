@@ -27,35 +27,36 @@
         <select name="status"
                 onchange="document.getElementById('filterForm').submit()"
                 class="block w-full pl-3 pr-10 py-2 text-sm border-gray-200 bg-gray-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500">
-          <option value="">Tous les status</option>
+          <option value="" th:selected="${param.status == null}">Tous les status</option>
           <option th:each="s : ${status}"
                   th:value="${s}"
                   th:text="${s.label}"
-                  th:selected="${param.status != null and param.status[0] == s}">
+                  th:selected="${param.status != null and param.status[0] == s.name()}">
           </option>
         </select>
       </div>
     </form>
 
-    <div class="overflow-x-auto">
-      <table class="w-full text-left">
+    <div class="">
+      <table class="w-full text-center items-center justify-center">
         <thead>
-        <tr class="bg-gray-50 text-gray-400 text-xs uppercase tracking-wider text-center">
+        <tr class="bg-gray-50 text-gray-400 text-xs uppercase tracking-wider ">
           <th class="px-6 py-4 font-semibold">Id commande</th>
           <th class="px-6 py-4 font-semibold">Client</th>
           <th class="px-6 py-4 font-semibold">Date</th>
           <th class="px-6 py-4 font-semibold">Total</th>
           <th class="px-6 py-4 font-semibold">Status</th>
-          <th class="px-6 py-4 font-semibold text-right">Actions</th>
         </tr>
         </thead>
         <tbody class="divide-y divide-gray-100">
-        <tr th:each="commande : ${allCommands}" class="hover:bg-gray-50 transition">
+        <tr th:each="commande : ${allCommands}"
+            class="hover:bg-gray-50 transition" th:onclick="|window.location.href='@{/admin/commands/{id}(id=${commande.id})}'|">
           <td class="px-6 py-4 text-center">
             <span class="font-medium text-gray-900" th:text="${'#' + commande.id}">#1234</span>
           </td>
           <td class="px-6 py-4">
             <div class="flex flex-col">
+
                 <span class="text-sm font-semibold text-gray-800"
                       th:text="${commande.user.firstname + ' ' + commande.user.lastname}">Nom Client</span>
               <span class="text-xs text-gray-500" th:text="${commande.user.email}">email@mail.com</span>
@@ -66,7 +67,7 @@
             24/05/2024
           </td>
           <td class="px-6 py-4 font-bold text-gray-900"
-              th:text="${#numbers.formatDecimal(commande.total, 1, 'POINT', 2, 'COMMA') + '€'}">
+              th:text="${#numbers.formatDecimal(commande.getTotalPrice, 1, 'POINT', 2, 'COMMA') + '€'}">
             0,00€
           </td>
           <td class="px-6 py-4 text-center">
@@ -75,48 +76,6 @@
                   th:text="${commande.status.label}">
               Status
             </span>
-          </td>
-          <td class="px-6 py-4 text-right">
-            <div x-data="{ open: false }" class="relative inline-block text-left">
-
-              <button @click="open = !open"
-                      @click.away="open = false"
-                      class="flex items-center justify-center w-10 h-10 hover:bg-gray-100 text-gray-500 rounded-lg border border-gray-200 transition-colors focus:outline-none bg-white">
-                <i class="fa-solid fa-ellipsis-vertical"></i>
-              </button>
-
-              <div x-show="open"
-                   x-transition:enter="transition ease-out duration-100"
-                   x-transition:enter-start="transform opacity-0 scale-95"
-                   x-transition:enter-end="transform opacity-100 scale-100"
-                   x-transition:leave="transition ease-in duration-75"
-                   x-transition:leave-start="transform opacity-100 scale-100"
-                   x-transition:leave-end="transform opacity-0 scale-95"
-                   class="absolute right-0 z-50 mt-2 w-48 origin-top-right rounded-xl bg-white shadow-lg ring-1 ring-black ring-opacity-5 border border-gray-100 focus:outline-none"
-                   style="display: none;">
-
-                <div class="py-1 px-1">
-                  <a th:href="@{/admin/commands/{id}(id=${commande.id})}"
-                     class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-cyan-50 hover:text-cyan-600 rounded-lg transition">
-                    <i class="fa-solid fa-eye w-4 text-center"></i>
-                    Voir les détails
-                  </a>
-
-                  <a th:href="@{/admin/commands/edit/{id}(id=${commande.id})}"
-                     class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-600 rounded-lg transition">
-                    <i class="fa-solid fa-pen-to-square w-4 text-center"></i>
-                    Modifier le statut
-                  </a>
-
-                  <hr class="my-1 border-gray-50">
-
-                  <button class="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition text-left">
-                    <i class="fa-solid fa-trash w-4 text-center"></i>
-                    Annuler la commande
-                  </button>
-                </div>
-              </div>
-            </div>
           </td>
         </tr>
         </tbody>

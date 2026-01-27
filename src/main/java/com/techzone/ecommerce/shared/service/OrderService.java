@@ -114,4 +114,19 @@ public class OrderService {
         return null;
     }
 
+    public Order findById(Long id){
+        if (orderRepository.findById(id).isPresent()){
+            return orderRepository.findById(id).get();
+        }
+        return null;
+    }
+
+    public void changeStatus(Long id, OrderStatus status){
+        if (orderRepository.findById(id).isPresent()){
+            Order order = orderRepository.findById(id).get();
+            order.setStatus(status);
+            orderRepository.save(order);
+        }
+    }
+
 }
