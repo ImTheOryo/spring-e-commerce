@@ -5,19 +5,20 @@ import lombok.Getter;
 
 @Getter
 public enum OrderStatus {
-    IN_PROCESS("IN_PROCESS", "En préparation"),
-    IN_TRANSIT("IN_TRANSIT", "En cours de livraison"),
-    DELIVERED("DELIVERED", "Livré"),
-    RETURN_ASK("RETURN_ASK", "Retour demandé"),
-    RETURNED("RETURNED", "Retour reçu"),
-    REFUNDED("REFUNDED", "Remboursé");
+    IN_PROCESS("IN_PROCESS", "En préparation", "amber"),
+    IN_TRANSIT("IN_TRANSIT", "En cours de livraison", "blue"),
+    DELIVERED("DELIVERED", "Livré", "emerald"),
+    RETURN_ASK("RETURN_ASK", "Retour demandé", "purple"),
+    RETURNED("RETURNED", "Retour reçu", "slate"),
+    REFUNDED("REFUNDED", "Remboursé", "rose");
     private final String code;
-    @JsonValue
     private final String label;
+    private final String color;
 
-    OrderStatus(String code, String label) {
+    OrderStatus(String code, String label, String color) {
         this.code = code;
         this.label = label;
+        this.color = color;
     }
 
 }

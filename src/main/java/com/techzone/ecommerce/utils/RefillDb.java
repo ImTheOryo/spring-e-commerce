@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,7 +31,8 @@ public class RefillDb {
     private final OrderStatus[] statuses = {OrderStatus.DELIVERED, OrderStatus.IN_PROCESS, OrderStatus.DELIVERED, OrderStatus.REFUNDED, OrderStatus.RETURNED, OrderStatus.IN_TRANSIT};
     private String[] brands;
     private final int qtyBrands = 10;
-    private final String[] emails = {"@gmail.com","@live.fr", "@live.com","@test.com","@test.fr"};
+    private final String[] emails = {"@gmail.com", "@live.fr", "@live.com", "@test.com", "@test.fr", "@orange.fr"};
+    private List<String> emailsUsed = new ArrayList<>();
 
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -46,9 +46,9 @@ public class RefillDb {
         }
         createCategoryAndProduct();
 
-        User user = createUser(100);
+        createUser(100);
         createCarts();
-        createOrders(user);
+        createOrders();
     }
 
     public void createCategoryAndProduct() {
@@ -68,15 +68,31 @@ public class RefillDb {
         createProduct(accesoires, 76);
     }
 
-    public User createUser(int quantity) {
+    public String newEmail(User user) {
+        String email = user.getFirstname() + user.getLastname() + emails[getRandom(0, emails.length - 1)];
+
+        int count = 0;
+        while (emailsUsed.contains(email) && count < 100) {
+            email = user.getFirstname() + user.getLastname() + emails[getRandom(0, emails.length - 1)];
+            count++;
+        }
+
+        emailsUsed.add(email);
+        return email;
+    }
+
+    public void createUser(int quantity) {
         String password = bCryptPasswordEncoder.encode("password");
         for (int i = 0; i < quantity; i++) {
             User user = new User();
             user.setRole(RoleEnum.USER);
             user.setFirstname(faker.name().firstName());
             user.setLastname(faker.name().lastName());
-            user.setEmail(user.getFirstname() + user.getLastname() + emails[getRandom(0, emails.length - 1)]);
+
+            user.setEmail(newEmail(user));
             user.setPassword(password);
+            user.setAddress(faker.address().fullAddress());
+            user.setPhone(faker.phoneNumber().phoneNumber());
             userRepository.save(user);
         }
         User user = new User();
@@ -84,6 +100,8 @@ public class RefillDb {
         user.setFirstname(faker.name().firstName());
         user.setLastname(faker.name().lastName());
         user.setEmail("admin@test.com");
+        user.setAddress(faker.address().fullAddress());
+        user.setPhone(faker.phoneNumber().phoneNumber());
         user.setPassword(password);
         userRepository.save(user);
 
@@ -92,10 +110,10 @@ public class RefillDb {
         user2.setFirstname(faker.name().firstName());
         user2.setLastname(faker.name().lastName());
         user2.setEmail("user@test.com");
+        user2.setAddress(faker.address().fullAddress());
+        user2.setPhone(faker.phoneNumber().phoneNumber());
         user2.setPassword(password);
         userRepository.save(user2);
-
-        return user2;
     }
 
     public void createProduct(Category category, int quantity) {
@@ -137,7 +155,7 @@ public class RefillDb {
         }
     }
 
-    public void createOrders(User user2) {
+    public void createOrders() {
         List<User> users = userRepository.findAll();
         List<Product> products = productRepository.findAll();
 
@@ -148,8 +166,10 @@ public class RefillDb {
                 order.setCreatedAt((faker.date().past(100, TimeUnit.DAYS)).toInstant()
                         .atZone(ZoneId.systemDefault())
                         .toLocalDateTime());
-                order.setAddress(faker.address().fullAddress());
-                order.setPhone(faker.phoneNumber().phoneNumber());
+                order.setAddress(user.getAddress());
+                order.setPhone(user.getPhone());
+                order.setLastname(user.getLastname());
+                order.setFirstname(user.getFirstname());
                 order.setStatus(statuses[getRandom(0, statuses.length - 1)]);
                 order = orderRepository.save(order);
 
@@ -157,7 +177,7 @@ public class RefillDb {
                     OrderProduct orderProduct = new OrderProduct();
                     orderProduct.setOrder(order);
                     orderProduct.setProduct(products.get(getRandom(0, products.size() - 1)));
-                    orderProduct.setQuantity(getRandom(1, orderProduct.getProduct().getStock()));
+                    orderProduct.setQuantity(getRandom(1, Math.min(50, orderProduct.getProduct().getStock())));
                     orderProduct.setPromotion(faker.bool().bool());
                     orderProduct.setPromotionPourcent(orderProduct.isPromotion() ? promotion[getRandom(0, promotion.length - 1)] : 0);
                     orderProductRepository.save(orderProduct);
@@ -166,33 +186,12 @@ public class RefillDb {
 
         }
 
-
         List<Order> orders = orderRepository.findAll();
         for (Order order : orders) {
             Date date = faker.date().past(120, TimeUnit.DAYS);
             LocalDateTime dateTime = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
             order.setCreatedAt(dateTime);
             orderRepository.save(order);
-        }
-
-        for (int i = 1; i <= 2; i++) {
-            Order order = new Order();
-            order.setUser(user2);
-            order.setCreatedAt(LocalDateTime.now().minusYears(i));
-            order.setAddress(faker.address().fullAddress());
-            order.setPhone(faker.phoneNumber().phoneNumber());
-            order.setStatus(statuses[getRandom(0, statuses.length - 1)]);
-            order = orderRepository.save(order);
-
-            for (int j = 0; j < getRandom(1, 20); j++) {
-                OrderProduct orderProduct = new OrderProduct();
-                orderProduct.setOrder(order);
-                orderProduct.setProduct(products.get(getRandom(0, products.size() - 1)));
-                orderProduct.setQuantity(getRandom(1, orderProduct.getProduct().getStock()));
-                orderProduct.setPromotion(faker.bool().bool());
-                orderProduct.setPromotionPourcent(orderProduct.isPromotion() ? promotion[getRandom(0, promotion.length - 1)] : 0);
-                orderProductRepository.save(orderProduct);
-            }
         }
     }
 

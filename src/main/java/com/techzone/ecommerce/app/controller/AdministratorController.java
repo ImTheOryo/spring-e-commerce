@@ -45,7 +45,7 @@ public class AdministratorController {
             Model model,
             @PathVariable Long id
     ) {
-        if (orderService.findById(id) == null){
+        if (orderService.getOrder(id) == null){
             return "error/404";
         }
 
