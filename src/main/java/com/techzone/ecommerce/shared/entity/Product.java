@@ -1,5 +1,6 @@
 package com.techzone.ecommerce.shared.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -16,6 +17,8 @@ public class Product extends BaseEntity {
     @JoinColumn(name = "category_id")
     private Category category;
     private String name;
+
+    @Column(length=512)
     private String description;
     private int stock;
     private double price;
