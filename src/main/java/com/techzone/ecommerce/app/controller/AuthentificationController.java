@@ -97,7 +97,5 @@ public class AuthentificationController {
             model.addAttribute("error", "Une erreur technique est survenue.");
             return "register/register";
         }
-
-
     }
 }
