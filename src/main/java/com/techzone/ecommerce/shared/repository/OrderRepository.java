@@ -6,6 +6,7 @@ import com.techzone.ecommerce.shared.entity.OrderStatus;
 import com.techzone.ecommerce.shared.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import com.techzone.ecommerce.shared.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,6 +20,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     @Query("SELECT o.status as status, COUNT(o) as count FROM Order o GROUP BY o.status")
     List<OrderStatusCount> countOrdersByStatus();
+    List<Order> findByCreatedAtBetweenAndUserOrderByCreatedAt(LocalDateTime start, LocalDateTime end, User user);
+    @Query("SELECT DISTINCT YEAR(o.createdAt) FROM Order o WHERE o.user.id = :userId ORDER BY YEAR(o.createdAt) DESC")
+    List<Integer> findDistinctYearsByUserId(@Param("userId") Long userId);
 
     @Query("SELECT SUM(op.quantity * p.price * (1 - op.promotionPourcent / 100.0)) " +
             "FROM OrderProduct op JOIN op.product p JOIN op.order o " +

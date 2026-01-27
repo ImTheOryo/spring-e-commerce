@@ -15,8 +15,12 @@ public class User extends BaseEntity {
     private String lastname;
 
     private RoleEnum role;
+
+    @Column(unique = true)
     private String email;
     private String password;
+    private String address;
+    private String phone;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "cart_id")
