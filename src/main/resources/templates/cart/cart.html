@@ -102,9 +102,10 @@
                     </div>
                 </div>
 
-                <button class="w-full bg-primary hover:bg-blue-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-blue-200 transition-all hover:-translate-y-1 active:scale-95">
+                <a th:href="@{/order/payment}"
+                   class="flex justify-center text-center bg-primary hover:bg-blue-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-blue-200 transition-all hover:-translate-y-1 active:scale-95">
                     Passer la commande
-                </button>
+                </a>
 
                 <p class="text-center text-xs text-slate-400 mt-6">
                     <i class="fa-solid fa-shield-check mr-1"></i> Paiement sécurisé SSL
@@ -153,7 +154,7 @@
                 const productId = btn.getAttribute("data-product-id")
 
                 try {
-                    const response = await fetch(`/cart/${productId}`, { method: "DELETE" })
+                    const response = await fetch(`/cart/${productId}`, {method: "DELETE"})
 
                     if (response.ok) {
                         window.location.reload()

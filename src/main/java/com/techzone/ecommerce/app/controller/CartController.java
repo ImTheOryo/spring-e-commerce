@@ -34,22 +34,14 @@ public class CartController {
 
         List<CartProduct> cartProducts = user.getCart().getCartProductList();
 
-        double total = 0;
-        long qty = 0;
 
-        for (CartProduct cartProduct : cartProducts) {
-            Product product = cartProduct.getProduct();
-            double price = product.isPromotion() ? product.getPrice() * (1 - product.getPromotionPourcent() / 100.0) : product.getPrice();
-            qty += cartProduct.getQuantity();
-            total += price * cartProduct.getQuantity();
-        }
         List<Category> categories = categoryService.getAllCategory();
 
         model.addAttribute("categories", categories);
 
         model.addAttribute("products", cartProducts);
-        model.addAttribute("total", total);
-        model.addAttribute("qty", qty);
+        model.addAttribute("total", user.getCart().getTotal());
+        model.addAttribute("qty", user.getCart().getQty());
 
 
         return "cart/cart";
