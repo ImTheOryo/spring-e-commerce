@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechZone - Paiement Validé</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=AR+One+Sans:wght@400..700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1057B9'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 font-['AR_One_Sans'] text-slate-800 antialiased min-h-screen flex flex-col">
+<div th:replace="~{component/navbar}"></div>
+
+<main class="container mx-auto px-4 flex-grow flex items-center justify-center py-12">
+    <div class="max-w-2xl w-full bg-white rounded-[2.5rem] p-8 md:p-12 shadow-xl shadow-slate-200/50 border border-slate-100 text-center transition-all animate-in fade-in zoom-in duration-700">
+
+        <div class="mb-8 relative inline-block">
+            <div class="h-24 w-24 bg-emerald-100 text-emerald-500 rounded-full flex items-center justify-center text-5xl mx-auto shadow-lg shadow-emerald-100">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <div class="absolute -top-2 -right-2 h-6 w-6 bg-primary rounded-full animate-bounce"></div>
+            <div class="absolute -bottom-1 -left-4 h-4 w-4 bg-amber-400 rounded-full animate-pulse"></div>
+        </div>
+
+        <h1 class="text-3xl md:text-4xl font-black text-slate-900 mb-4">
+            Merci pour votre confiance !
+        </h1>
+
+        <p class="text-lg text-slate-500 mb-8 leading-relaxed">
+            Votre paiement a été <span class="text-emerald-500 font-bold italic text-xl">validé</span> avec succès.
+            Toute l'équipe de <span class="text-primary font-bold">TechZone</span> s'active déjà pour préparer votre colis !
+        </p>
+
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a th:href="@{/user}" class="w-full sm:w-auto px-8 py-4 bg-primary text-white font-bold rounded-2xl shadow-lg shadow-blue-200 hover:-translate-y-1 transition-all active:scale-95">
+                Suivre ma commande
+            </a>
+            <a th:href="@{/}" class="w-full sm:w-auto px-8 py-4 bg-white border-2 border-slate-100 text-slate-600 font-bold rounded-2xl hover:bg-slate-50 transition-all">
+                Retour à l'accueil
+            </a>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{component/footer}"></div>
+
+</body>
+</html>

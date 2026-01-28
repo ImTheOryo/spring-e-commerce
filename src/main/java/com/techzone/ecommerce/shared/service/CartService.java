@@ -4,10 +4,12 @@ import com.techzone.ecommerce.shared.entity.Cart;
 import com.techzone.ecommerce.shared.entity.CartProduct;
 import com.techzone.ecommerce.shared.repository.CartProductRepository;
 import com.techzone.ecommerce.shared.repository.CartRepository;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -64,5 +66,21 @@ public class CartService {
             System.out.println(e.toString());
         }
         return false;
+    }
+
+    @Transactional
+    public void cleanCart(Cart cart) {
+        try {
+            List<CartProduct> toDelete = new ArrayList<>(cart.getCartProductList());
+
+            cart.getCartProductList().clear();
+
+            cartRepository.save(cart);
+
+            cartProductRepository.deleteAll(toDelete);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

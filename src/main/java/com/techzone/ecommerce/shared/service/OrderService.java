@@ -1,12 +1,11 @@
 package com.techzone.ecommerce.shared.service;
 
 import com.techzone.ecommerce.shared.dto.OrderStatusCount;
-import com.techzone.ecommerce.shared.entity.Order;
-import com.techzone.ecommerce.shared.entity.OrderProduct;
-import com.techzone.ecommerce.shared.entity.OrderStatus;
-import com.techzone.ecommerce.shared.entity.User;
+import com.techzone.ecommerce.shared.dto.PartialOrderDTO;
+import com.techzone.ecommerce.shared.entity.*;
 import com.techzone.ecommerce.shared.repository.OrderProductRepository;
 import com.techzone.ecommerce.shared.repository.OrderRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,10 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -28,6 +24,7 @@ import java.util.stream.Collectors;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderProductRepository orderProductRepository;
+    private final ProductService productService;
 
     public List<Integer> getYears(Long userId) {
 
@@ -107,7 +104,7 @@ public class OrderService {
             start = start.minusSeconds(1);
             LocalDateTime end = LocalDateTime.of(year, 12, 31, 23, 59);
             end = end.plusSeconds(1);
-            return orderRepository.findByCreatedAtBetweenAndUserOrderByCreatedAt(start, end, user);
+            return orderRepository.findByCreatedAtBetweenAndUserOrderByCreatedAtDesc(start, end, user);
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -125,11 +122,47 @@ public class OrderService {
 
     }
 
-    public void changeStatus(Long id, OrderStatus status){
-        if (orderRepository.findById(id).isPresent()){
+    public void changeStatus(Long id, OrderStatus status) {
+        if (orderRepository.findById(id).isPresent()) {
             Order order = orderRepository.findById(id).get();
             order.setStatus(status);
             orderRepository.save(order);
+        }
+    }
+
+    @Transactional
+    public Order createOrder(Cart cart, PartialOrderDTO partialOrderDTO, User user) {
+        try {
+            Order order = new Order();
+            order.setFirstname(partialOrderDTO.getFirstname());
+            order.setLastname(partialOrderDTO.getLastname());
+            order.setPhone(partialOrderDTO.getPhone());
+            order.setAddress(partialOrderDTO.getAddress());
+            order.setStatus(OrderStatus.IN_PROCESS);
+            order.setUser(user);
+            order.setCreatedAt(LocalDateTime.now());
+
+            List<OrderProduct> orderProducts = new ArrayList<>();
+
+            for (CartProduct cartProduct : cart.getCartProductList()) {
+                OrderProduct orderProduct = new OrderProduct();
+                orderProduct.setOrder(order); // Très important pour la FK
+                orderProduct.setProduct(cartProduct.getProduct());
+                orderProduct.setQuantity(cartProduct.getQuantity());
+                orderProduct.setPromotion(cartProduct.getProduct().isPromotion());
+                orderProduct.setPromotionPourcent(cartProduct.getProduct().getPromotionPourcent());
+                productService.removeFromStock(cartProduct.getQuantity(), cartProduct.getProduct());
+
+                orderProducts.add(orderProduct);
+            }
+
+            order.setOrderProductList(orderProducts);
+
+            return orderRepository.save(order);
+
+        } catch (Exception e) {
+            e.printStackTrace(); // Affiche l'erreur complète dans la console
+            return null;
         }
     }
 }

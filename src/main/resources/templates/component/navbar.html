@@ -7,7 +7,7 @@
           class="flex items-center p-4 w-full h-[35px] bg-zinc-100 rounded-md row-start-2 col-span-2 md:row-start-1 md:col-start-2 md:col-span-3">
         <input id="searchInput" class="w-full h-[32px] bg-transparent outline-none" type="text"
                placeholder="Rechercher un produit...">
-        <button type="button" onclick="performSearch()">
+        <button type="button" onclick="onClickSearch()">
             <i class="fa-solid fa-magnifying-glass"></i>
         </button>
     </form>
@@ -74,15 +74,10 @@
     </div>
 </div>
 <script>
-    function performSearch() {
-        console.log("ok")
+    function onClickSearch() {
         const query = document.getElementById('searchInput').value
         if (query.trim() !== "") {
             window.location.href = `/search?query=${encodeURIComponent(query)}`
         }
     }
-
-    document.getElementById('searchInput').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') performSearch()
-    })
 </script>
