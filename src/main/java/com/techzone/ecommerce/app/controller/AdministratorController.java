@@ -50,6 +50,7 @@ public class AdministratorController {
             return "error/404";
         }
 
+        model.addAttribute("activePage", "commands");
         model.addAllAttributes(adminService.getCommandInfos(id));
         return "admin/command";
     }
@@ -98,5 +99,13 @@ public class AdministratorController {
         }
         return "error/404";
 
+    }
+
+    @GetMapping("/products")
+    public String getProducts(
+            Model model
+    ) {
+        model.addAttribute("activePage", "products");
+        return "admin/products";
     }
 }
