@@ -1,8 +1,12 @@
 package com.techzone.ecommerce.shared.service;
 
+import com.techzone.ecommerce.shared.dto.UserDTO;
+import com.techzone.ecommerce.shared.entity.Order;
 import com.techzone.ecommerce.shared.entity.User;
 import com.techzone.ecommerce.shared.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -48,5 +52,37 @@ public class UserService {
             System.out.println(e);
         }
         return false;
+    }
+
+    public boolean updateUser(long id, UserDTO userDTO){
+        try {
+            User currentUserInfo = userRepository.getReferenceById(id);
+            currentUserInfo.setFirstname(userDTO.getFirstname());
+            currentUserInfo.setLastname(userDTO.getLastname());
+            currentUserInfo.setAddress(userDTO.getAddress());
+            currentUserInfo.setPhone(userDTO.getPhone());
+            userRepository.save(currentUserInfo);
+            return true;
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return false;
+    }
+
+    public Page<User> findFilteredUsers (
+            String search,
+            Pageable page
+    ) {
+        return userRepository.findFilteredUsers(search, page);
+    }
+
+    public User getUser (Long id) {
+        try {
+            Optional<User> order = userRepository.findById(id);
+            return order.orElse(null);
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+        return null;
     }
 }
