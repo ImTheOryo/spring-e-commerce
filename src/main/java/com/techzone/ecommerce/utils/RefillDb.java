@@ -161,26 +161,28 @@ public class RefillDb {
 
         for (User user : users) {
             for (int i = 0; i < getRandom(0, 20); i++) {
-                Order order = new Order();
-                order.setUser(user);
-                order.setCreatedAt((faker.date().past(100, TimeUnit.DAYS)).toInstant()
-                        .atZone(ZoneId.systemDefault())
-                        .toLocalDateTime());
-                order.setAddress(user.getAddress());
-                order.setPhone(user.getPhone());
-                order.setLastname(user.getLastname());
-                order.setFirstname(user.getFirstname());
-                order.setStatus(statuses[getRandom(0, statuses.length - 1)]);
-                order = orderRepository.save(order);
+                if (!(user.getId() == 102)) {
+                    Order order = new Order();
+                    order.setUser(user);
+                    order.setCreatedAt((faker.date().past(100, TimeUnit.DAYS)).toInstant()
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDateTime());
+                    order.setAddress(user.getAddress());
+                    order.setPhone(user.getPhone());
+                    order.setLastname(user.getLastname());
+                    order.setFirstname(user.getFirstname());
+                    order.setStatus(statuses[getRandom(0, statuses.length - 1)]);
+                    order = orderRepository.save(order);
 
-                for (int j = 0; j < getRandom(1, 20); j++) {
-                    OrderProduct orderProduct = new OrderProduct();
-                    orderProduct.setOrder(order);
-                    orderProduct.setProduct(products.get(getRandom(0, products.size() - 1)));
-                    orderProduct.setQuantity(getRandom(1, Math.min(50, orderProduct.getProduct().getStock())));
-                    orderProduct.setPromotion(faker.bool().bool());
-                    orderProduct.setPromotionPourcent(orderProduct.isPromotion() ? promotion[getRandom(0, promotion.length - 1)] : 0);
-                    orderProductRepository.save(orderProduct);
+                    for (int j = 0; j < getRandom(1, 20); j++) {
+                        OrderProduct orderProduct = new OrderProduct();
+                        orderProduct.setOrder(order);
+                        orderProduct.setProduct(products.get(getRandom(0, products.size() - 1)));
+                        orderProduct.setQuantity(getRandom(1, Math.min(50, orderProduct.getProduct().getStock())));
+                        orderProduct.setPromotion(faker.bool().bool());
+                        orderProduct.setPromotionPourcent(orderProduct.isPromotion() ? promotion[getRandom(0, promotion.length - 1)] : 0);
+                        orderProductRepository.save(orderProduct);
+                    }
                 }
             }
 
