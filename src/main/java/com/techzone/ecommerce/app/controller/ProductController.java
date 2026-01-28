@@ -68,7 +68,7 @@ public class ProductController {
     }
 
     @GetMapping("/inStock")
-    public String getProductInCategory(
+    public String getProductInStock(
             Model model,
             @PageableDefault(size =12) Pageable pageable
     ){
@@ -83,4 +83,21 @@ public class ProductController {
 
         return "product/in_stock";
     }
+
+//    @GetMapping("/promotion")
+//    public String getProductInPromotion(
+//            Model model,
+//            @PageableDefault(size =12) Pageable pageable
+//    ){
+//        Page<Product> productPage = productRepository.findAllByIsAvailableTrueAndProductPromotionsIsNotEmpty(pageable);
+//
+//        model.addAttribute("products", productPage.getContent());
+//        model.addAttribute("currentPage", productPage.getNumber());
+//        model.addAttribute("totalPages", productPage.getTotalPages());
+//        model.addAttribute("hasNext", productPage.hasNext());
+//        model.addAttribute("hasPrevious", productPage.hasPrevious());
+//        model.addAttribute("pageSize", pageable.getPageSize());
+//
+//        return "product/promotion";
+//    }
 }
