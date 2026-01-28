@@ -47,4 +47,9 @@ public class ProductService {
     public Page<Product> getInStock(Pageable pageable) {
         return productRepository.findAllByIsAvailableTrueAndIsInStockTrue(pageable);
     }
+
+    public void removeFromStock(int qty, Product product){
+        product.setStock(product.getStock() - qty);
+        productRepository.save(product);
+    }
 }

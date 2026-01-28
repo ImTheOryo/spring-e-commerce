@@ -32,8 +32,6 @@ public class Cart extends BaseEntity {
         long qty = 0;
 
         for (CartProduct cartProduct : cartProductList) {
-            Product product = cartProduct.getProduct();
-            double price = product.isPromotion() ? product.getPrice() * (1 - product.getPromotionPourcent() / 100.0) : product.getPrice();
             qty += cartProduct.getQuantity();
         }
 
