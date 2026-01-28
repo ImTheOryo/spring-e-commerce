@@ -103,6 +103,7 @@
                 </div>
 
                 <a th:href="@{/order/payment}"
+                   th:if="${not #lists.isEmpty(products)}"
                    class="flex justify-center text-center bg-primary hover:bg-blue-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-blue-200 transition-all hover:-translate-y-1 active:scale-95">
                     Passer la commande
                 </a>

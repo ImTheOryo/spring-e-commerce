@@ -111,7 +111,6 @@
         if (!yearSelect || !container) return
 
         try {
-            console.log(yearSelect.value)
             if (yearSelect.value) {
                 const response = await fetch(`/order/${yearSelect.value}`)
                 const orders = await response.json()
