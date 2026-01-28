@@ -2,7 +2,6 @@ package com.techzone.ecommerce.app.controller;
 
 import com.techzone.ecommerce.shared.entity.Category;
 import com.techzone.ecommerce.shared.entity.Product;
-import com.techzone.ecommerce.shared.repository.ProductRepository;
 import com.techzone.ecommerce.shared.service.CategoryService;
 import com.techzone.ecommerce.shared.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @Controller
@@ -73,7 +71,6 @@ public class ProductController {
         model.addAttribute("hasPrevious", productPage.hasPrevious());
         model.addAttribute("pageSize", pageable.getPageSize());
         model.addAttribute("category", category);
-        //TODO regler le probleme de pagination (ça bug au 1er chargelent de category)
         return "product/category";
     }
 
