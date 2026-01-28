@@ -4,6 +4,7 @@ import com.techzone.ecommerce.shared.entity.Order;
 import com.techzone.ecommerce.shared.entity.OrderProduct;
 import com.techzone.ecommerce.shared.entity.OrderStatus;
 import lombok.*;
+import org.springframework.context.annotation.Primary;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class PartialOrderDTO {
     private OrderStatus status;
     private double price;
@@ -22,6 +24,7 @@ public class PartialOrderDTO {
     private String address;
     private String phone;
     private List<PartialOrderProductDTO> orderProducts = new ArrayList<>();
+    private String payment;
 
     public PartialOrderDTO(Order order) {
         this.status = order.getStatus();

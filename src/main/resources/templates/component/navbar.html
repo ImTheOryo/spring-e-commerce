@@ -4,7 +4,7 @@
              alt="logo TechZone page accueil"/>
     </a>
 
-    <form onsubmit="performSearch(); return false"
+    <form onsubmit="onClickSearch()"
           class="flex items-center p-4 w-full h-[35px] bg-zinc-100 rounded-md row-start-2 col-span-2 md:row-start-1 md:col-start-2 md:col-span-3">
         <input id="searchInput" class="w-full h-[32px] bg-transparent outline-none" type="text"
                placeholder="Rechercher un produit...">
@@ -76,8 +76,7 @@
     </div>
 </div>
 <script>
-    function performSearch() {
-        console.log("ok")
+    function onClickSearch() {
         const query = document.getElementById('searchInput').value
         if (query.trim() !== "") {
             window.location.href = `/search?query=${encodeURIComponent(query)}`
