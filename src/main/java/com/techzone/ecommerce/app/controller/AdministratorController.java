@@ -103,9 +103,13 @@ public class AdministratorController {
 
     @GetMapping("/products")
     public String getProducts(
-            Model model
+            Model model,
+            @PageableDefault(size = 10) Pageable pageable,
+            @RequestParam(required = false) Long category,
+            @RequestParam(required = false) String search
     ) {
         model.addAttribute("activePage", "products");
+        model.addAllAttributes(adminService.productsInfos(search, category, pageable));
         return "admin/products";
     }
 }

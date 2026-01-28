@@ -41,9 +41,9 @@
     </form>
 
     <div class="overflow-x-auto">
-      <table class="w-full">
+      <table class="w-full text-center">
         <thead>
-        <tr class="bg-gray-50 text-gray-400 text-xs uppercase tracking-wider text-left">
+        <tr class="bg-gray-50 text-gray-400 text-xs uppercase tracking-wider text-center">
           <th class="px-6 py-4 font-semibold">Produit</th>
           <th class="px-6 py-4 font-semibold">Catégorie</th>
           <th class="px-6 py-4 font-semibold">Stock</th>
@@ -53,7 +53,7 @@
         </tr>
         </thead>
         <tbody class="divide-y divide-gray-100">
-        <tr th:each="product : ${allProducts}" class="hover:bg-gray-50/50 transition">
+        <tr th:each="product : ${allProducts}" class="text-center hover:bg-gray-50/50 transition">
           <td class="px-6 py-4">
             <div class="flex items-center gap-4">
               <img th:src="${product.urlPhoto}" class="w-12 h-12 object-contain rounded-lg bg-gray-50 border border-gray-100" alt="Img">
@@ -83,10 +83,10 @@
           </td>
           <td class="px-6 py-4">
             <span th:if="${product.isAvailable}" class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-xs font-medium bg-green-100 text-green-700">
-              <span class="w-1.5 h-1.5 rounded-full bg-green-600"></span> En ligne
+              <span class="w-1.5 h-1.5 rounded-full bg-green-600"></span> Disponible
             </span>
-            <span th:unless="${product.isAvailable}" class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
-              <span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span> Brouillon
+            <span th:unless="${product.isAvailable}" class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-xs font-medium bg-red-100 text-gray-600">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-400"></span> Non disponible
             </span>
           </td>
           <td class="px-6 py-4 text-right">

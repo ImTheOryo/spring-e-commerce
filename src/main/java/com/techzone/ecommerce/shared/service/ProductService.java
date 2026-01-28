@@ -47,4 +47,12 @@ public class ProductService {
     public Page<Product> getInStock(Pageable pageable) {
         return productRepository.findAllByIsAvailableTrueAndIsInStockTrue(pageable);
     }
+
+    public Page<Product> findFilteredProduct (
+            String search,
+            Long categoryId,
+            Pageable pageable
+    ) {
+       return productRepository.findFilteredProducts(search, categoryId, pageable);
+    }
 }

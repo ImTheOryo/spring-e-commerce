@@ -1,9 +1,7 @@
 package com.techzone.ecommerce.shared.service;
 
 import com.techzone.ecommerce.shared.dto.UserDTO;
-import com.techzone.ecommerce.shared.entity.Order;
-import com.techzone.ecommerce.shared.entity.OrderStatus;
-import com.techzone.ecommerce.shared.entity.User;
+import com.techzone.ecommerce.shared.entity.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,6 +21,9 @@ public class AdminService {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    CategoryService categoryService;
 
     public Map<String ,Object> getDashboardInfos () {
         Map<String , Object> dashboardInfos = new HashMap<>();
@@ -89,6 +90,22 @@ public class AdminService {
             UserDTO userDTO
     ) {
         return userService.updateUser(id, userDTO);
+    }
+
+    public Map<String, Object> productsInfos (
+            String search,
+            Long category,
+            Pageable pageable
+    ) {
+        Map<String, Object> productsInfos = new HashMap<>();
+        Page<Product> allProducts = productService.findFilteredProduct(search, category, pageable);
+        productsInfos.put("allProducts",allProducts);
+        productsInfos.put("categories", categoryService.getAllCategory());
+        productsInfos.put("currentPage", allProducts.getNumber());
+        productsInfos.put("totalPages", allProducts.getTotalPages());
+        productsInfos.put("hasNext", allProducts.hasNext());
+        productsInfos.put("hasPrevious", allProducts.hasPrevious());
+        return  productsInfos;
     }
 
     public Map<OrderStatus, String> getStatusColor() {
