@@ -1,10 +1,8 @@
 package com.techzone.ecommerce.app.controller;
 
-import com.techzone.ecommerce.shared.entity.Cart;
-import com.techzone.ecommerce.shared.entity.CartProduct;
-import com.techzone.ecommerce.shared.entity.Product;
-import com.techzone.ecommerce.shared.entity.User;
+import com.techzone.ecommerce.shared.entity.*;
 import com.techzone.ecommerce.shared.service.CartService;
+import com.techzone.ecommerce.shared.service.CategoryService;
 import com.techzone.ecommerce.shared.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +25,7 @@ import java.util.List;
 public class CartController {
     private final CartService cartService;
     private final UserService userService;
+    private final CategoryService categoryService;
 
     @GetMapping
     public String cartView(Model model, @AuthenticationPrincipal UserDetails userDetails) {
@@ -47,6 +46,9 @@ public class CartController {
             qty += cartProduct.getQuantity();
             total += price * cartProduct.getQuantity();
         }
+        List<Category> categories = categoryService.getAllCategory();
+
+        model.addAttribute("categories", categories);
 
         model.addAttribute("products", cartProducts);
         model.addAttribute("total", total);

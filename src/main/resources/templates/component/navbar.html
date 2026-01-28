@@ -14,14 +14,14 @@
         <a th:href="@{/cart}" href="#"> <i class=" text-3xl fa-solid fa-basket-shopping text-white"></i></a>
     </div>
 </div>
+
 <div  class="p-3.5 flex items-center w-screen h-full bg-[#E0E5F0]">
-    <ul class="flex flex-wrap justify-between items-center">
-        <li class="pr-14 text-black font-semibold text-base">PC</li>
-        <li class="pr-14 text-black font-semibold text-base">Portable</li>
-        <li class="pr-14 text-black font-semibold text-base">Accessoires</li>
-        <li class="pr-14 text-black font-semibold text-base">En Promotion</li>
-        <li class="pr-14 text-black font-semibold text-base">En stock</li>
-    </ul>
+    <nav class="flex flex-wrap justify-between items-center">
+        <a href="/" class="pr-14 text-black font-semibold text-base">Accueil</a>
+        <a class="pr-14 text-black font-semibold text-base capitalize" th:each="category : ${categories}" th:href="@{/category/{id}(id=${category.getId()})}" th:text="${category.name}">Catégorie</a>
+        <a href="/promo" class="pr-14 text-black font-semibold text-base">En Promotion</a>
+        <a href="/in-stock" class="pr-14 text-black font-semibold text-base">En stock</a>
+    </nav>
 </div>
 <script>
     function performSearch() {

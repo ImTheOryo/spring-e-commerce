@@ -2,8 +2,10 @@ package com.techzone.ecommerce.app.controller;
 
 import com.techzone.ecommerce.shared.dto.PartialOrderDTO;
 import com.techzone.ecommerce.shared.dto.UserDTO;
+import com.techzone.ecommerce.shared.entity.Category;
 import com.techzone.ecommerce.shared.entity.Order;
 import com.techzone.ecommerce.shared.entity.User;
+import com.techzone.ecommerce.shared.service.CategoryService;
 import com.techzone.ecommerce.shared.service.OrderService;
 import com.techzone.ecommerce.shared.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Comparator;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -23,11 +26,15 @@ import java.util.Comparator;
 public class UserController {
     private final UserService userService;
     private final OrderService orderService;
+    private final CategoryService categoryService;
+
 
     @GetMapping()
     public String profilView(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         User user = userService.getUser(userDetails.getUsername());
+        List<Category> categories = categoryService.getAllCategory();
 
+        model.addAttribute("categories", categories);
         if (user == null) {
             return "error/404";
         }
