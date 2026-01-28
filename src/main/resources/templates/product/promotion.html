@@ -28,11 +28,9 @@
 <div th:replace="~{component/navbar}"></div>
 
 <main class="container mx-auto px-4">
-    <div th:replace="~{component/breadcrumbCategory :: breadcrumb(${category.name})}"></div>
-
-    <h1 class="text-xl md:text-3xl lg:text-4xl text-center my-8 md:my-12 font-bold px-4">
-        Phrase très percutante qui donne envie d’acheter nos produits !
-    </h1>
+    <h2 class="text-3xl md:text-4xl font-black text-slate-900 my-8 text-center">
+        Offres <span class="text-primary">Flash</span> du moment
+    </h2>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
 
@@ -99,14 +97,14 @@
          class="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4 my-12">
         <ul class="flex -space-x-px text-sm overflow-x-auto" th:if="${totalPages > 0}">
             <li>
-                <a th:if="${hasPrevious}" th:href="@{'/category/' + ${category.getId()}(page=${currentPage - 1})}"
+                <a th:if="${hasPrevious}" th:href="@{/promo(page=${currentPage - 1})}"
                    class="flex items-center justify-center px-4 w-10 h-10 py-2 border border-gray-300 rounded-s-lg bg-white hover:bg-gray-100">
                     <i class="fa-solid fa-chevron-left"></i>
                 </a>
             </li>
 
             <li th:each="i : ${#numbers.sequence(0, (totalPages > 5 ? 4 : totalPages - 1))}">
-                <a th:href="@{'/category/' + ${category.getId()}(page=${i})}"
+                <a th:href="@{/promo(page=${i})}"
                    th:text="${i + 1}"
                    th:classappend="${currentPage == i} ? 'bg-primary text-white border-primary' : 'bg-white text-gray-700 border-gray-300'"
                    class="flex items-center justify-center w-10 h-10 border hover:bg-gray-50 transition-colors">
@@ -114,7 +112,7 @@
             </li>
 
             <li>
-                <a th:if="${hasNext}" th:href="@{'/category/' + ${category.getId()}(page=${currentPage + 1})}"
+                <a th:if="${hasNext}" th:href="@{/promo(page=${currentPage + 1})}"
                    class="flex items-center w-10 h-10 justify-center px-4 py-2 border border-gray-300 rounded-e-lg bg-white hover:bg-gray-100">
                     <i class="fa-solid fa-chevron-right"></i>
                 </a>
