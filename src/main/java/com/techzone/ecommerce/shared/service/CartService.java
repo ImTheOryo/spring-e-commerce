@@ -52,4 +52,17 @@ public class CartService {
         }
         return null;
     }
+
+    public boolean removeCartProduct(long id, Cart cart) {
+        try {
+            CartProduct cartProduct = cart.getCartProductList().stream().filter(cP -> cP.getProduct().getId() == id).findFirst().get();
+            cart.getCartProductList().removeIf(cP -> cP.getProduct().getId() == id);
+            cartRepository.save(cart);
+            cartProductRepository.delete(cartProduct);
+            return true;
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+        return false;
+    }
 }

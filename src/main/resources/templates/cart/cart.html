@@ -33,7 +33,6 @@
                 <span class="text-center">Sous-total</span>
                 <span></span>
             </div>
-
             <div th:each="item : ${products}"
                  th:with="p=${item.product}, uPrice=${p.isPromotion ? p.price * (1 - p.promotionPourcent / 100.0) : p.price}"
                  class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 grid grid-cols-1 md:grid-cols-[100px_1fr_120px_120px_120px_50px] gap-4 items-center transition-all hover:shadow-md">
@@ -43,7 +42,8 @@
 
                 <div>
                     <a th:href="@{/product/{id}(id=${p.id})}"
-                       class="font-bold text-lg hover:text-primary transition-colors block" th:text="${p.name}">Nom</a>
+                       class="font-bold text-lg hover:text-primary transition-colors block"
+                       th:text="${p.name}">Nom</a>
                     <span class="text-xs text-slate-400 uppercase font-bold tracking-tighter" th:text="${p.brand}">Marque</span>
                 </div>
 
@@ -84,7 +84,7 @@
 
                 <div class="space-y-4 mb-8">
                     <div class="flex justify-between text-slate-500">
-                        <span th:text="'Articles (' + ${qty} + ')'">Articles</span>
+                        <span id="items-count" th:text="'Articles (' + ${qty} + ')'">Articles</span>
                         <span id="cart-total-display" class="font-bold text-slate-900"
                               th:text="${#numbers.formatDecimal(total, 1, 2)} + ' €'">0.00€</span>
                     </div>
@@ -97,7 +97,7 @@
                 <div class="pt-6 border-t border-slate-100 mb-8">
                     <div class="flex justify-between items-end">
                         <span class="text-lg font-bold">Total TTC</span>
-                        <span class="text-3xl font-black text-primary"
+                        <span id="main-total-display" class="text-3xl font-black text-primary"
                               th:text="${#numbers.formatDecimal(total, 1, 2)} + ' €'">0.00€</span>
                     </div>
                 </div>
@@ -119,15 +119,63 @@
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         const inputs = document.querySelectorAll(".qty-input")
+        const deleteBtns = document.querySelectorAll(".cart-btn")
+
+        const totalDisplay = document.getElementById("cart-total-display")
+        const mainTotalDisplay = document.querySelector("#main-total-display")
+        const totalQtyDisplay = document.getElementById("items-count")
+
+        function updateCartSummary() {
+            let total = 0
+            let totalQty = 0
+
+            document.querySelectorAll("[id^='price-']:not([id*='base'])").forEach(el => {
+                const price = parseFloat(el.innerText.replace('€', '').replace(',', '.'))
+                if (!isNaN(price)) total += price
+            })
+
+            document.querySelectorAll(".qty-input").forEach(input => {
+                totalQty += parseInt(input.value) || 0
+            })
+
+            const formattedTotal = total.toFixed(2).replace('.', ',') + " €"
+            if (totalDisplay) totalDisplay.innerText = formattedTotal
+            if (mainTotalDisplay) mainTotalDisplay.innerText = formattedTotal
+            if (totalQtyDisplay) totalQtyDisplay.innerText = `Articles (${totalQty})`
+
+            if (totalQty === 0) {
+                window.location.reload()
+            }
+        }
+
+        deleteBtns.forEach(btn => {
+            btn.addEventListener("click", async () => {
+                const productId = btn.getAttribute("data-product-id")
+
+                try {
+                    const response = await fetch(`/cart/${productId}`, { method: "DELETE" })
+
+                    if (response.ok) {
+                        window.location.reload()
+                    }
+                } catch (err) {
+                    console.error("Erreur suppression:", err)
+                }
+            })
+        })
 
         inputs.forEach(input => {
             input.addEventListener("change", async (e) => {
-                const qty = parseInt(e.target.value) || 1
-                const id = e.target.id.replace("qty-", "")
+                let qty = parseInt(e.target.value) || 1
+                const max = parseInt(e.target.getAttribute("max"))
 
+                if (qty > max) qty = max
+                if (qty < 1) qty = 1
+                e.target.value = qty
+
+                const id = e.target.id.replace("qty-", "")
                 const priceEl = document.getElementById(`price-${id}`)
                 const priceBaseEl = document.getElementById(`price-base-${id}`)
-
                 const unitPrice = parseFloat(priceEl.getAttribute("data-unit-price"))
 
                 priceEl.innerText = (unitPrice * qty).toFixed(2).replace('.', ',') + " €"
@@ -137,21 +185,16 @@
                     priceBaseEl.innerText = (unitBase * qty).toFixed(2).replace('.', ',') + " €"
                 }
 
-                priceEl.classList.add('scale-110', 'text-primary', 'transition-transform')
-                setTimeout(() => priceEl.classList.remove('scale-110', 'text-primary'), 200)
-// TODO faire un refresh du montant total et corrigé le add
-                try {
-                    await fetch("/cart/update", {
-                        method: "PUT",
-                        headers: {"Content-Type": "application/json"},
-                        body: JSON.stringify({
-                            product: {id: Number(id)},
-                            quantity: Number(qty),
-                        })
+                updateCartSummary()
+
+                await fetch("/cart/update", {
+                    method: "PUT",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({
+                        product: {id: Number(id)},
+                        quantity: Number(qty)
                     })
-                } catch (err) {
-                    console.error("Erreur sync:", err)
-                }
+                })
             })
         })
     })

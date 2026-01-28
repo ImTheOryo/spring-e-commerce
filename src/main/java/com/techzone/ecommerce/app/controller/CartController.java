@@ -12,10 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -81,6 +78,20 @@ public class CartController {
 
         CartProduct res = cartService.updateCartProduct(cartProduct, user.getCart());
         if (res == null) {
+            return new ResponseEntity<>("Il y a eu un problème lors de l'ajout", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>("Produit ajouter avec succés", HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> removeCartProduct(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id) {
+        User user = userService.getUser(userDetails.getUsername());
+
+        if (user == null) {
+            return new ResponseEntity<>("Il y a eu un problème lors de l'ajout", HttpStatus.NOT_FOUND);
+        }
+
+        if (!cartService.removeCartProduct(id, user.getCart())) {
             return new ResponseEntity<>("Il y a eu un problème lors de l'ajout", HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>("Produit ajouter avec succés", HttpStatus.OK);
