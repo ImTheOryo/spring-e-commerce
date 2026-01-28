@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/admin-layout}"
+      lang="fr">
+<body>
+
+<div layout:fragment="content">
+  <h1 class="text-3xl font-bold text-gray-900 mb-8">Utilisateurs</h1>
+
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+
+    <form th:action="@{/admin/users}" method="get" id="filterForm" class="p-6 border-b border-gray-50 flex flex-col md:flex-row gap-4 justify-between items-center">
+      <div class="relative w-full">
+        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </span>
+        <input type="text"
+               name="search"
+               th:value="${param.search}"
+               placeholder="Rechercher par nom, email, téléphone..."
+               class="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-xl bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 transition">
+      </div>
+    </form>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-center">
+        <thead>
+        <tr class="bg-gray-50 text-gray-400 text-xs uppercase tracking-wider">
+          <th class="px-6 py-4 font-semibold">ID</th>
+          <th class="px-6 py-4 font-semibold">Utilisateur</th>
+          <th class="px-6 py-4 font-semibold">Email</th>
+          <th class="px-6 py-4 font-semibold">Téléphone</th>
+          <th class="px-6 py-4 font-semibold">Adresse</th>
+        </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+        <tr th:each="user : ${allUsers}" class="hover:bg-gray-50 transition" th:onclick="|window.location.href='@{/admin/users/{id}(id=${user.id})}'|">
+          <td class="px-6 py-4 text-sm font-medium text-gray-900" th:text="${'#' + user.id}">#1</td>
+          <td class="px-6 py-4">
+            <div class="flex flex-col">
+              <span class="text-sm font-semibold text-gray-800" th:text="${user.firstname + ' ' + user.lastname}">Nom</span>
+            </div>
+          </td>
+          <td class="px-6 py-4 text-sm text-gray-600" th:text="${user.email}">test@test.com</td>
+          <td class="px-6 py-4 text-sm text-gray-600" th:text="${user.phone}">0102030405</td>
+          <td class="px-6 py-4 text-sm text-gray-600" th:text="${user.address}">123 Rue de...</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <nav aria-label="Page navigation" class="flex flex-col sm:flex-row items-center justify-center my-12"
+         th:with="maxVisible=5,
+              offset=${currentPage > 2 ? (currentPage < totalPages - 2 ? currentPage - 2 : (totalPages > maxVisible ? totalPages - maxVisible : 0)) : 0},
+              lastIdx=${totalPages > 0 ? (totalPages > (offset + maxVisible) ? offset + maxVisible - 1 : totalPages - 1) : 0}">
+      <ul class="flex -space-x-px text-sm" th:if="${totalPages > 1}">
+        <li th:if="${currentPage > 0}">
+          <a th:href="@{/admin/users(page=0, search=${param.search})}" class="flex items-center justify-center w-10 h-10 border border-gray-300 rounded-s-lg bg-white text-gray-500"><i class="fa-solid fa-angles-left"></i></a>
+        </li>
+        <li th:each="i : ${#numbers.sequence(offset, lastIdx)}">
+          <a th:href="@{/admin/users(page=${i}, search=${param.search})}"
+             th:text="${i + 1}"
+             th:classappend="${currentPage == i} ? 'z-10 bg-cyan-600 text-white border-cyan-600' : 'bg-white text-gray-700 border-gray-300'"
+             class="flex items-center justify-center w-10 h-10 border"></a>
+        </li>
+        <li th:if="${currentPage < totalPages - 1}">
+          <a th:href="@{/admin/users(page=${totalPages - 1}, search=${param.search})}" class="flex items-center justify-center w-10 h-10 border border-gray-300 rounded-e-lg bg-white text-gray-500"><i class="fa-solid fa-angles-right"></i></a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>
+</body>
+</html>
