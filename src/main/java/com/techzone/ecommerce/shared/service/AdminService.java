@@ -1,7 +1,9 @@
 package com.techzone.ecommerce.shared.service;
 
+import com.techzone.ecommerce.shared.dto.UserDTO;
 import com.techzone.ecommerce.shared.entity.Order;
 import com.techzone.ecommerce.shared.entity.OrderStatus;
+import com.techzone.ecommerce.shared.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -57,6 +59,36 @@ public class AdminService {
         commandInfos.put("colors",   getStatusColor());
         commandInfos.put("status", OrderStatus.values());
         return  commandInfos;
+    }
+
+    public Map<String, Object> getUsersInfos(
+            String search,
+            Pageable pageable
+    ) {
+        Map<String, Object> usersInfos = new HashMap<>();
+        Page<User> allUsers = userService.findFilteredUsers(search, pageable);
+        usersInfos.put("allUsers", allUsers);
+        usersInfos.put("currentPage", allUsers.getNumber());
+        usersInfos.put("totalPages", allUsers.getTotalPages());
+        usersInfos.put("hasNext", allUsers.hasNext());
+        usersInfos.put("hasPrevious", allUsers.hasPrevious());
+        return  usersInfos;
+    }
+
+    public Map<String, Object> userInfos (
+            Long id
+    ) {
+        Map<String, Object> userInfos = new HashMap<>();
+        userInfos.put("user",userService.getUser(id));
+
+        return  userInfos;
+    }
+
+    public boolean updateUser (
+            long id,
+            UserDTO userDTO
+    ) {
+        return userService.updateUser(id, userDTO);
     }
 
     public Map<OrderStatus, String> getStatusColor() {
