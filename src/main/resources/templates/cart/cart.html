@@ -18,14 +18,14 @@
 <body class="bg-slate-50 font-['AR_One_Sans'] text-slate-800 antialiased min-h-screen flex flex-col">
 <div th:replace="~{component/navbar}"></div>
 
-<main class="container mx-auto px-4 py-12 flex-grow">
+<main class="container mx-auto px-4 py-12 w-full">
     <h1 class="text-3xl font-bold mb-10 text-slate-900"><i class="fa-solid fa-cart-shopping mr-4 text-primary"></i>Votre
         panier</h1>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 w-full">
 
         <div class="lg:col-span-2 space-y-4">
-            <div class="hidden md:grid grid-cols-[100px_1fr_120px_120px_120px_50px] gap-4 px-6 py-2 text-sm font-bold text-slate-400 uppercase tracking-wider">
+            <div class="hidden md:grid md:grid-cols-[100px_1fr_100px_75px_120px_50px] gap-4 px-6 py-2 text-sm font-bold text-slate-400 uppercase tracking-wider">
                 <span>Produit</span>
                 <span>Désignation</span>
                 <span class="text-center">Prix</span>
@@ -35,7 +35,7 @@
             </div>
             <div th:each="item : ${products}"
                  th:with="p=${item.product}, uPrice=${p.isPromotion ? p.price * (1 - p.promotionPourcent / 100.0) : p.price}"
-                 class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 grid grid-cols-1 md:grid-cols-[100px_1fr_120px_120px_120px_50px] gap-4 items-center transition-all hover:shadow-md">
+                 class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 grid grid-cols-1 md:grid-cols-[100px_1fr_100px_75px_120px_50px] gap-4 items-center transition-all hover:shadow-md">
 
                 <img th:src="${p.urlPhoto}" class="rounded-2xl w-24 h-24 object-cover mx-auto md:mx-0 shadow-sm"
                      th:alt="${p.name}">
