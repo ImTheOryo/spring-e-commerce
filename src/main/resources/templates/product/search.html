@@ -133,7 +133,7 @@
         Array.from(elementBtn).forEach(btn => {
             btn.addEventListener("click", async (event) => {
                 event.preventDefault()
-                const response = await fetch("http://localhost:8080/cart", {
+                const response = await fetch("http://localhost:8080/cart/add", {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json"

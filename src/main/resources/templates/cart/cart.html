@@ -141,12 +141,12 @@
                 setTimeout(() => priceEl.classList.remove('scale-110', 'text-primary'), 200)
 // TODO faire un refresh du montant total et corrigé le add
                 try {
-                    await fetch("/cart", {
+                    await fetch("/cart/update", {
                         method: "PUT",
                         headers: {"Content-Type": "application/json"},
                         body: JSON.stringify({
                             product: {id: Number(id)},
-                            quantity: Number(qty)
+                            quantity: Number(qty),
                         })
                     })
                 } catch (err) {

@@ -58,7 +58,7 @@ public class CartController {
         return "cart/cart";
     }
 
-    @PutMapping
+    @PutMapping("/add")
     public ResponseEntity<String> addProduct(@Valid @RequestBody CartProduct cartProduct, @AuthenticationPrincipal UserDetails userDetails) {
         User user = userService.getUser(userDetails.getUsername());
         if (user == null) {
@@ -66,6 +66,21 @@ public class CartController {
         }
         Cart cart = cartService.addCartProduct(cartProduct, user.getCart());
         if (cart == null) {
+            return new ResponseEntity<>("Il y a eu un problème lors de l'ajout", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>("Produit ajouter avec succés", HttpStatus.OK);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<String> updateProduct(@Valid @RequestBody CartProduct cartProduct, @AuthenticationPrincipal UserDetails userDetails) {
+        User user = userService.getUser(userDetails.getUsername());
+
+        if (user == null) {
+            return new ResponseEntity<>("Il y a eu un problème lors de l'ajout", HttpStatus.NOT_FOUND);
+        }
+
+        CartProduct res = cartService.updateCartProduct(cartProduct, user.getCart());
+        if (res == null) {
             return new ResponseEntity<>("Il y a eu un problème lors de l'ajout", HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>("Produit ajouter avec succés", HttpStatus.OK);
