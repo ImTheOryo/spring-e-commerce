@@ -120,17 +120,6 @@
                 </a>
             </li>
         </ul>
-
-        <div class="flex items-center">
-            <select id="pageSize"
-                    name="size"
-                    onchange="window.location.href = '/?page=0&size=' + this.value"
-                    class="block w-20 px-3 py-2 bg-white border border-gray-300 text-sm rounded-md focus:ring-primary focus:border-primary outline-none">
-                <option value="12" th:selected="${pageSize == 12}">12</option>
-                <option value="24" th:selected="${pageSize == 24}">24</option>
-                <option value="48" th:selected="${pageSize == 48}">48</option>
-            </select>
-        </div>
     </nav>
 
 </main>
