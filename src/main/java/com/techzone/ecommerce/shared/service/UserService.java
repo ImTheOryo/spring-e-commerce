@@ -54,6 +54,21 @@ public class UserService {
         return false;
     }
 
+    public boolean updateUser(long id, UserDTO userDTO){
+        try {
+            User currentUserInfo = userRepository.getReferenceById(id);
+            currentUserInfo.setFirstname(userDTO.getFirstname());
+            currentUserInfo.setLastname(userDTO.getLastname());
+            currentUserInfo.setAddress(userDTO.getAddress());
+            currentUserInfo.setPhone(userDTO.getPhone());
+            userRepository.save(currentUserInfo);
+            return true;
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return false;
+    }
+
     public Page<User> findFilteredUsers (
             String search,
             Pageable page

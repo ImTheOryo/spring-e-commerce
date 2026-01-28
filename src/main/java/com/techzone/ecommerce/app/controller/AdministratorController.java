@@ -1,5 +1,6 @@
 package com.techzone.ecommerce.app.controller;
 
+import com.techzone.ecommerce.shared.dto.UserDTO;
 import com.techzone.ecommerce.shared.entity.OrderStatus;
 import com.techzone.ecommerce.shared.service.AdminService;
 import com.techzone.ecommerce.shared.service.OrderService;
@@ -84,5 +85,18 @@ public class AdministratorController {
         model.addAllAttributes(adminService.userInfos(id));
 
         return "admin/user";
+    }
+
+    @PostMapping("/users/{id}")
+    public String updateUser(
+            Model model,
+            @PathVariable Long id,
+            UserDTO user
+    ) {
+        if (adminService.updateUser(id, user)){
+            return getUser(model, id);
+        }
+        return "error/404";
+
     }
 }

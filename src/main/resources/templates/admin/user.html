@@ -93,7 +93,7 @@
           </button>
         </div>
 
-        <form th:action="@{/admin/users/update}" method="post" class="space-y-6">
+        <form th:action="@{/admin/users/{id}(id=${user.id})}" method="post" class="space-y-6">
           <input type="hidden" name="id" th:value="${user.id}">
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

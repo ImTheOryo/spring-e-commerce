@@ -1,5 +1,6 @@
 package com.techzone.ecommerce.shared.service;
 
+import com.techzone.ecommerce.shared.dto.UserDTO;
 import com.techzone.ecommerce.shared.entity.Order;
 import com.techzone.ecommerce.shared.entity.OrderStatus;
 import com.techzone.ecommerce.shared.entity.User;
@@ -81,6 +82,13 @@ public class AdminService {
         userInfos.put("user",userService.getUser(id));
 
         return  userInfos;
+    }
+
+    public boolean updateUser (
+            long id,
+            UserDTO userDTO
+    ) {
+        return userService.updateUser(id, userDTO);
     }
 
     public Map<OrderStatus, String> getStatusColor() {
