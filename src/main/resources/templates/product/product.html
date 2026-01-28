@@ -164,7 +164,7 @@
         const qtyElement = document.getElementById("qty")
 
         btnAddCart.addEventListener("click", async () => {
-            const response = await fetch("http://localhost:8080/cart", {
+            const response = await fetch("http://localhost:8080/cart/add", {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"

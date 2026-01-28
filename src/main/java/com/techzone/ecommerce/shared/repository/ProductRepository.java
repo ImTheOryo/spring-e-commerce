@@ -16,7 +16,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, PagingA
 
     Page<Product> findAllByIsAvailableTrueAndCategory(Pageable pageable, Category category);
     Page<Product> findAllByIsAvailableTrueAndIsPromotionTrue(Pageable pageable);
-    Page<Product> findAllByIsAvailableTrueAndStockGreaterThan(Pageable pageable, int stock);
+    Page<Product> findAllByIsAvailableTrueAndIsInStockTrue(Pageable pageable);
 
     @Query("SELECT p FROM Product p WHERE LOWER(p.brand) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(p.description) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(p.model) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%'))")
     Page<Product> searchProduct(Pageable pageable, String search);

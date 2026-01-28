@@ -2,8 +2,8 @@ package com.techzone.ecommerce.app.controller;
 
 import com.techzone.ecommerce.shared.entity.Category;
 import com.techzone.ecommerce.shared.entity.Product;
-import com.techzone.ecommerce.shared.repository.ProductRepository;
 import com.techzone.ecommerce.shared.service.CategoryService;
+import com.techzone.ecommerce.shared.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,19 +14,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Optional;
+import java.util.List;
 
 
 @Controller
 @RequiredArgsConstructor
 public class ProductController {
-    private final ProductRepository productRepository;
+    private final ProductService productService;
     private final CategoryService categoryService;
 
     @GetMapping("/")
     public String home(Model model, @PageableDefault(size = 12) Pageable pageable) {
-        Page<Product> productPage = productRepository.findAllByIsAvailableTrue(pageable);
+        Page<Product> productPage = productService.getAllAvailable(pageable);
+        List<Category> categories = categoryService.getAllCategory();
 
+        model.addAttribute("categories", categories);
         model.addAttribute("products", productPage.getContent());
         model.addAttribute("currentPage", productPage.getNumber());
         model.addAttribute("totalPages", productPage.getTotalPages());
@@ -39,24 +41,29 @@ public class ProductController {
 
     @GetMapping("/product/{id}")
     public String getProduct(Model model, @PathVariable Long id) {
-        Optional<Product> product = productRepository.findById(id);
+        Product product = productService.get(id);
+        List<Category> categories = categoryService.getAllCategory();
 
-        if (product.isEmpty()) {
+        if (product == null) {
             return "product/home";
         }
-        model.addAttribute("product", product.get());
+
+        model.addAttribute("categories", categories);
+        model.addAttribute("product", product);
         return "product/product";
     }
 
     @GetMapping("/category/{id}")
-    public String getProductPerCategory(
+    public String getProductPerCategoryView(
             Model model,
             @PageableDefault(size = 12) Pageable pageable,
             @PathVariable("id") Long categoryId
     ) {
         Category category = categoryService.getCategory(categoryId);
-        Page<Product> productPage = productRepository.findAllByIsAvailableTrueAndCategory(pageable, category);
+        Page<Product> productPage = productService.getAllAvailableByCategory(pageable, category);
+        List<Category> categories = categoryService.getAllCategory();
 
+        model.addAttribute("categories", categories);
         model.addAttribute("products", productPage.getContent());
         model.addAttribute("currentPage", productPage.getNumber());
         model.addAttribute("totalPages", productPage.getTotalPages());
@@ -64,17 +71,18 @@ public class ProductController {
         model.addAttribute("hasPrevious", productPage.hasPrevious());
         model.addAttribute("pageSize", pageable.getPageSize());
         model.addAttribute("category", category);
-        //TODO regler le probleme de pagination (ça bug au 1er chargelent de category)
         return "product/category";
     }
 
-    @GetMapping("/inStock")
+    @GetMapping("/in-stock")
     public String getProductInStock(
             Model model,
             @PageableDefault(size =12) Pageable pageable
     ){
-        Page<Product> productPage = productRepository.findAllByIsAvailableTrueAndStockGreaterThan(pageable, 0);
+        Page<Product> productPage = productService.getInStock(pageable);
+        List<Category> categories = categoryService.getAllCategory();
 
+        model.addAttribute("categories", categories);
         model.addAttribute("products", productPage.getContent());
         model.addAttribute("currentPage", productPage.getNumber());
         model.addAttribute("totalPages", productPage.getTotalPages());
@@ -86,12 +94,13 @@ public class ProductController {
     }
 
     @GetMapping("/search")
-    public String getProductPerCategory(
+    public String getProductPerSearchView(
             Model model,
             @PageableDefault(size = 12) Pageable pageable,
             @RequestParam("query") String search
-    ){
-            Page<Product> productPage = productRepository.searchProduct(pageable, search);
+    ) {
+        Page<Product> productPage = productService.getSearch(pageable, search);
+        List<Category> categories = categoryService.getAllCategory();
 
             model.addAttribute("products", productPage.getContent());
             model.addAttribute("search", search);
@@ -104,13 +113,15 @@ public class ProductController {
             return "product/search";
     }
 
-    @GetMapping("/promotion")
-    public String getProductInPromotion(
+    @GetMapping("/promo")
+    public String getProductPerPromoView(
             Model model,
             @PageableDefault(size =12) Pageable pageable
     ){
-        Page<Product> productPage = productRepository.findAllByIsAvailableTrueAndIsPromotionTrue(pageable);
+        Page<Product> productPage = productService.getPromo(pageable);
+        List<Category> categories = categoryService.getAllCategory();
 
+        model.addAttribute("categories", categories);
         model.addAttribute("products", productPage.getContent());
         model.addAttribute("currentPage", productPage.getNumber());
         model.addAttribute("totalPages", productPage.getTotalPages());
@@ -120,5 +131,4 @@ public class ProductController {
 
         return "product/promotion";
     }
-
 }

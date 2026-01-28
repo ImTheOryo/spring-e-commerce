@@ -25,13 +25,15 @@
                 <span th:text="${#strings.substring(user.getFirstname(),0,1) + #strings.substring(user.getLastname(),0,1)}">JD</span>
             </div>
             <div>
-                <h1 class="text-2xl md:text-3xl font-bold text-slate-900" th:text="${user.getFirstname() + ' ' + user.getLastname()}">John Doe</h1>
+                <h1 class="text-2xl md:text-3xl font-bold text-slate-900"
+                    th:text="${user.getFirstname() + ' ' + user.getLastname()}">John Doe</h1>
                 <p class="text-slate-500 text-sm md:text-base" th:text="${user.getEmail()}">email@example.com</p>
             </div>
         </div>
 
         <form th:action="@{/logout}" method="post">
-            <button type="submit" class="flex items-center gap-2 px-6 py-3 bg-red-50 text-red-600 rounded-2xl font-bold hover:bg-red-100 transition-colors">
+            <button type="submit"
+                    class="flex items-center gap-2 px-6 py-3 bg-red-50 text-red-600 rounded-2xl font-bold hover:bg-red-100 transition-colors">
                 <i class="fa-solid fa-power-off"></i> Déconnexion
             </button>
         </form>
@@ -47,13 +49,17 @@
                 <div class="space-y-6">
                     <div>
                         <label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">Téléphone</label>
-                        <p class="font-medium text-slate-700" th:text="${user.getPhone() ?: 'Non renseigné'}">+33 6 00 00 00 00</p>
+                        <p class="font-medium text-slate-700" th:text="${user.getPhone() ?: 'Non renseigné'}">+33 6 00
+                            00 00 00</p>
                     </div>
                     <div>
-                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">Adresse de livraison</label>
-                        <p class="font-medium text-slate-700 leading-relaxed" th:text="${user.getAddress() ?: 'Aucune adresse enregistrée'}">123 Rue de la Tech, Paris</p>
+                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">Adresse de
+                            livraison</label>
+                        <p class="font-medium text-slate-700 leading-relaxed"
+                           th:text="${user.getAddress() ?: 'Aucune adresse enregistrée'}">123 Rue de la Tech, Paris</p>
                     </div>
-                    <button id="edit-profil-btn" class="w-full mt-4 py-3 border-2 border-slate-100 text-primary font-bold rounded-2xl hover:bg-slate-50 transition-all">
+                    <button id="edit-profil-btn"
+                            class="w-full mt-4 py-3 border-2 border-slate-100 text-primary font-bold rounded-2xl hover:bg-slate-50 transition-all">
                         Modifier mon profil
                     </button>
                 </div>
@@ -93,7 +99,9 @@
                 yearSelect.appendChild(option)
             })
             yearSelect.selectedIndex = 0
-        } catch (e) { console.error(e) }
+        } catch (e) {
+            console.error(e)
+        }
     }
 
     async function updateList() {
@@ -103,34 +111,42 @@
         if (!yearSelect || !container) return
 
         try {
-            const response = await fetch(`/order/${yearSelect.value}`)
-            const orders = await response.json()
-            container.innerHTML = orders.length === 0 ? emptyList() : ""
+            console.log(yearSelect.value)
+            if (yearSelect.value) {
+                const response = await fetch(`/order/${yearSelect.value}`)
+                const orders = await response.json()
+                container.innerHTML = ""
 
-            orders.forEach(order => {
-                container.insertAdjacentHTML('beforeend', orderLine(order))
-            })
+                orders.forEach(order => {
+                    container.insertAdjacentHTML('beforeend', orderLine(order))
+                })
 
-            container.querySelectorAll(".details-order-btn").forEach(btn => {
-                btn.addEventListener("click", async (e) => {
+
+                container.querySelectorAll(".details-order-btn").forEach(btn => {
+                    btn.addEventListener("click", async (e) => {
+                        e.preventDefault()
+                        const id = btn.getAttribute("data-detail-btn")
+                        const res = await fetch(`/user/${id}`)
+                        const html = await res.text()
+                        document.querySelector(".profil-view").innerHTML = html
+                        window.scrollTo({top: 0, behavior: 'smooth'})
+                    })
+                })
+
+                editBtn.addEventListener("click", async (e) => {
                     e.preventDefault()
-                    const id = btn.getAttribute("data-detail-btn")
-                    const res = await fetch(`/user/${id}`)
+                    const res = await fetch(`/user/edit`)
                     const html = await res.text()
                     document.querySelector(".profil-view").innerHTML = html
                     window.scrollTo({top: 0, behavior: 'smooth'})
                 })
-            })
+            } else {
+                container.innerHTML = emptyList()
+            }
 
-            editBtn.addEventListener("click", async (e) => {
-                e.preventDefault()
-                const res = await fetch(`/user/edit`)
-                const html = await res.text()
-                document.querySelector(".profil-view").innerHTML = html
-                window.scrollTo({top: 0, behavior: 'smooth'})
-            })
-
-        } catch (error) { console.error(error) }
+        } catch (error) {
+            console.error(error)
+        }
     }
 
     function formatDate(date) {
@@ -148,8 +164,22 @@
     }
 
     function orderLine(order) {
-        const labels = { IN_PROCESS: "En préparation", IN_TRANSIT: "Livraison...", DELIVERED: "Livré", RETURN_ASK: "Retour demandé", RETURNED: "Retourné", REFUNDED: "Remboursé" }
-        const colors = { IN_PROCESS: "amber", IN_TRANSIT: "blue", DELIVERED: "emerald", RETURN_ASK: "purple", RETURNED: "slate", REFUNDED: "rose" }
+        const labels = {
+            IN_PROCESS: "En préparation",
+            IN_TRANSIT: "Livraison...",
+            DELIVERED: "Livré",
+            RETURN_ASK: "Retour demandé",
+            RETURNED: "Retourné",
+            REFUNDED: "Remboursé"
+        }
+        const colors = {
+            IN_PROCESS: "amber",
+            IN_TRANSIT: "blue",
+            DELIVERED: "emerald",
+            RETURN_ASK: "purple",
+            RETURNED: "slate",
+            REFUNDED: "rose"
+        }
         const c = colors[order.status] || "slate"
 
         return `
