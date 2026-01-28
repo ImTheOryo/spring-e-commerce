@@ -62,4 +62,27 @@ public class AdministratorController {
         orderService.changeStatus(id, status);
         return getCommand(model, id);
     }
+
+    @GetMapping("/users")
+    public String getUsers(
+            Model model,
+            @PageableDefault(size = 10) Pageable pageable,
+            @RequestParam(required = false) String search
+    ) {
+        model.addAttribute("activePage", "users");
+        model.addAllAttributes(adminService.getUsersInfos(search, pageable));
+
+        return "admin/users";
+    }
+
+    @GetMapping("/users/{id}")
+    public String getUser(
+            Model model,
+            @PathVariable Long id
+    ) {
+        model.addAttribute("activePage", "users");
+        model.addAllAttributes(adminService.userInfos(id));
+
+        return "admin/user";
+    }
 }
