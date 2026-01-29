@@ -7,19 +7,30 @@ import com.techzone.ecommerce.shared.entityForm.UserForm;
 import com.techzone.ecommerce.shared.repository.UserRepository;
 import com.techzone.ecommerce.shared.service.UserDetailsServiceImpl;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
+import org.springframework.security.oauth2.jwt.JwsHeader;
+import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class AuthentificationApiController {
-
+    private final JwtEncoder encoder;
     @Autowired
     UserRepository userRepository;
 
@@ -28,23 +39,6 @@ public class AuthentificationApiController {
 
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    @GetMapping("/login")
-    public String loginPage(
-            @RequestParam(value = "error", required = false) String error
-    ) {
-        return "security/login";
-    }
-
-    @GetMapping("/login_sucess")
-    public String loginSuccess() {
-        return "security/login_succes";
-    }
-
-    @GetMapping("/404")
-    public String errorPage() {
-        return "security/404";
-    }
 
     @GetMapping("/register")
     public String registerPage(
@@ -95,5 +89,27 @@ public class AuthentificationApiController {
             model.addAttribute("error", "Une erreur technique est survenue.");
             return "register/register";
         }
+    }
+
+    @PostMapping("/auth/login")
+    public String token(Authentication authentication) {
+        Instant now = Instant.now();
+        long expiry = 36000L;
+
+        String scope = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(" "));
+
+        JwsHeader jwsHeader = JwsHeader.with(MacAlgorithm.HS256).build();
+
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+                .issuer("self")
+                .issuedAt(now)
+                .expiresAt(now.plusSeconds(expiry))
+                .subject(authentication.getName())
+                .claim("scope", scope)
+                .build();
+
+        return this.encoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
     }
 }
