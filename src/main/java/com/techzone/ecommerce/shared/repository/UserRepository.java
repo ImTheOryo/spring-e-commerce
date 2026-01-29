@@ -38,4 +38,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
                 LOWER(u.address) LIKE LOWER(CONCAT('%', :search, '%')))
             """)
     List<User> findFilteredUsers(@Param("search") String search);
+
+    Optional<User> findById(long id);
 }

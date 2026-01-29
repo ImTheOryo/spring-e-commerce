@@ -78,10 +78,10 @@ classDiagram
  user "1" --> "1" roles : a un
     user "1" *-- "1" cart : possède
     user "1" <-- "*" order : appartient à
-    product "*" --> "1" categorie : appartient à
+    product "*" --> "1" categorie : possède
     cart "1" *-- "*" cart_product : contient
     product "1" <-- "*" cart_product : référence
-    order "1" *-- "1..*" order_product : est composée de
+    order "1" *-- "*" order_product : contient
     product "1" <-- "*" order_product : référence
     class user {
         -long id
