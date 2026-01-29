@@ -2,10 +2,12 @@ package com.techzone.ecommerce.shared.dto;
 
 import com.techzone.ecommerce.shared.entity.User;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class UserDTO {
     private long id;
     private String firstname;

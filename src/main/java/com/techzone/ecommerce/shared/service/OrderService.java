@@ -128,36 +128,40 @@ public class OrderService {
 
     @Transactional
     public Order createOrder(Cart cart, PartialOrderDTO partialOrderDTO, User user) {
-        try {
-            Order order = new Order();
-            order.setFirstname(partialOrderDTO.getFirstname());
-            order.setLastname(partialOrderDTO.getLastname());
-            order.setPhone(partialOrderDTO.getPhone());
-            order.setAddress(partialOrderDTO.getAddress());
-            order.setStatus(OrderStatus.IN_PROCESS);
-            order.setUser(user);
-            order.setCreatedAt(LocalDateTime.now());
+        Order order = new Order();
+        order.setFirstname(partialOrderDTO.getFirstname());
+        order.setLastname(partialOrderDTO.getLastname());
+        order.setPhone(partialOrderDTO.getPhone());
+        order.setAddress(partialOrderDTO.getAddress());
+        order.setStatus(OrderStatus.IN_PROCESS);
+        order.setUser(user);
+        order.setCreatedAt(LocalDateTime.now());
 
-            List<OrderProduct> orderProducts = new ArrayList<>();
+        List<OrderProduct> orderProducts = new ArrayList<>();
+        double orderTotal = 0;
 
-            for (CartProduct cartProduct : cart.getCartProductList()) {
-                OrderProduct orderProduct = new OrderProduct();
-                orderProduct.setProduct(cartProduct.getProduct());
-                orderProduct.setQuantity(cartProduct.getQuantity());
-                orderProduct.setPromotion(cartProduct.getProduct().isPromotion());
-                orderProduct.setPromotionPourcent(cartProduct.getProduct().getPromotionPourcent());
-                productService.removeFromStock(cartProduct.getQuantity(), cartProduct.getProduct());
+        for (CartProduct cartProduct : cart.getCartProductList()) {
+            OrderProduct orderProduct = new OrderProduct();
+            orderProduct.setProduct(cartProduct.getProduct());
+            orderProduct.setQuantity(cartProduct.getQuantity());
+            orderProduct.setOrder(order);
 
-                orderProducts.add(orderProduct);
-            }
+            double currentPrice = cartProduct.getProduct().getPrice();
+            orderProduct.setPrice(currentPrice);
+            orderProduct.setPromotion(cartProduct.getProduct().isPromotion());
+            orderProduct.setPromotionPourcent(cartProduct.getProduct().getPromotionPourcent());
 
-            order.setOrderProductList(orderProducts);
+            productService.removeFromStock(cartProduct.getQuantity(), cartProduct.getProduct());
 
-            return orderRepository.save(order);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            orderProducts.add(orderProduct);
+
+            orderTotal += (currentPrice * cartProduct.getQuantity());
         }
+
+        order.setOrderProductList(orderProducts);
+        order.setTotal(orderTotal);
+
+        return orderRepository.save(order);
     }
 
     public List<Order> getAllByUser(User user) {
