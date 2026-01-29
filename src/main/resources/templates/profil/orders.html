@@ -1,7 +1,7 @@
 <div th:fragment="order-list" class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
     <div class="flex justify-between items-center mb-8">
         <h2 class="text-xl font-bold">Mes dernières commandes</h2>
-        <select id="year" onchange="updateList()" class="border-none bg-slate-50 rounded-lg font-bold text-primary">
+        <select id="year" class="border-none bg-slate-50 rounded-lg font-bold text-primary">
             <option th:each="year : ${orderYears}" th:text="${year}" th:value="${year}"></option>
         </select>
     </div>
