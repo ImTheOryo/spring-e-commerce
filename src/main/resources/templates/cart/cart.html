@@ -17,6 +17,7 @@
 </head>
 <body class="bg-slate-50 font-['AR_One_Sans'] text-slate-800 antialiased min-h-screen flex flex-col">
 <div th:replace="~{component/navbar}"></div>
+<div th:replace="~{component/toast}"></div>
 
 <main class="container mx-auto px-4 py-12 w-full">
     <h1 class="text-3xl font-bold mb-10 text-slate-900"><i class="fa-solid fa-cart-shopping mr-4 text-primary"></i>Votre
@@ -118,7 +119,19 @@
 
 <div th:replace="~{component/footer}"></div>
 
-<script>
+<script th:inline="javascript">
+    const toastType = /*[[${toastType}]]*/ null;
+    const toastTitle = /*[[${toastTitle}]]*/ null;
+    const toastMessage = /*[[${toastMessage}]]*/ null;
+
+    if (toastType && toastMessage) {
+        window.showToast(toastType, toastTitle, toastMessage);
+    }
+</script>
+<script type="module">
+    import { showToast } from "/js/toast.js";
+    window.showToast = showToast;
+
     document.addEventListener("DOMContentLoaded", () => {
         const inputs = document.querySelectorAll(".qty-input")
         const deleteBtns = document.querySelectorAll(".cart-btn")
@@ -158,9 +171,13 @@
                     const response = await fetch(`/cart/${productId}`, {method: "DELETE"})
 
                     if (response.ok) {
-                        window.location.reload()
+                        showToast("success", "Produits supprimer", "Le produits est supprimer du panier");
+                        setTimeout(() => {
+                            window.location.reload()
+                        }, 1200)
                     }
                 } catch (err) {
+                    showToast("error", "Erreur", "L'article n'a pas pu être supprimer, veuillez réessayer.")
                     console.error("Erreur suppression:", err)
                 }
             })
@@ -189,7 +206,7 @@
 
                 updateCartSummary()
 
-                await fetch("/cart/update", {
+                const response = await fetch("/cart/update", {
                     method: "PUT",
                     headers: {"Content-Type": "application/json"},
                     body: JSON.stringify({
@@ -197,6 +214,12 @@
                         quantity: Number(qty)
                     })
                 })
+
+                if (response.ok) {
+                    showToast("success", "Produits modifier", "Le produits à été modifier");
+                } else {
+                    showToast("error", "Erreur", "Impossible modifier le produit");
+                }
             })
         })
     })

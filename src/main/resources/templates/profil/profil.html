@@ -17,6 +17,7 @@
 </head>
 <body class="bg-slate-50 font-['AR_One_Sans'] text-slate-800 antialiased min-h-screen">
 <div th:replace="~{component/navbar}"></div>
+<div th:replace="~{component/toast}"></div>
 
 <main class="container mx-auto px-4 py-8 md:py-12">
     <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-6 bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
@@ -75,7 +76,19 @@
 
 <div th:replace="~{component/footer}"></div>
 
-<script>
+<script th:inline="javascript">
+    const toastType = /*[[${toastType}]]*/ null;
+    const toastTitle = /*[[${toastTitle}]]*/ null;
+    const toastMessage = /*[[${toastMessage}]]*/ null;
+
+    if (toastType && toastMessage) {
+        window.showToast(toastType, toastTitle, toastMessage);
+    }
+</script>
+<script type="module">
+    import { showToast } from "/js/toast.js";
+    window.showToast = showToast;
+
     document.addEventListener("DOMContentLoaded", async () => {
         const yearSelect = document.getElementById("year")
         if (yearSelect) {

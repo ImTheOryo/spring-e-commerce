@@ -74,6 +74,25 @@ public class ProductController {
         return "product/category";
     }
 
+    @GetMapping("/in-stock")
+    public String getProductInStock(
+            Model model,
+            @PageableDefault(size =12) Pageable pageable
+    ){
+        Page<Product> productPage = productService.getInStock(pageable);
+        List<Category> categories = categoryService.getAllCategory();
+
+        model.addAttribute("categories", categories);
+        model.addAttribute("products", productPage.getContent());
+        model.addAttribute("currentPage", productPage.getNumber());
+        model.addAttribute("totalPages", productPage.getTotalPages());
+        model.addAttribute("hasNext", productPage.hasNext());
+        model.addAttribute("hasPrevious", productPage.hasPrevious());
+        model.addAttribute("pageSize", pageable.getPageSize());
+
+        return "product/in_stock";
+    }
+
     @GetMapping("/search")
     public String getProductPerSearchView(
             Model model,
@@ -83,23 +102,22 @@ public class ProductController {
         Page<Product> productPage = productService.getSearch(pageable, search);
         List<Category> categories = categoryService.getAllCategory();
 
-        model.addAttribute("categories", categories);
-        model.addAttribute("products", productPage.getContent());
-        model.addAttribute("search", search);
-        model.addAttribute("currentPage", productPage.getNumber());
-        model.addAttribute("totalPages", productPage.getTotalPages());
-        model.addAttribute("hasNext", productPage.hasNext());
-        model.addAttribute("hasPrevious", productPage.hasPrevious());
-        model.addAttribute("pageSize", pageable.getPageSize());
+            model.addAttribute("products", productPage.getContent());
+            model.addAttribute("search", search);
+            model.addAttribute("currentPage", productPage.getNumber());
+            model.addAttribute("totalPages", productPage.getTotalPages());
+            model.addAttribute("hasNext", productPage.hasNext());
+            model.addAttribute("hasPrevious", productPage.hasPrevious());
+            model.addAttribute("pageSize", pageable.getPageSize());
 
-        return "product/search";
+            return "product/search";
     }
 
     @GetMapping("/promo")
     public String getProductPerPromoView(
             Model model,
-            @PageableDefault(size = 12) Pageable pageable
-    ) {
+            @PageableDefault(size =12) Pageable pageable
+    ){
         Page<Product> productPage = productService.getPromo(pageable);
         List<Category> categories = categoryService.getAllCategory();
 
@@ -112,24 +130,5 @@ public class ProductController {
         model.addAttribute("pageSize", pageable.getPageSize());
 
         return "product/promotion";
-    }
-
-    @GetMapping("/in-stock")
-    public String getProductPerStockView(
-            Model model,
-            @PageableDefault(size = 12) Pageable pageable
-    ) {
-        Page<Product> productPage = productService.getInStock(pageable);
-        List<Category> categories = categoryService.getAllCategory();
-
-        model.addAttribute("categories", categories);
-        model.addAttribute("products", productPage.getContent());
-        model.addAttribute("currentPage", productPage.getNumber());
-        model.addAttribute("totalPages", productPage.getTotalPages());
-        model.addAttribute("hasNext", productPage.hasNext());
-        model.addAttribute("hasPrevious", productPage.hasPrevious());
-        model.addAttribute("pageSize", pageable.getPageSize());
-
-        return "product/inStock";
     }
 }

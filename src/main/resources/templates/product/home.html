@@ -27,6 +27,7 @@
 </head>
 <body class="bg-gray-50 font-['AR_One_Sans']">
 <div th:replace="~{component/navbar}"></div>
+<div th:replace="~{component/toast}"></div>
 
 <main class="container mx-auto px-4">
     <h1 class="text-xl md:text-3xl lg:text-4xl text-center my-8 md:my-12 font-bold px-4">
@@ -125,7 +126,19 @@
 
 <div th:replace="~{component/footer}"></div>
 
-<script>
+<script th:inline="javascript">
+    const toastType = /*[[${toastType}]]*/ null;
+    const toastTitle = /*[[${toastTitle}]]*/ null;
+    const toastMessage = /*[[${toastMessage}]]*/ null;
+
+    if (toastType && toastMessage) {
+        window.showToast(toastType, toastTitle, toastMessage);
+    }
+</script>
+<script type="module">
+    import { showToast } from "/js/toast.js";
+    window.showToast = showToast;
+
     document.addEventListener("DOMContentLoaded", () => {
         const elementBtn = document.getElementsByClassName("cart-btn")
 
@@ -145,6 +158,11 @@
                     })
                 });
                 // TODO mettre un toast
+                if (response.ok) {
+                    showToast("success", "Produits ajouté", "Le produits à été ajouter du panier");
+                } else {
+                    showToast("error", "Erreur", "Impossible d'ajouter le produit au panier");
+                }
                 console.log(response)
             })
         })
