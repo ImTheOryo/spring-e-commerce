@@ -79,6 +79,11 @@ public class UserController {
     @PostMapping("update")
     public String updateUser(@AuthenticationPrincipal UserDetails userDetails, @ModelAttribute UserDTO userDTO) {
         User user = userService.getUser(userDetails.getUsername());
+
+        if (user == null) {
+            return "error/404";
+        }
+
         user.setLastname(userDTO.getLastname());
         user.setFirstname(userDTO.getFirstname());
         user.setAddress(userDTO.getAddress());
