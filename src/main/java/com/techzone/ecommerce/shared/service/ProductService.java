@@ -41,6 +41,10 @@ public class ProductService {
         return productRepository.findAllByIsAvailableTrueAndCategory(pageable, category);
     }
 
+    public List<Product> getAllAvailableByCategory(Category category) {
+        return productRepository.findAllByIsAvailableTrueAndCategory(category);
+    }
+
     public Page<Product> getSearch(Pageable pageable, String search) {
         return productRepository.searchProduct(pageable, search);
     }

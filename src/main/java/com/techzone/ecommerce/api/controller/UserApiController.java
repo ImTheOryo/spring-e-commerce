@@ -9,6 +9,8 @@ import com.techzone.ecommerce.shared.service.CategoryService;
 import com.techzone.ecommerce.shared.service.OrderService;
 import com.techzone.ecommerce.shared.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.ui.Model;
@@ -27,50 +29,14 @@ public class UserApiController {
 
 
     @GetMapping()
-    public String getUser(Model model, @AuthenticationPrincipal UserDetails userDetails) {
-        User user = userService.getUser(userDetails.getUsername());
-        List<Category> categories = categoryService.getAllCategory();
-
-        model.addAttribute("categories", categories);
-        if (user == null) {
-            return "error/404";
-        }
-
-        user.getOrders().sort(Comparator.comparing(Order::getCreatedAt).reversed());
-        model.addAttribute("user", user);
-        model.addAttribute("viewContent", "profil/orders :: order-list");
-        return "profil/profil";
-    }
-
-    @GetMapping("/{id}")
-    public String profilViewDetails(Model model, @AuthenticationPrincipal UserDetails userDetails, @PathVariable long id) {
+    public ResponseEntity<User> getUser(@AuthenticationPrincipal UserDetails userDetails) {
         User user = userService.getUser(userDetails.getUsername());
 
         if (user == null) {
-            return "error/404";
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
 
-        Order order = orderService.getOrder(id);
-
-        user.getOrders().sort(Comparator.comparing(Order::getCreatedAt).reversed());
-        model.addAttribute("user", user);
-        model.addAttribute("order", new PartialOrderDTO(order));
-        model.addAttribute("viewContent", "profil/orderDetails :: order-detail");
-        return "profil/orderDetails";
-    }
-
-    @GetMapping("/edit")
-    public String profilEdit(Model model, @AuthenticationPrincipal UserDetails userDetails) {
-        User user = userService.getUser(userDetails.getUsername());
-
-        if (user == null) {
-            return "error/404";
-        }
-
-        user.getOrders().sort(Comparator.comparing(Order::getCreatedAt).reversed());
-        model.addAttribute("user", user);
-        model.addAttribute("viewContent", "profil/edit :: profile-edit");
-        return "profil/edit";
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @PostMapping("update")

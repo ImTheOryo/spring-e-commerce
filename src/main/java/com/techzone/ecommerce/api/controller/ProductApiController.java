@@ -39,12 +39,13 @@ public class ProductApiController {
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
- //   @GetMapping("/category/{categoryId}")
-   // public ResponseEntity<List<Product>> getProductPerCategory(@PathVariable String categoryId) {
-       // List<Product> productPage = productService.getAllAvailableByCategory(category);
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<List<Product>> getProductPerCategory(@PathVariable Long categoryId) {
+        Category category = categoryService.getCategory(categoryId);
+        List<Product> productPage = productService.getAllAvailableByCategory(category);
 
-  //      return new ResponseEntity<>(productPage, HttpStatus.OK);
-  //  }
+        return new ResponseEntity<>(productPage, HttpStatus.OK);
+    }
 
     @GetMapping("/search")
     public ResponseEntity<Page<Product>> getProductPerSearch(@PageableDefault(size = 12) Pageable pageable, @RequestParam("query") String search) {

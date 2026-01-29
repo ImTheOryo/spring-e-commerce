@@ -11,11 +11,16 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long>, PagingAndSortingRepository<Product, Long>, JpaSpecificationExecutor<Product> {
     Page<Product> findAllByIsAvailableTrue(Pageable pageable);
 
     Page<Product> findAllByIsAvailableTrueAndCategory(Pageable pageable, Category category);
+
+    List<Product> findAllByIsAvailableTrueAndCategory(Category category);
+
 
     Page<Product> findAllByIsAvailableTrueAndIsPromotionTrue(Pageable pageable);
 
@@ -25,13 +30,13 @@ public interface ProductRepository extends JpaRepository<Product, Long>, PagingA
     Page<Product> searchProduct(Pageable pageable, String search);
 
     @Query("""
-    SELECT p FROM Product p WHERE
-    (:categoryId IS NULL OR p.category.id = :categoryId) AND
-    (:search IS NULL OR 
-    LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%')) OR 
-    LOWER(p.brand) LIKE LOWER(CONCAT('%', :search, '%')) OR 
-    LOWER(p.model) LIKE LOWER(CONCAT('%', :search, '%')))
-""")
+                SELECT p FROM Product p WHERE
+                (:categoryId IS NULL OR p.category.id = :categoryId) AND
+                (:search IS NULL OR 
+                LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%')) OR 
+                LOWER(p.brand) LIKE LOWER(CONCAT('%', :search, '%')) OR 
+                LOWER(p.model) LIKE LOWER(CONCAT('%', :search, '%')))
+            """)
     Page<Product> findFilteredProducts(
             @Param("search") String search,
             @Param("categoryId") Long categoryId,

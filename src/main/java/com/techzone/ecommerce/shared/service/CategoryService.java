@@ -17,6 +17,7 @@ public class CategoryService {
     public Category getCategory(Long id) {
         try {
             Optional<Category> category = categoryRepository.findById(id);
+
             if (category.isPresent()) {
                 return category.get();
             }
@@ -30,6 +31,7 @@ public class CategoryService {
     public List<Category> getAllCategory(){
         try {
             List<Category> categories = categoryRepository.findAll();
+
             if (!categories.isEmpty()) {
                 return categories;
             }
