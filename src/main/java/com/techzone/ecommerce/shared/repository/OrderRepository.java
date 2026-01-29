@@ -62,5 +62,5 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             """)
     List<Order> findFilteredOrders(@Param("search") String search, @Param("status") OrderStatus statusfindFilteredOrders);
 
-    List<Order> findByUserId(User user);
+    List<Order> findByUserId(Long user);
 }
