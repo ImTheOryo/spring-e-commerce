@@ -98,6 +98,7 @@ public class AuthentificationApiController {
 
         String scope = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
+                .map(authority -> authority.replace("ROLE_", "")) // "ROLE_ADMIN" -> "ADMIN"
                 .collect(Collectors.joining(" "));
 
         JwsHeader jwsHeader = JwsHeader.with(MacAlgorithm.HS256).build();

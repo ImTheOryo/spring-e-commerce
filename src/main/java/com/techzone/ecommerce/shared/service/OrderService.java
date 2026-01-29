@@ -107,6 +107,10 @@ public class OrderService {
         return null;
     }
 
+    public List<Order> getOrders () {
+        return orderRepository.findAll();
+    }
+
     public Order getOrder(long id) {
         try {
             Optional<Order> order = orderRepository.findById(id);
