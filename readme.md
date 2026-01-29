@@ -15,12 +15,42 @@ L'enjeu principal est de fournir une expérience fluide pour les clients, tout e
 | Build       | Maven                 | Gestion du cycle de vie et du build |
 
 ## Architecture du projet 
-
-src/</br>
-├── main/</br>
-├────  controller/</br>
-├────  model/</br>
-A FINIR
+```
+TechZone/
+├── Dockerfile
+├── docker-compose.yml
+├── pom.xml
+├── src/main/java/com/techzone/ecommerce/
+│   ├── app/
+│   │   ├── controller/
+│   │   └── handler/
+│   ├── config/
+│   ├── shared/
+│   │   ├── dto/
+│   │   ├── entity/
+│   │   ├── repository/
+│   │   └── service/
+│   └── utils/
+├── src/main/resources/
+│   ├── assets/css/
+│   ├── static/images/
+│   ├── templates/
+│   │   ├── admin/
+│   │   ├── cart/
+│   │   ├── component/
+│   │   ├── error/
+│   │   ├── layouts/
+│   │   ├── payment/
+│   │   ├── product/
+│   │   ├── profil/
+│   │   ├── register/
+│   │   └── security/
+│   └── application.properties
+└── readme-assets/
+```
+classDiagram
+    Order "1" --> "*" OrderProduct
+    User "1" --> "1" Cart
 
 ## Instructions de lancement 
 Pour le lancement avec docker :<br/>
@@ -44,19 +74,61 @@ password:
 
 ## Diagramme de classes UML 
 
-| Entité JPA | Attributs Principaux | Relations (Annotations) |
-| --- | ---  | --- |
-|User | id, email, password | @ManyToOne Role, @OneToOne Cart, @OneToMany Order |
-| Product | id, name, price, stock | @ManyToOne Category |
-| Order | id, reference, status | @ManyToOne User, @ManyToOne OrderStatus, @OneToMany ProductDetailsOrder | 
-| Cart | id, reference | @OneToOne User, @OneToMany ProductDetailsCart |
-| Payment | id, sum, paymentDate | @OneToOne Order, @ManyToOne PaymentMethod |
+```mermaid
+erDiagram
+    users ||--o{ roles : "has"
+    users ||--o{ users : "created_by"
+    users ||--o{ categories : "manages"
+    users ||--o{ products : "manages"
+    users ||--o{ orders : "places"
+    users ||--|| cart : "owns"
+    
+    categories ||--o{ products : "contains"
+    
+    cart ||--o{ cart_product : "contains"
+    products ||--o{ cart_product : "added_to"
+    
+    orders ||--o{ order_product : "details"
+    products ||--o{ order_product : "sold_in"
+    
+    order_status ||--o{ orders : "defines"
+
+    users {
+        long id PK
+        varchar firstname
+        varchar lastname
+        varchar email
+    }
+
+    products {
+        long id PK
+        varchar name
+        decimal price
+        integer stock
+    }
+
+    orders {
+        long id PK
+        varchar address
+        datetime created_at
+    }
+
+    order_product {
+        long id PK
+        integer quantity
+        double price
+    }
+
+    cart_product {
+        long id PK
+        integer quantity
+    } 
+   ```
+    
 
 ## Schéma de base de données 
+https://dbdiagram.io/d/68f24d312e68d21b41ff0652
 
 ![bdd.png](readme-assets/bdd.png)
-
-
-
 
 

@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderProductRepository orderProductRepository;
+    private final ProductService productService;
 
     public List<Integer> getYears(Long userId) {
 
@@ -150,6 +151,7 @@ public class OrderService {
                 orderProduct.setQuantity(cartProduct.getQuantity());
                 orderProduct.setPromotion(cartProduct.getProduct().isPromotion());
                 orderProduct.setPromotionPourcent(cartProduct.getProduct().getPromotionPourcent());
+                productService.removeFromStock(cartProduct.getQuantity(), cartProduct.getProduct());
 
                 orderProducts.add(orderProduct);
             }
