@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -19,12 +20,22 @@ public interface UserRepository extends JpaRepository<User, Long> {
     long countUsersBetweenDates(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 
     @Query("""
-        SELECT u FROM User u WHERE
-        (:search IS NULL OR 
-        LOWER(u.firstname) LIKE LOWER(CONCAT('%', :search, '%')) OR 
-        LOWER(u.lastname) LIKE LOWER(CONCAT('%', :search, '%')) OR 
-        LOWER(u.phone) LIKE CONCAT('%', :search, '%') OR 
-        LOWER(u.address) LIKE LOWER(CONCAT('%', :search, '%')))
-    """)
+                SELECT u FROM User u WHERE
+                (:search IS NULL OR 
+                LOWER(u.firstname) LIKE LOWER(CONCAT('%', :search, '%')) OR 
+                LOWER(u.lastname) LIKE LOWER(CONCAT('%', :search, '%')) OR 
+                LOWER(u.phone) LIKE CONCAT('%', :search, '%') OR 
+                LOWER(u.address) LIKE LOWER(CONCAT('%', :search, '%')))
+            """)
     Page<User> findFilteredUsers(@Param("search") String search, Pageable pageable);
+
+    @Query("""
+                SELECT u FROM User u WHERE
+                (:search IS NULL OR 
+                LOWER(u.firstname) LIKE LOWER(CONCAT('%', :search, '%')) OR 
+                LOWER(u.lastname) LIKE LOWER(CONCAT('%', :search, '%')) OR 
+                LOWER(u.phone) LIKE CONCAT('%', :search, '%') OR 
+                LOWER(u.address) LIKE LOWER(CONCAT('%', :search, '%')))
+            """)
+    List<User> findFilteredUsers(@Param("search") String search);
 }

@@ -1,7 +1,6 @@
 package com.techzone.ecommerce.shared.service;
 
 import com.techzone.ecommerce.shared.dto.UserDTO;
-import com.techzone.ecommerce.shared.entity.Order;
 import com.techzone.ecommerce.shared.entity.User;
 import com.techzone.ecommerce.shared.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -54,6 +54,15 @@ public class UserService {
         return false;
     }
 
+    public User updateUserApi(User user){
+        try {
+            return userRepository.save(user);
+        }catch (Exception e){
+            System.out.println(e);
+        }
+        return null;
+    }
+
     public boolean updateUser(long id, UserDTO userDTO){
         try {
             User currentUserInfo = userRepository.getReferenceById(id);
@@ -74,6 +83,10 @@ public class UserService {
             Pageable page
     ) {
         return userRepository.findFilteredUsers(search, page);
+    }
+
+    public List<User> findFilteredUsers (String search) {
+        return userRepository.findFilteredUsers(search);
     }
 
     public User getUser (Long id) {

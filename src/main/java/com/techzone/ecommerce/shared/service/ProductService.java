@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -40,6 +41,10 @@ public class ProductService {
         return productRepository.findAllByIsAvailableTrueAndCategory(pageable, category);
     }
 
+    public List<Product> getAllAvailableByCategory(Category category) {
+        return productRepository.findAllByIsAvailableTrueAndCategory(category);
+    }
+
     public Page<Product> getSearch(Pageable pageable, String search) {
         return productRepository.searchProduct(pageable, search);
     }
@@ -52,12 +57,18 @@ public class ProductService {
         return productRepository.findAllByIsAvailableTrueAndIsInStockTrue(pageable);
     }
 
-    public Page<Product> findFilteredProduct (
+    public Page<Product> findFilteredProduct(
             String search,
             Long categoryId,
             Pageable pageable
     ) {
-       return productRepository.findFilteredProducts(search, categoryId, pageable);
+        return productRepository.findFilteredProducts(search, categoryId, pageable);
+    }
+
+    public List<Product> findFilteredProduct(
+            String search,
+            Long categoryId) {
+        return productRepository.findFilteredProducts(search, categoryId);
     }
 
     public void updateProduct(
@@ -111,8 +122,12 @@ public class ProductService {
 
     }
 
-    public void removeFromStock(int qty, Product product){
+    public void removeFromStock(int qty, Product product) {
         product.setStock(product.getStock() - qty);
         productRepository.save(product);
+    }
+
+    public List<Product> getAll() {
+        return productRepository.findAll();
     }
 }

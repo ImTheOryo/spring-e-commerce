@@ -4,12 +4,12 @@
 TechZone est une plateforme e-commerce conçue pour répondre aux besoins d'une boutique spécialisée dans les produits high-tech (PC, smartphones, accessoires). L'application gère un catalogue complexe de plusieurs centaines de références, tout en assurant le suivi des commandes et la gestion des stocks pour l'équipe interne.
 
 L'enjeu principal est de fournir une expérience fluide pour les clients, tout en offrant une interface de gestion sécurisée et performante pour les administrateurs.
-## Stack technique utilis
+## Stack technique utilisée
 | Catégorie   | Outils                | Rôle |
 |-------------|-----------------------| --- |
 | Langage     | Java 24               | Langage principal |
 | Framework   | Spring Boot           | Auto-configuration et gestion des dépendances |
-| Persistence | 	Spring Data JPA / H2 | Gestion de la BDD (H2) |
+| persistance | 	Spring Data JPA / H2 | Gestion de la BDD (H2) |
 | Sécurité    | Spring Security + JWT | Protection des routes et gestion des rôles ADMIN/USER |
 | Frontend    | Thymeleaf             | Moteur de templates pour l'affichage dynamique |
 | Build       | Maven                 | Gestion du cycle de vie et du build |
@@ -48,19 +48,17 @@ TechZone/
 │   └── application.properties
 └── readme-assets/
 ```
-classDiagram
-    Order "1" --> "*" OrderProduct
-    User "1" --> "1" Cart
 
 ## Instructions de lancement 
+Prérequis :<br/>
+Docker et Docker Compose<br/><br/>
 Pour le lancement avec docker :<br/>
 ```docker-compose up --build```
 
-Pour la connexion a la BDD H2 utiliser les settings suivants : <br/>
+Pour la connexion à la BDD H2, utilisez les paramètres suivants : <br/>
 ``` 
 database : jdbc:h2:file:/app/data/ecommerce_db
 username: sa
-password: 
 ```
 ## Comptes de test 
 
@@ -75,54 +73,108 @@ password:
 ## Diagramme de classes UML 
 
 ```mermaid
-erDiagram
-    users ||--o{ roles : "has"
-    users ||--o{ users : "created_by"
-    users ||--o{ categories : "manages"
-    users ||--o{ products : "manages"
-    users ||--o{ orders : "places"
-    users ||--|| cart : "owns"
-    
-    categories ||--o{ products : "contains"
-    
-    cart ||--o{ cart_product : "contains"
-    products ||--o{ cart_product : "added_to"
-    
-    orders ||--o{ order_product : "details"
-    products ||--o{ order_product : "sold_in"
-    
-    order_status ||--o{ orders : "defines"
-
-    users {
-        long id PK
-        varchar firstname
-        varchar lastname
-        varchar email
+classDiagram
+    direction LR
+ user "1" --> "1" roles : a un
+    user "1" *-- "1" cart : possède
+    user "1" <-- "*" order : appartient à
+    product "*" --> "1" categorie : appartient à
+    cart "1" *-- "*" cart_product : contient
+    product "1" <-- "*" cart_product : référence
+    order "1" *-- "1..*" order_product : est composée de
+    product "1" <-- "*" order_product : référence
+    class user {
+        -long id
+        -LocalDateTime createdAt
+        -String createdBy
+        -LocalDateTime lastUpdated
+        -String lastUpdatedBy;
+        -String firstname
+        -String lastname
+        -RoleEnum role
+        -String email
+        -String password
+        -String address
+        -String phone
+        -Cart cart
+        -List<Order> orders
     }
 
-    products {
-        long id PK
-        varchar name
-        decimal price
-        integer stock
+    class product {
+        -long id
+        -LocalDateTime createdAt
+        -String createdBy
+        -LocalDateTime lastUpdated
+        -String lastUpdatedBy;
+        -Category category
+        -String name
+        -String description
+        -int stock
+        -double price
+        -String brand
+        -String model
+        -boolean isAvailable
+        -boolean isInStock
+        -String urlPhoto
+        -byte promotionPourcent
+        -boolean isPromotion
     }
 
-    orders {
-        long id PK
-        varchar address
-        datetime created_at
+    class order {
+        -long id
+        -LocalDateTime createdAt
+        -String createdBy
+        -LocalDateTime lastUpdated
+        -String lastUpdatedBy;
+        -User user
+        -OrderStatus status
+        -String firstname
+        -String lastname
+        -String address
+        -String phone
+        -List<OrderProduct> orderProductList
+        -double total
+        +double getTotalPrice()
+        +int getTotalQty()
     }
 
-    order_product {
-        long id PK
-        integer quantity
-        double price
+    class order_product {
+        -long id
+        -LocalDateTime createdAt
+        -String createdBy
+        -LocalDateTime lastUpdated
+        -String lastUpdatedBy;
+        -Order order
+        -Product product
+        -int quantity
+        -byte promotionPourcent
+        -boolean isPromotion
+        -double price
+        +void calculatePrice()
     }
 
-    cart_product {
-        long id PK
-        integer quantity
-    } 
+    class cart {
+        -long id
+        -LocalDateTime createdAt
+        -String createdBy
+        -LocalDateTime lastUpdated
+        -String lastUpdatedBy;
+        -User user
+        -List<CartProduct> cartProductList
+        -double getTotal()
+        -long getQty()
+    }
+
+    class cart_product {
+        -long id
+        -LocalDateTime createdAt
+        -String createdBy
+        -LocalDateTime lastUpdated
+        -String lastUpdatedBy;
+        -Cart cart
+        -Product product
+        -int quantity
+    }
    ```
     
 
@@ -130,5 +182,7 @@ erDiagram
 https://dbdiagram.io/d/68f24d312e68d21b41ff0652
 
 ![bdd.png](readme-assets/bdd.png)
+
+## Endpoint de l'api REST 
 
 
