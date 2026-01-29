@@ -156,6 +156,12 @@ public class AdminService {
         productService.createProduct(productDTO);
     }
 
+    public Map<String, Object> getCategoriesInfos() {
+        Map<String, Object> categoriesInfos = new HashMap<>();
+        categoriesInfos.put("categories", categoryService.getAllCategory());
+        return  categoriesInfos;
+    }
+
     public Map<OrderStatus, String> getStatusColor() {
         Map<OrderStatus, String> colors = new HashMap<>();
         colors.put(OrderStatus.IN_PROCESS, "fed7aa");

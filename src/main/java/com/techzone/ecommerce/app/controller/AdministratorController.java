@@ -158,4 +158,31 @@ public class AdministratorController {
         adminService.updateProduct(id, productDTO);
         return "redirect:/admin/products";
     }
+
+    @GetMapping("/categories")
+    public String getCategories(
+            Model model
+    ) {
+        model.addAttribute("activePage", "categories");
+        model.addAllAttributes(adminService.getCategoriesInfos());
+
+        return "admin/categories";
+    }
+
+    @PostMapping("/categories/save")
+    public String createCategory(
+            @RequestParam("name") String name
+    ) {
+        categoryService.createCategory(name);
+        return "redirect:/admin/categories";
+    }
+
+    @PostMapping("/categories/save/{id}")
+    public String updateCategory(
+            @PathVariable Long id,
+            @RequestParam("name") String name
+    ) {
+        categoryService.updateCategory(id, name);
+        return "redirect:/admin/categories";
+    }
 }
