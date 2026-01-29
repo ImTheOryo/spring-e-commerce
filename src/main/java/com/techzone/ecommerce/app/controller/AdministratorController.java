@@ -170,14 +170,19 @@ public class AdministratorController {
     }
 
     @PostMapping("/categories/save")
-    public String createCategory() {
-        return "redirect:/categories";
+    public String createCategory(
+            @RequestParam("name") String name
+    ) {
+        categoryService.createCategory(name);
+        return "redirect:/admin/categories";
     }
 
     @PostMapping("/categories/save/{id}")
     public String updateCategory(
-            @RequestParam Long id
+            @PathVariable Long id,
+            @RequestParam("name") String name
     ) {
-        return "redirect:/categories";
+        categoryService.updateCategory(id, name);
+        return "redirect:/admin/categories";
     }
 }

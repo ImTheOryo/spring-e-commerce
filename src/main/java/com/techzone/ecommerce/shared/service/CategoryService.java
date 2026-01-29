@@ -39,4 +39,28 @@ public class CategoryService {
         }
         return null;
     }
+
+    public boolean createCategory(String categoryName) {
+        try {
+            Category category = new Category();
+            category.setName(categoryName);
+            categoryRepository.save(category);
+            return true;
+        }  catch (Exception e) {
+            System.out.println(e.toString());
+        }
+        return false;
+    }
+
+    public boolean updateCategory(Long id, String categoryName) {
+        try {
+            Category currentCategory = categoryRepository.findById(id).get();
+            currentCategory.setName(categoryName);
+            categoryRepository.save(currentCategory);
+            return true;
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+        return false;
+    }
 }
