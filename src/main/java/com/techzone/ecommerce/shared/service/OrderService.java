@@ -166,7 +166,7 @@ public class OrderService {
 
     public List<Order> getAllByUser(User user) {
         try {
-            return orderRepository.findByUserId(user);
+            return orderRepository.findByUserId(user.getId());
         } catch (Exception e) {
             System.out.println(e.toString());
         }

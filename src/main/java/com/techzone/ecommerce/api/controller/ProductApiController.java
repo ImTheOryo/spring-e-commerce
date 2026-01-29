@@ -21,7 +21,7 @@ public class ProductApiController {
     private final ProductService productService;
     private final CategoryService categoryService;
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<Product>> getAll() {
         List<Product> productPage = productService.getAll();
 

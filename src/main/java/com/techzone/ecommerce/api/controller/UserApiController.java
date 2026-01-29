@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserApiController {
     private final UserService userService;
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<User> getUser(@AuthenticationPrincipal Jwt jwt) {
         User user = userService.getUser(jwt.getSubject());
 

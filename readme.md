@@ -184,5 +184,7 @@ https://dbdiagram.io/d/68f24d312e68d21b41ff0652
 ![bdd.png](readme-assets/bdd.png)
 
 ## Endpoint de l'api REST 
+![swagger1.png](readme-assets/swagger1.png)
+![swagger2.png](readme-assets/swagger2.png)
 
-
+https://web.postman.co/workspace/327b9255-72e5-4dfc-9364-e2948faaa2d5/documentation/6be26e24-14d3-4587-9dd2-a93d1a419b2c

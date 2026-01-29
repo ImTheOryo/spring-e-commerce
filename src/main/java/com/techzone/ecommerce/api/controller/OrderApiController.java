@@ -40,7 +40,7 @@ public class OrderApiController {
         return new ResponseEntity<>(new PartialOrderDTO(order), HttpStatus.OK);
     }
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<PartialOrderDTO>> getAll(@AuthenticationPrincipal Jwt jwt) {
         User user = userService.getUser(jwt.getSubject());
         List<Order> orders = orderService.getAllByUser(user);
@@ -67,7 +67,7 @@ public class OrderApiController {
         return new ResponseEntity<>(years, HttpStatus.OK);
     }
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<Boolean> createOrder(@AuthenticationPrincipal Jwt jwt, @ModelAttribute PartialOrderDTO partialOrderDTO) {
         User user = userService.getUser(jwt.getSubject());
 
