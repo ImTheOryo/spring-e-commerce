@@ -1,5 +1,6 @@
 package com.techzone.ecommerce.shared.service;
 
+import com.techzone.ecommerce.shared.dto.ProductDTO;
 import com.techzone.ecommerce.shared.entity.Category;
 import com.techzone.ecommerce.shared.entity.Product;
 import com.techzone.ecommerce.shared.repository.ProductRepository;
@@ -17,6 +18,9 @@ import java.util.Optional;
 public class ProductService {
     @Autowired
     private final ProductRepository productRepository;
+
+    @Autowired
+    private final CategoryService categoryService;
 
     public int getProductsCount() {
 
@@ -46,6 +50,65 @@ public class ProductService {
 
     public Page<Product> getInStock(Pageable pageable) {
         return productRepository.findAllByIsAvailableTrueAndIsInStockTrue(pageable);
+    }
+
+    public Page<Product> findFilteredProduct (
+            String search,
+            Long categoryId,
+            Pageable pageable
+    ) {
+       return productRepository.findFilteredProducts(search, categoryId, pageable);
+    }
+
+    public void updateProduct(
+            ProductDTO productDTO,
+            long id
+    ) {
+        Product currentProduct = productRepository.findById(id).orElse(null);
+        if (currentProduct == null) {
+            return;
+        }
+
+        currentProduct.setName(productDTO.getName());
+        currentProduct.setBrand(productDTO.getBrand());
+        currentProduct.setModel(productDTO.getModel());
+        currentProduct.setDescription(productDTO.getDescription());
+        currentProduct.setPrice(productDTO.getPrice());
+        currentProduct.setUrlPhoto(productDTO.getUrlPhoto());
+        currentProduct.setStock(productDTO.getStock());
+        currentProduct.setInStock(productDTO.isInStock());
+        currentProduct.setAvailable(productDTO.isAvailable());
+        currentProduct.setPromotion(productDTO.isPromotion());
+        currentProduct.setPromotionPourcent(productDTO.getPromotionPourcent());
+        currentProduct.setCategory(categoryService.getCategory(productDTO.getCategory()));
+
+        productRepository.save(currentProduct);
+    }
+
+    public void createProduct(ProductDTO productDTO) {
+        Product currentProduct = new Product();
+        currentProduct.setName(productDTO.getName());
+        currentProduct.setStock(productDTO.getStock());
+        currentProduct.setInStock(productDTO.isInStock());
+        currentProduct.setPrice(productDTO.getPrice());
+        currentProduct.setAvailable(productDTO.isAvailable());
+
+        currentProduct.setPromotion(productDTO.isPromotion());
+
+        currentProduct.setBrand(productDTO.getBrand());
+        currentProduct.setModel(productDTO.getModel());
+        currentProduct.setUrlPhoto(productDTO.getUrlPhoto());
+        currentProduct.setPromotionPourcent(productDTO.getPromotionPourcent());
+        currentProduct.setDescription(productDTO.getDescription());
+
+        // Fix: Safe category assignment
+        Category category = categoryService.getCategory(productDTO.getCategory());
+        if (category != null) {
+            currentProduct.setCategory(category);
+        }
+
+        productRepository.save(currentProduct);
+
     }
 
     public void removeFromStock(int qty, Product product){
