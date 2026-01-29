@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,8 +28,8 @@ public class CartApiController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<CartDTO> cart(@AuthenticationPrincipal UserDetails userDetails) {
-        User user = userService.getUser(userDetails.getUsername());
+    public ResponseEntity<CartDTO> cart(@AuthenticationPrincipal Jwt jwt) {
+        User user = userService.getUser(Long.parseLong(jwt.getId()));
 
         if (user == null) {
             return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
