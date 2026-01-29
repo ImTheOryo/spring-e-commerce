@@ -31,7 +31,13 @@ public class Product extends BaseEntity {
     private boolean isPromotion;
 
     public void setStock(int stock) {
-        this.stock = Math.max(stock, 0);
+        stock = Math.max(stock, 0);
+        if (this.stock > 0 && stock == 0){
+            this.setInStock(false);
+        } if (this.stock == 0 && stock > 0){
+            this.setInStock(true);
+        }
+        this.stock = stock;
     }
 
     public void setPrice(double price) {
@@ -39,6 +45,6 @@ public class Product extends BaseEntity {
     }
 
     public void setPromotionPourcent(byte promotionPourcent) {
-        this.promotionPourcent = (byte) Math.min(100, Math.max(0, promotionPourcent));
+        this.promotionPourcent = (byte) Math.min(99.99, Math.max(0, promotionPourcent));
     }
 }

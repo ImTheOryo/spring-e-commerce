@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/admin-layout}"
+      lang="fr">
+<body>
+
+<div layout:fragment="content" x-data="{ openModal: false, isEdit: false, currentCat: {id: null, name: ''} }">
+
+    <div class="flex justify-between items-center mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900">Catégories</h1>
+            <p class="text-gray-500 text-sm">Organisez vos produits par groupes logiques.</p>
+        </div>
+        <button @click="currentCat = {id: null, name: ''}; isEdit = false; openModal = true"
+                class="px-5 py-2.5 bg-cyan-600 text-white font-semibold rounded-xl hover:bg-cyan-700 transition shadow-md shadow-cyan-100 flex items-center gap-2">
+            <i class="fa-solid fa-plus"></i> Nouvelle Catégorie
+        </button>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <form th:action="@{/admin/categories}" method="get" id="filterForm" class="p-6 border-b border-gray-50">
+            <div class="relative w-full md:w-2/3">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+                <input type="text" name="search" th:value="${param.search}" placeholder="Rechercher une catégorie..."
+                       class="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-xl bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 transition">
+            </div>
+        </form>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead>
+                <tr class="bg-gray-50 text-gray-400 text-xs uppercase tracking-wider">
+                    <th class="px-6 py-4 font-semibold text-center">ID</th>
+                    <th class="px-6 py-4 font-semibold">Nom de la catégorie</th>
+                    <th class="px-6 py-4 font-semibold text-right">Actions</th>
+                </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                <tr th:each="category : ${categories}" class="hover:bg-gray-50 transition">
+                    <td class="px-6 py-4 text-center">
+                        <span class="text-sm font-medium text-gray-400" th:text="${'#' + category.id}">#1</span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-cyan-50 flex items-center justify-center text-cyan-600">
+                                <i class="fa-solid fa-folder-open"></i>
+                            </div>
+                            <span class="font-semibold text-gray-900" th:text="${category.name}">Nom</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <div class="flex justify-end gap-2">
+                            <button type="button"
+                                    th:data-id="${category.id}"
+                                    th:data-name="${category.name}"
+                                    @click="currentCat = { id: $el.dataset.id, name: $el.dataset.name }; isEdit = true; openModal = true"
+                                    class="p-2 text-gray-400 hover:text-cyan-600 transition">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+
+                            <form th:action="@{/admin/categories/delete/{id}(id=${category.id})}" method="post" class="inline" onsubmit="return confirm('Supprimer ?');">
+                                <button type="submit" class="p-2 text-gray-400 hover:text-red-600 transition">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div x-show="openModal"
+         class="fixed inset-0 z-50 overflow-y-auto"
+         style="display: none;"
+         x-cloak>
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 transition-opacity bg-gray-900/50 backdrop-blur-sm" @click="openModal = false"></div>
+
+            <div class="inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-2xl shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <form :action="isEdit ? '/admin/categories/save/' + currentCat.id : '/admin/categories/save'" method="post">
+                    <div class="px-6 py-6 bg-white">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-xl font-bold text-gray-900" x-text="isEdit ? 'Modifier la catégorie' : 'Nouvelle catégorie'"></h3>
+                            <button type="button" @click="openModal = false" class="text-gray-400 hover:text-gray-600">
+                                <i class="fa-solid fa-xmark text-xl"></i>
+                            </button>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Nom de la catégorie</label>
+                                <input type="text" name="name" x-model="currentCat.name" required
+                                       class="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-cyan-500 outline-none transition">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="px-6 py-4 bg-gray-50 flex justify-end gap-3">
+                        <button type="button" @click="openModal = false"
+                                class="px-4 py-2 text-sm font-semibold text-gray-600 hover:text-gray-800 transition">
+                            Annuler
+                        </button>
+                        <button type="submit"
+                                class="px-6 py-2 bg-cyan-600 text-white text-sm font-semibold rounded-lg hover:bg-cyan-700 transition shadow-md shadow-cyan-100"
+                                x-text="isEdit ? 'Enregistrer les modifications' : 'Créer la catégorie'">
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<th:block layout:fragment="scripts">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</th:block>
+</html>

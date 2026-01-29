@@ -72,14 +72,14 @@ public class ProductService {
         currentProduct.setName(productDTO.getName());
         currentProduct.setBrand(productDTO.getBrand());
         currentProduct.setModel(productDTO.getModel());
+        currentProduct.setPromotion(productDTO.isPromotion());
         currentProduct.setDescription(productDTO.getDescription());
-        currentProduct.setPrice(productDTO.getPrice());
         currentProduct.setUrlPhoto(productDTO.getUrlPhoto());
-        currentProduct.setStock(productDTO.getStock());
         currentProduct.setInStock(productDTO.isInStock());
         currentProduct.setAvailable(productDTO.isAvailable());
-        currentProduct.setPromotion(productDTO.isPromotion());
         currentProduct.setPromotionPourcent(productDTO.getPromotionPourcent());
+        currentProduct.setPrice(productDTO.getPrice());
+        currentProduct.setStock(productDTO.getStock());
         currentProduct.setCategory(categoryService.getCategory(productDTO.getCategory()));
 
         productRepository.save(currentProduct);
@@ -88,10 +88,10 @@ public class ProductService {
     public void createProduct(ProductDTO productDTO) {
         Product currentProduct = new Product();
         currentProduct.setName(productDTO.getName());
-        currentProduct.setStock(productDTO.getStock());
         currentProduct.setInStock(productDTO.isInStock());
-        currentProduct.setPrice(productDTO.getPrice());
         currentProduct.setAvailable(productDTO.isAvailable());
+        currentProduct.setStock(productDTO.getStock());
+        currentProduct.setPrice(productDTO.getPrice());
 
         currentProduct.setPromotion(productDTO.isPromotion());
 
@@ -101,7 +101,6 @@ public class ProductService {
         currentProduct.setPromotionPourcent(productDTO.getPromotionPourcent());
         currentProduct.setDescription(productDTO.getDescription());
 
-        // Fix: Safe category assignment
         Category category = categoryService.getCategory(productDTO.getCategory());
         if (category != null) {
             currentProduct.setCategory(category);
