@@ -1,5 +1,6 @@
 package com.techzone.ecommerce.shared.service;
 
+import com.techzone.ecommerce.shared.dto.ProductDTO;
 import com.techzone.ecommerce.shared.dto.UserDTO;
 import com.techzone.ecommerce.shared.entity.*;
 import lombok.RequiredArgsConstructor;
@@ -106,6 +107,28 @@ public class AdminService {
         productsInfos.put("hasNext", allProducts.hasNext());
         productsInfos.put("hasPrevious", allProducts.hasPrevious());
         return  productsInfos;
+    }
+
+    public Map<String, Object> productInfos (
+            Long id
+    ) {
+        Map<String, Object> productInfos = new HashMap<>();
+        productInfos.put("product", productService.get(id));
+        productInfos.put("categories", categoryService.getAllCategory());
+        return  productInfos;
+    }
+
+    public void updateProduct(
+            Long id,
+            ProductDTO productDTO
+    ) {
+       productService.updateProduct(productDTO, id);
+    }
+
+    public void createProduct(
+            ProductDTO productDTO
+    ) {
+        productService.createProduct(productDTO);
     }
 
     public Map<OrderStatus, String> getStatusColor() {

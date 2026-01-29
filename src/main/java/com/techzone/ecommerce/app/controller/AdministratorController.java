@@ -1,14 +1,19 @@
 package com.techzone.ecommerce.app.controller;
 
+import com.techzone.ecommerce.shared.dto.ProductDTO;
 import com.techzone.ecommerce.shared.dto.UserDTO;
 import com.techzone.ecommerce.shared.entity.OrderStatus;
+import com.techzone.ecommerce.shared.entity.Product;
 import com.techzone.ecommerce.shared.service.AdminService;
+import com.techzone.ecommerce.shared.service.CategoryService;
 import com.techzone.ecommerce.shared.service.OrderService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -17,6 +22,9 @@ public class AdministratorController {
 
     @Autowired
     private AdminService adminService;
+
+    @Autowired
+    private CategoryService categoryService;
 
     @Autowired
     private OrderService orderService;
@@ -111,5 +119,43 @@ public class AdministratorController {
         model.addAttribute("activePage", "products");
         model.addAllAttributes(adminService.productsInfos(search, category, pageable));
         return "admin/products";
+    }
+
+    @GetMapping("/products/{id}")
+    public String getProduct(
+            Model model,
+            @PathVariable Long id
+    ) {
+        model.addAttribute("activePage", "products");
+        model.addAllAttributes(adminService.productInfos(id));
+        return "admin/product";
+    }
+
+    @GetMapping("/product")
+    public String newProduct(
+            Model model
+    ) {
+        model.addAttribute("activePage", "products");
+        model.addAttribute("categories", categoryService.getAllCategory());
+        model.addAttribute("product", new ProductDTO());
+        return "admin/product";
+    }
+
+    @PostMapping("/products/save")
+    public String createProduct(
+            Model model,
+            @Valid ProductDTO productDTO
+    ) {
+        adminService.createProduct(productDTO);
+        return "redirect:/admin/products";
+    }
+
+    @PostMapping("/products/save/{id}")
+    public String updateProduct(
+            @PathVariable Long id,
+            @Valid @ModelAttribute("product") ProductDTO productDTO
+    ) {
+        adminService.updateProduct(id, productDTO);
+        return "redirect:/admin/products";
     }
 }

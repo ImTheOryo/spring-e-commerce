@@ -8,7 +8,7 @@
 <div layout:fragment="content">
   <div class="flex justify-between items-center mb-8">
     <h1 class="text-3xl font-bold text-gray-900">Catalogue Produits</h1>
-    <a th:href="@{/admin/products/create}"
+    <a th:href="@{/admin/product}"
        class="bg-cyan-600 hover:bg-cyan-700 text-white px-5 py-2.5 rounded-xl transition flex items-center gap-2 shadow-sm">
       <i class="fa-solid fa-plus text-sm"></i>
       Ajouter un produit
@@ -52,7 +52,7 @@
         </tr>
         </thead>
         <tbody class="divide-y divide-gray-100">
-        <tr th:each="product : ${allProducts}" class="text-center hover:bg-gray-50/50 transition">
+        <tr th:each="product : ${allProducts}" class="text-center hover:bg-gray-50/50 transition" th:onclick="|window.location.href='@{/admin/products/{id}(id=${product.id})}'|">
           <td class="px-6 py-4">
             <div class="flex items-center gap-4">
               <img th:src="${product.urlPhoto}" class="w-12 h-12 object-contain rounded-lg bg-gray-50 border border-gray-100" alt="Img">
