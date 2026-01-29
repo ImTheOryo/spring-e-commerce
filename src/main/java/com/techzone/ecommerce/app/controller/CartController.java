@@ -1,5 +1,10 @@
 package com.techzone.ecommerce.app.controller;
 
+import org.springframework.ui.Model;
+import com.techzone.ecommerce.shared.entity.Cart;
+import com.techzone.ecommerce.shared.entity.CartProduct;
+import com.techzone.ecommerce.shared.entity.Product;
+import com.techzone.ecommerce.shared.entity.User;
 import com.techzone.ecommerce.shared.entity.*;
 import com.techzone.ecommerce.shared.service.CartService;
 import com.techzone.ecommerce.shared.service.CategoryService;
@@ -11,9 +16,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @Controller
@@ -43,7 +50,6 @@ public class CartController {
         model.addAttribute("total", user.getCart().getTotal());
         model.addAttribute("qty", user.getCart().getQty());
 
-
         return "cart/cart";
     }
 
@@ -57,6 +63,7 @@ public class CartController {
         if (cart == null) {
             return new ResponseEntity<>("Il y a eu un problème lors de l'ajout", HttpStatus.NOT_FOUND);
         }
+
         return new ResponseEntity<>("Produit ajouter avec succés", HttpStatus.OK);
     }
 
@@ -88,5 +95,4 @@ public class CartController {
         }
         return new ResponseEntity<>("Produit ajouter avec succés", HttpStatus.OK);
     }
-
 }
