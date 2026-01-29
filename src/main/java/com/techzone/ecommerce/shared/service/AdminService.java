@@ -26,8 +26,8 @@ public class AdminService {
     @Autowired
     CategoryService categoryService;
 
-    public Map<String ,Object> getDashboardInfos () {
-        Map<String , Object> dashboardInfos = new HashMap<>();
+    public Map<String, Object> getDashboardInfos() {
+        Map<String, Object> dashboardInfos = new HashMap<>();
         dashboardInfos.put("totalCommandes", orderService.getOrdersCount());
         dashboardInfos.put("totalProduits", productService.getProductsCount());
         dashboardInfos.put("totalUtilisateurs", userService.getUsersCount());
@@ -40,7 +40,7 @@ public class AdminService {
         return dashboardInfos;
     }
 
-    public Map<String, Object> getCommandsInfos (String search, OrderStatus status ,Pageable page) {
+    public Map<String, Object> getCommandsInfos(String search, OrderStatus status, Pageable page) {
         Map<String, Object> commandsInfos = new HashMap<>();
         Page<Order> allCommands = orderService.findAllByIsAvailableTrue(search, status, page);
 
@@ -49,18 +49,28 @@ public class AdminService {
         commandsInfos.put("totalPages", allCommands.getTotalPages());
         commandsInfos.put("hasNext", allCommands.hasNext());
         commandsInfos.put("hasPrevious", allCommands.hasPrevious());
-        commandsInfos.put("colors",  getStatusColor());
+        commandsInfos.put("colors", getStatusColor());
         commandsInfos.put("status", OrderStatus.values());
-        return  commandsInfos;
+        return commandsInfos;
     }
 
-    public Map<String, Object> getCommandInfos (Long id) {
+    public Map<String, Object> getCommandsInfos(String search, OrderStatus status) {
+        Map<String, Object> commandsInfos = new HashMap<>();
+        List<Order> allCommands = orderService.findAllByIsAvailableTrue(search, status);
+
+        commandsInfos.put("allCommands", allCommands);
+        commandsInfos.put("colors", getStatusColor());
+        commandsInfos.put("status", OrderStatus.values());
+        return commandsInfos;
+    }
+
+    public Map<String, Object> getCommandInfos(Long id) {
         Map<String, Object> commandInfos = new HashMap<>();
 
-        commandInfos.put("commande",orderService.getOrder(id));
-        commandInfos.put("colors",   getStatusColor());
+        commandInfos.put("commande", orderService.getOrder(id));
+        commandInfos.put("colors", getStatusColor());
         commandInfos.put("status", OrderStatus.values());
-        return  commandInfos;
+        return commandInfos;
     }
 
     public Map<String, Object> getUsersInfos(
@@ -74,55 +84,70 @@ public class AdminService {
         usersInfos.put("totalPages", allUsers.getTotalPages());
         usersInfos.put("hasNext", allUsers.hasNext());
         usersInfos.put("hasPrevious", allUsers.hasPrevious());
-        return  usersInfos;
+        return usersInfos;
     }
 
-    public Map<String, Object> userInfos (
+    public Map<String, Object> getUsersInfos(String search) {
+        Map<String, Object> usersInfos = new HashMap<>();
+        List<User> allUsers = userService.findFilteredUsers(search);
+        usersInfos.put("allUsers", allUsers);
+        return usersInfos;
+    }
+
+    public Map<String, Object> userInfos(
             Long id
     ) {
         Map<String, Object> userInfos = new HashMap<>();
-        userInfos.put("user",userService.getUser(id));
+        userInfos.put("user", userService.getUser(id));
 
-        return  userInfos;
+        return userInfos;
     }
 
-    public boolean updateUser (
+    public boolean updateUser(
             long id,
             UserDTO userDTO
     ) {
         return userService.updateUser(id, userDTO);
     }
 
-    public Map<String, Object> productsInfos (
+    public Map<String, Object> productsInfos(
             String search,
             Long category,
             Pageable pageable
     ) {
         Map<String, Object> productsInfos = new HashMap<>();
         Page<Product> allProducts = productService.findFilteredProduct(search, category, pageable);
-        productsInfos.put("allProducts",allProducts);
+        productsInfos.put("allProducts", allProducts);
         productsInfos.put("categories", categoryService.getAllCategory());
         productsInfos.put("currentPage", allProducts.getNumber());
         productsInfos.put("totalPages", allProducts.getTotalPages());
         productsInfos.put("hasNext", allProducts.hasNext());
         productsInfos.put("hasPrevious", allProducts.hasPrevious());
-        return  productsInfos;
+        return productsInfos;
     }
 
-    public Map<String, Object> productInfos (
+    public Map<String, Object> productsInfos(String search, Long category) {
+        Map<String, Object> productsInfos = new HashMap<>();
+        List<Product> allProducts = productService.findFilteredProduct(search, category);
+        productsInfos.put("allProducts", allProducts);
+        productsInfos.put("categories", categoryService.getAllCategory());
+        return productsInfos;
+    }
+
+    public Map<String, Object> productInfos(
             Long id
     ) {
         Map<String, Object> productInfos = new HashMap<>();
         productInfos.put("product", productService.get(id));
         productInfos.put("categories", categoryService.getAllCategory());
-        return  productInfos;
+        return productInfos;
     }
 
     public void updateProduct(
             Long id,
             ProductDTO productDTO
     ) {
-       productService.updateProduct(productDTO, id);
+        productService.updateProduct(productDTO, id);
     }
 
     public void createProduct(

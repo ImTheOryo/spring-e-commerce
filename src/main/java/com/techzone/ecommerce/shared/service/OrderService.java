@@ -90,6 +90,10 @@ public class OrderService {
         return orderRepository.findFilteredOrders(search, status, page);
     }
 
+    public List<Order> findAllByIsAvailableTrue(String search, OrderStatus status) {
+        return orderRepository.findFilteredOrders(search, status);
+    }
+
     public List<Order> getUserOrderByYear(int year, User user) {
         try {
             LocalDateTime start = LocalDateTime.of(year, 1, 1, 0, 0);
@@ -164,5 +168,19 @@ public class OrderService {
         }
 
         return null;
+    }
+
+    public boolean changeStatusApi(Long id, OrderStatus status) {
+        try {
+            if (orderRepository.findById(id).isPresent()) {
+                Order order = orderRepository.findById(id).get();
+                order.setStatus(status);
+                orderRepository.save(order);
+                return true;
+            }
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+        return false;
     }
 }

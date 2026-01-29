@@ -3,8 +3,6 @@ package com.techzone.ecommerce.api.controller;
 import com.techzone.ecommerce.shared.dto.UserDTO;
 
 import com.techzone.ecommerce.shared.entity.User;
-import com.techzone.ecommerce.shared.service.CategoryService;
-import com.techzone.ecommerce.shared.service.OrderService;
 import com.techzone.ecommerce.shared.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,9 +17,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/user")
 public class UserApiController {
     private final UserService userService;
-    private final OrderService orderService;
-    private final CategoryService categoryService;
-
 
     @GetMapping()
     public ResponseEntity<User> getUser(@AuthenticationPrincipal UserDetails userDetails) {

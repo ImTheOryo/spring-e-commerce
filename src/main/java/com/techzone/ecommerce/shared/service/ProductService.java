@@ -65,6 +65,12 @@ public class ProductService {
         return productRepository.findFilteredProducts(search, categoryId, pageable);
     }
 
+    public List<Product> findFilteredProduct(
+            String search,
+            Long categoryId) {
+        return productRepository.findFilteredProducts(search, categoryId);
+    }
+
     public void updateProduct(
             ProductDTO productDTO,
             long id

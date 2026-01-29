@@ -42,4 +42,14 @@ public interface ProductRepository extends JpaRepository<Product, Long>, PagingA
             @Param("categoryId") Long categoryId,
             Pageable pageable
     );
+
+    @Query("""
+                SELECT p FROM Product p WHERE
+                (:categoryId IS NULL OR p.category.id = :categoryId) AND
+                (:search IS NULL OR 
+                LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%')) OR 
+                LOWER(p.brand) LIKE LOWER(CONCAT('%', :search, '%')) OR 
+                LOWER(p.model) LIKE LOWER(CONCAT('%', :search, '%')))
+            """)
+    List<Product> findFilteredProducts(@Param("search") String search, @Param("categoryId") Long categoryId);
 }
