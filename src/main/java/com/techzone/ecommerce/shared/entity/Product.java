@@ -29,4 +29,16 @@ public class Product extends BaseEntity {
     private String urlPhoto;
     private byte promotionPourcent;
     private boolean isPromotion;
+
+    public void setStock(int stock) {
+        this.stock = Math.max(stock, 0);
+    }
+
+    public void setPrice(double price) {
+        this.price = Math.max(price, 0);
+    }
+
+    public void setPromotionPourcent(byte promotionPourcent) {
+        this.promotionPourcent = (byte) Math.min(100, Math.max(0, promotionPourcent));
+    }
 }
