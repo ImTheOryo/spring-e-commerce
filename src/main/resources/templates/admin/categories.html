@@ -35,11 +35,14 @@
                 <tr class="bg-gray-50 text-gray-400 text-xs uppercase tracking-wider">
                     <th class="px-6 py-4 font-semibold text-center">ID</th>
                     <th class="px-6 py-4 font-semibold">Nom de la catégorie</th>
-                    <th class="px-6 py-4 font-semibold text-right">Actions</th>
                 </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
-                <tr th:each="category : ${categories}" class="hover:bg-gray-50 transition">
+                <tr th:each="category : ${categories}"
+                    th:data-id="${category.id}"
+                    th:data-name="${category.name}"
+                    @click="currentCat = { id: $el.dataset.id, name: $el.dataset.name }; isEdit = true; openModal = true"
+                    class="hover:bg-gray-50 transition">
                     <td class="px-6 py-4 text-center">
                         <span class="text-sm font-medium text-gray-400" th:text="${'#' + category.id}">#1</span>
                     </td>
@@ -49,23 +52,6 @@
                                 <i class="fa-solid fa-folder-open"></i>
                             </div>
                             <span class="font-semibold text-gray-900" th:text="${category.name}">Nom</span>
-                        </div>
-                    </td>
-                    <td class="px-6 py-4 text-right">
-                        <div class="flex justify-end gap-2">
-                            <button type="button"
-                                    th:data-id="${category.id}"
-                                    th:data-name="${category.name}"
-                                    @click="currentCat = { id: $el.dataset.id, name: $el.dataset.name }; isEdit = true; openModal = true"
-                                    class="p-2 text-gray-400 hover:text-cyan-600 transition">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </button>
-
-                            <form th:action="@{/admin/categories/delete/{id}(id=${category.id})}" method="post" class="inline" onsubmit="return confirm('Supprimer ?');">
-                                <button type="submit" class="p-2 text-gray-400 hover:text-red-600 transition">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </form>
                         </div>
                     </td>
                 </tr>
