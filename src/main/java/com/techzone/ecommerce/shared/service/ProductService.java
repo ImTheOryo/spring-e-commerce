@@ -111,4 +111,8 @@ public class ProductService {
 
     }
 
+    public void removeFromStock(int qty, Product product){
+        product.setStock(product.getStock() - qty);
+        productRepository.save(product);
+    }
 }
