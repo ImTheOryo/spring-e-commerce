@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
@@ -48,4 +49,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
                 CAST(o.id AS string) LIKE CONCAT('%', :search, '%'))
             """)
     Page<Order> findFilteredOrders(@Param("search") String search, @Param("status") OrderStatus status, Pageable pageable);
+
+    List<Order> findByUserId(User user);
 }

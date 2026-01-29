@@ -7,14 +7,11 @@ import com.techzone.ecommerce.shared.repository.OrderProductRepository;
 import com.techzone.ecommerce.shared.repository.OrderRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,12 +24,7 @@ public class OrderService {
     private final ProductService productService;
 
     public List<Integer> getYears(Long userId) {
-
         return orderRepository.findDistinctYearsByUserId(userId);
-    }
-
-    public List<Order> getAllOrders() {
-        return orderRepository.findAll();
     }
 
     public long getOrdersCount() {
@@ -146,7 +138,6 @@ public class OrderService {
 
             for (CartProduct cartProduct : cart.getCartProductList()) {
                 OrderProduct orderProduct = new OrderProduct();
-                orderProduct.setOrder(order); // Très important pour la FK
                 orderProduct.setProduct(cartProduct.getProduct());
                 orderProduct.setQuantity(cartProduct.getQuantity());
                 orderProduct.setPromotion(cartProduct.getProduct().isPromotion());
@@ -159,10 +150,19 @@ public class OrderService {
             order.setOrderProductList(orderProducts);
 
             return orderRepository.save(order);
-
         } catch (Exception e) {
-            e.printStackTrace(); // Affiche l'erreur complète dans la console
+            e.printStackTrace();
             return null;
         }
+    }
+
+    public List<Order> getAllByUser(User user) {
+        try {
+            return orderRepository.findByUserId(user);
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+
+        return null;
     }
 }
