@@ -54,6 +54,15 @@ public class UserService {
         return false;
     }
 
+    public User updateUserApi(User user){
+        try {
+            return userRepository.save(user);
+        }catch (Exception e){
+            System.out.println(e);
+        }
+        return null;
+    }
+
     public boolean updateUser(long id, UserDTO userDTO){
         try {
             User currentUserInfo = userRepository.getReferenceById(id);

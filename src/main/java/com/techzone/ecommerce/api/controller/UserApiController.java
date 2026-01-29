@@ -1,9 +1,7 @@
 package com.techzone.ecommerce.api.controller;
 
-import com.techzone.ecommerce.shared.dto.PartialOrderDTO;
 import com.techzone.ecommerce.shared.dto.UserDTO;
-import com.techzone.ecommerce.shared.entity.Category;
-import com.techzone.ecommerce.shared.entity.Order;
+
 import com.techzone.ecommerce.shared.entity.User;
 import com.techzone.ecommerce.shared.service.CategoryService;
 import com.techzone.ecommerce.shared.service.OrderService;
@@ -13,11 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Comparator;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,18 +34,17 @@ public class UserApiController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @PostMapping("update")
-    public String updateUser(@AuthenticationPrincipal UserDetails userDetails, @ModelAttribute UserDTO userDTO) {
+    @PostMapping("/update")
+    public ResponseEntity<User> updateUser(@AuthenticationPrincipal UserDetails userDetails, @ModelAttribute UserDTO userDTO) {
         User user = userService.getUser(userDetails.getUsername());
         user.setLastname(userDTO.getLastname());
         user.setFirstname(userDTO.getFirstname());
         user.setAddress(userDTO.getAddress());
         user.setPhone(userDTO.getPhone());
 
-        if (!userService.updateUser(user)) {
-            return "error/404";
-        }
+        User res = userService.updateUserApi(user);
+        if (res == null) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
 
-        return "redirect:/user";
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 }
