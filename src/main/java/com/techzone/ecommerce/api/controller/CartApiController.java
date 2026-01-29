@@ -29,7 +29,7 @@ public class CartApiController {
 
     @GetMapping
     public ResponseEntity<CartDTO> cart(@AuthenticationPrincipal Jwt jwt) {
-        User user = userService.getUser(Long.parseLong(jwt.getId()));
+        User user = userService.getUser(jwt.getSubject());
 
         if (user == null) {
             return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
@@ -41,11 +41,11 @@ public class CartApiController {
     }
 
     @PutMapping("/add")
-    public ResponseEntity<String> addProduct(@Valid @RequestBody CartProduct cartProduct, @AuthenticationPrincipal UserDetails userDetails) {
-        User user = userService.getUser(userDetails.getUsername());
+    public ResponseEntity<String> addProduct(@Valid @RequestBody CartProduct cartProduct, @AuthenticationPrincipal Jwt jwt) {
+        User user = userService.getUser(jwt.getSubject());
 
         if (user == null) {
-            return new ResponseEntity<>("Il y a eu un problème lors de l'ajout", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Il y a eu un problème lors de l'ajout", HttpStatus.UNAUTHORIZED);
         }
 
         Cart cart = cartService.addCartProduct(cartProduct, user.getCart());
@@ -58,8 +58,8 @@ public class CartApiController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<String> updateProduct(@Valid @RequestBody CartProduct cartProduct, @AuthenticationPrincipal UserDetails userDetails) {
-        User user = userService.getUser(userDetails.getUsername());
+    public ResponseEntity<String> updateProduct(@Valid @RequestBody CartProduct cartProduct, @AuthenticationPrincipal Jwt jwt) {
+        User user = userService.getUser(jwt.getSubject());
 
         if (user == null) {
             return new ResponseEntity<>("Il y a eu un problème lors de l'ajout", HttpStatus.NOT_FOUND);
@@ -73,8 +73,8 @@ public class CartApiController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> removeCartProduct(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id) {
-        User user = userService.getUser(userDetails.getUsername());
+    public ResponseEntity<String> removeCartProduct(@AuthenticationPrincipal Jwt jwt, @PathVariable Long id) {
+        User user = userService.getUser(jwt.getSubject());
 
         if (user == null) {
             return new ResponseEntity<>("Il y a eu un problème lors de l'ajout", HttpStatus.NOT_FOUND);

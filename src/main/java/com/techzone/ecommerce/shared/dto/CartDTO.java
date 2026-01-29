@@ -16,10 +16,6 @@ public class CartDTO {
     private long qty;
     private LocalDateTime createdAt;
     private long id;
-    private String firstname;
-    private String lastname;
-    private String address;
-    private String phone;
     private List<CartProductDTO> cartProductDTOS = new ArrayList<>();
 
     public CartDTO(Cart cart) {
