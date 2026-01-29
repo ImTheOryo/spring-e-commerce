@@ -39,5 +39,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
             """)
     List<User> findFilteredUsers(@Param("search") String search);
 
-    Optional<User> findById(long id);
 }

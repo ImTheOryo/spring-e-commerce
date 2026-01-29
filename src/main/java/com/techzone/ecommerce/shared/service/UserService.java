@@ -23,11 +23,6 @@ public class UserService {
         return user.orElse(null);
     }
 
-    public User getUser(long id){
-        Optional<User> user = userRepository.findById(id);
-        return user.orElse(null);
-    }
-
     public int getUsersCount() {
         return userRepository.findAll().size();
     }
