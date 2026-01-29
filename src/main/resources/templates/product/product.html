@@ -23,6 +23,7 @@
 </head>
 <body class="bg-slate-50 font-['AR_One_Sans'] text-slate-800 antialiased">
 <div th:replace="~{component/navbar}"></div>
+<div th:replace="~{component/toast}"></div>
 
 <main class="container mx-auto px-4 py-8 md:py-16">
     <div th:replace="~{component/breadcrumb}"></div>
@@ -134,6 +135,16 @@
 </main>
 
 <div th:replace="~{component/footer}"></div>
+
+<script th:inline="javascript">
+    const toastType = /*[[${toastType}]]*/ null;
+    const toastTitle = /*[[${toastTitle}]]*/ null;
+    const toastMessage = /*[[${toastMessage}]]*/ null;
+
+    if (toastType && toastMessage) {
+        window.showToast(toastType, toastTitle, toastMessage);
+    }
+</script>
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         const priceDisplay = document.getElementById("price")
@@ -158,7 +169,10 @@
         })
     })
 </script>
-<script>
+<script type="module">
+    import { showToast } from "/js/toast.js";
+    window.showToast = showToast;
+
     document.addEventListener("DOMContentLoaded", () => {
         const btnAddCart = document.getElementById("btn-add-cart")
         const qtyElement = document.getElementById("qty")
@@ -176,7 +190,13 @@
                     quantity: Number(qtyElement.value)
                 })
             });
+
             //TODO ajout de toast
+            if (response.ok) {
+                showToast("success", "Produits ajouté", "Le produits à été ajouter du panier");
+            } else {
+                showToast("error", "Erreur", "Impossible d'ajouter le produit au panier");
+            }
             console.log(response)
         })
     })
