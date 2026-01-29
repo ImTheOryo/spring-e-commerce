@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechZone - Mon Profil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=AR+One+Sans:wght@400..700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {colors: {primary: '#1057B9'}}
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 font-['AR_One_Sans'] text-slate-800 antialiased min-h-screen">
+<div th:replace="~{component/navbar}"></div>
+<div th:replace="~{component/toast}"></div>
+
+<main class="container mx-auto px-4 py-8 md:py-12">
+    <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-6 bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+        <div class="flex items-center gap-6">
+            <div class="h-16 w-16 md:h-20 md:w-20 bg-primary text-white rounded-full flex items-center justify-center text-2xl md:text-3xl font-bold shadow-lg shadow-blue-200">
+                <span th:text="${#strings.substring(user.getFirstname(),0,1) + #strings.substring(user.getLastname(),0,1)}">JD</span>
+            </div>
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold text-slate-900"
+                    th:text="${user.getFirstname() + ' ' + user.getLastname()}">John Doe</h1>
+                <p class="text-slate-500 text-sm md:text-base" th:text="${user.getEmail()}">email@example.com</p>
+            </div>
+        </div>
+
+        <form th:action="@{/logout}" method="post">
+            <button type="submit"
+                    class="flex items-center gap-2 px-6 py-3 bg-red-50 text-red-600 rounded-2xl font-bold hover:bg-red-100 transition-colors">
+                <i class="fa-solid fa-power-off"></i> Déconnexion
+            </button>
+        </form>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        <div class="lg:col-span-1 space-y-6">
+            <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 sticky top-8">
+                <h2 class="text-lg font-bold mb-6 flex items-center gap-3 text-slate-900">
+                    <i class="fa-solid fa-user-gear text-primary"></i> Mes Informations
+                </h2>
+                <div class="space-y-6">
+                    <div>
+                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">Téléphone</label>
+                        <p class="font-medium text-slate-700" th:text="${user.getPhone() ?: 'Non renseigné'}">+33 6 00
+                            00 00 00</p>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">Adresse de
+                            livraison</label>
+                        <p class="font-medium text-slate-700 leading-relaxed"
+                           th:text="${user.getAddress() ?: 'Aucune adresse enregistrée'}">123 Rue de la Tech, Paris</p>
+                    </div>
+                    <button id="edit-profil-btn"
+                            class="w-full mt-4 py-3 border-2 border-slate-100 text-primary font-bold rounded-2xl hover:bg-slate-50 transition-all">
+                        Modifier mon profil
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="lg:col-span-2 profil-view">
+            <div th:replace="~{__${viewContent}__}"></div>
+        </div>
+
+    </div>
+</main>
+
+<div th:replace="~{component/footer}"></div>
+
+<script th:inline="javascript">
+    const toastType = /*[[${toastType}]]*/ null;
+    const toastTitle = /*[[${toastTitle}]]*/ null;
+    const toastMessage = /*[[${toastMessage}]]*/ null;
+
+    if (toastType && toastMessage) {
+        window.showToast(toastType, toastTitle, toastMessage);
+    }
+</script>
+<script type="module">
+    import { showToast } from "/js/toast.js";
+    window.showToast = showToast;
+
+    document.addEventListener("DOMContentLoaded", async () => {
+        const yearSelect = document.getElementById("year")
+        if (yearSelect) {
+            yearSelect.addEventListener("change", updateList);
+
+            await fillYearOptions()
+            await updateList()
+        }
+    })
+
+    async function fillYearOptions() {
+        const yearSelect = document.getElementById("year")
+        if (!yearSelect) return
+
+        try {
+            const response = await fetch(`/order/years`)
+            const years = await response.json()
+            yearSelect.innerHTML = ""
+            years.forEach(year => {
+                const option = document.createElement("option")
+                option.value = year
+                option.text = year
+                yearSelect.appendChild(option)
+            })
+            yearSelect.selectedIndex = 0
+        } catch (e) {
+            console.error(e)
+        }
+    }
+
+    async function updateList() {
+        const yearSelect = document.getElementById("year")
+        const container = document.getElementById("order-container")
+        const editBtn = document.getElementById("edit-profil-btn")
+        if (!yearSelect || !container) return
+
+        try {
+            if (yearSelect.value) {
+                const response = await fetch(`/order/${yearSelect.value}`)
+                const orders = await response.json()
+                container.innerHTML = ""
+
+                orders.forEach(order => {
+                    container.insertAdjacentHTML('beforeend', orderLine(order))
+                })
+
+
+                container.querySelectorAll(".details-order-btn").forEach(btn => {
+                    btn.addEventListener("click", async (e) => {
+                        e.preventDefault()
+                        const id = btn.getAttribute("data-detail-btn")
+                        const res = await fetch(`/user/${id}`)
+                        const html = await res.text()
+                        document.querySelector(".profil-view").innerHTML = html
+                        window.scrollTo({top: 0, behavior: 'smooth'})
+                    })
+                })
+
+                editBtn.addEventListener("click", async (e) => {
+                    e.preventDefault()
+                    const res = await fetch(`/user/edit`)
+                    const html = await res.text()
+                    document.querySelector(".profil-view").innerHTML = html
+                    window.scrollTo({top: 0, behavior: 'smooth'})
+                })
+            } else {
+                container.innerHTML = emptyList()
+            }
+
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    function formatDate(date) {
+        const months = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"]
+        const d = new Date(date)
+        return `Passée le ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`
+    }
+
+    function emptyList() {
+        return `<div class="text-center py-16 bg-white rounded-3xl border border-dashed border-slate-200">
+            <i class="fa-solid fa-bag-shopping text-5xl text-slate-200 mb-4 block"></i>
+            <p class="text-slate-500 font-medium">Aucune commande pour cette période.</p>
+            <a href="/" class="text-primary font-bold mt-4 inline-block hover:underline">Continuer mes achats</a>
+        </div>`
+    }
+
+    function orderLine(order) {
+        const labels = {
+            IN_PROCESS: "En préparation",
+            IN_TRANSIT: "Livraison...",
+            DELIVERED: "Livré",
+            RETURN_ASK: "Retour demandé",
+            RETURNED: "Retourné",
+            REFUNDED: "Remboursé"
+        }
+        const colors = {
+            IN_PROCESS: "amber",
+            IN_TRANSIT: "blue",
+            DELIVERED: "emerald",
+            RETURN_ASK: "purple",
+            RETURNED: "slate",
+            REFUNDED: "rose"
+        }
+        const c = colors[order.status] || "slate"
+
+        return `
+        <div class="group flex flex-col sm:flex-row sm:items-center justify-between p-5 mb-4 bg-white border border-slate-100 rounded-2xl hover:shadow-md transition-all">
+            <div class="flex items-center gap-4 mb-4 sm:mb-0">
+                <div class="h-12 w-12 bg-slate-50 text-slate-400 rounded-xl flex items-center justify-center group-hover:bg-blue-50 group-hover:text-primary transition-colors">
+                    <i class="fa-solid fa-box-open"></i>
+                </div>
+                <div>
+                    <p class="font-bold text-slate-900">Commande #TZ-${order.id}</p>
+                    <p class="text-xs text-slate-400">${formatDate(order.createdAt)}</p>
+                </div>
+            </div>
+            <div class="flex items-center justify-between sm:justify-end gap-6 md:gap-10">
+                <div class="text-right">
+                    <p class="font-black text-slate-900">${order.price.toFixed(2)}€</p>
+                    <p class="text-xs text-slate-400">${order.qty} articles</p>
+                </div>
+                <span class="px-3 py-1 bg-${c}-100 text-${c}-700 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                    ${labels[order.status]}
+                </span>
+                <button data-detail-btn="${order.id}" class="details-order-btn h-10 w-10 flex items-center justify-center rounded-xl bg-slate-100 hover:bg-primary hover:text-white transition-all">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>`
+    }
+</script>
+</body>
+</html>

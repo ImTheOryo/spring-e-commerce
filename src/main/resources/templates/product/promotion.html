@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechZone - Accueil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link rel="stylesheet" href="../../assets/css/style_global.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=AR+One+Sans:wght@400..700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1057B9',
+                        grey: '#'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 font-['AR_One_Sans']">
+<div th:replace="~{component/navbar}"></div>
+
+<main class="container mx-auto px-4">
+    <h2 class="text-3xl md:text-4xl font-black text-slate-900 my-8 text-center">
+        Offres <span class="text-primary">Flash</span> du moment
+    </h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+
+        <div class="bg-white shadow-md p-4 rounded-3xl flex flex-col" th:each="product : ${products}">
+
+            <img th:src="${product.getUrlPhoto()}"
+                 class="w-full h-48 object-cover rounded-xl mb-4"
+                 th:alt="${product.getName()}">
+
+            <div class="flex flex-col flex-grow justify-between">
+                <div>
+                    <div class="flex justify-between items-start mb-2">
+                        <a th:href="@{/product/{id}(id=${product.id})}">
+                            <h5 th:text="${product.name}"
+                                class="font-semibold text-lg leading-tight group-hover:text-primary transition-colors">
+                                Nom du produit
+                            </h5>
+                        </a>
+                        <div class="text-right text-xs font-medium">
+                            <span th:if="${product.isInStock()}"
+                                  class="text-green-500 bg-green-50 px-2 py-1 rounded-lg">Dispo.</span>
+                            <span th:unless="${product.isInStock()}"
+                                  class="text-red-500 bg-red-50 px-2 py-1 rounded-lg">Indispo.</span>
+                        </div>
+                    </div>
+                    <p th:text="${product.getDescription()}"
+                       class="text-gray-600 text-sm line-clamp-3 mb-4">
+                        Description du produit
+                    </p>
+                </div>
+
+                <div class="flex justify-between items-center gap-2 pt-4 border-t border-gray-100">
+                    <div class="flex flex-col"
+                         th:with="finalPrice=${product.price * (1 - product.promotionPourcent / 100.0)}">
+                        <div th:if="${product.isPromotion}" class="mb-1">
+                            <span class="bg-red-100 text-red-600 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
+                                -<span th:text="${product.promotionPourcent}">0</span>%</span>
+                        </div>
+
+                        <div class="flex items-baseline gap-2">
+                            <p class="text-2xl font-extrabold tracking-tight text-slate-900"
+                               th:text="${(product.isPromotion ? #numbers.formatDecimal(finalPrice, 1, 2) : product.price) + '€'}">
+                                29.99€
+                            </p>
+
+                            <p th:if="${product.isPromotion}"
+                               class="text-sm line-through text-gray-400 decoration-red-500/50"
+                               th:text="${product.price + '€'}">
+                                39.99€
+                            </p>
+                        </div>
+                    </div>
+
+                    <button class="cart-btn hover:scale-110 transition-transform mx-4"
+                            th:data-product-id="${product.id}">
+                        <i class="fa-solid fa-cart-arrow-down text-primary text-3xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav aria-label="Page navigation"
+         class="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4 my-12">
+        <ul class="flex -space-x-px text-sm overflow-x-auto" th:if="${totalPages > 0}">
+            <li>
+                <a th:if="${hasPrevious}" th:href="@{/promo(page=${currentPage - 1})}"
+                   class="flex items-center justify-center px-4 w-10 h-10 py-2 border border-gray-300 rounded-s-lg bg-white hover:bg-gray-100">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </a>
+            </li>
+
+            <li th:each="i : ${#numbers.sequence(0, (totalPages > 5 ? 4 : totalPages - 1))}">
+                <a th:href="@{/promo(page=${i})}"
+                   th:text="${i + 1}"
+                   th:classappend="${currentPage == i} ? 'bg-primary text-white border-primary' : 'bg-white text-gray-700 border-gray-300'"
+                   class="flex items-center justify-center w-10 h-10 border hover:bg-gray-50 transition-colors">
+                </a>
+            </li>
+
+            <li>
+                <a th:if="${hasNext}" th:href="@{/promo(page=${currentPage + 1})}"
+                   class="flex items-center w-10 h-10 justify-center px-4 py-2 border border-gray-300 rounded-e-lg bg-white hover:bg-gray-100">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+</main>
+<div th:replace="~{component/footer}"></div>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const elementBtn = document.getElementsByClassName("cart-btn")
+
+        Array.from(elementBtn).forEach(btn => {
+            btn.addEventListener("click", async (event) => {
+                event.preventDefault()
+                const response = await fetch("http://localhost:8080/cart/add", {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        product: {
+                            id: event.currentTarget.getAttribute("data-product-id")
+                        },
+                        quantity: 1
+                    })
+                });
+                // TODO mettre un toast
+                console.log(response)
+            })
+        })
+    })
+</script>
+</body>
+</html>

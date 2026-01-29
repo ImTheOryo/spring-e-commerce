@@ -1,0 +1,83 @@
+<div class="px-4 py-2 md:py-6 grid grid-cols-2 grid-rows-2 md:grid-rows-1 md:grid-cols-5 justify-between items-center w-screen bg-primary">
+    <a th:href="@{/}" href="#" class="col-start-1 col-span-1">
+        <img class="w-[220px] h-[70px] object-cover" th:src="@{/images/Logo-TechZone-Blue.png}"
+             alt="logo TechZone page accueil"/>
+    </a>
+    <form onsubmit="performSearch(); return false"
+          class="flex items-center p-4 w-full h-[35px] bg-zinc-100 rounded-md row-start-2 col-span-2 md:row-start-1 md:col-start-2 md:col-span-3">
+        <input id="searchInput" class="w-full h-[32px] bg-transparent outline-none" type="text"
+               placeholder="Rechercher un produit...">
+        <button type="button" onclick="onClickSearch()">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+    </form>
+    <div class="text-end space-x-6 col-start-2 md:col-start-5 col-span-1">
+        <a th:href="@{/user}" href="#"> <i class="text-3xl fa-regular fa-user text-white"></i></a>
+        <a th:href="@{/cart}" href="#"> <i class=" text-3xl fa-solid fa-basket-shopping text-white"></i></a>
+    </div>
+</div>
+<div class="w-full bg-[#E0E5F0] border-b border-slate-200">
+    <div class="container mx-auto px-4 relative">
+        <div class="flex items-center justify-between h-14">
+
+            <nav class="hidden md:flex items-center space-x-10">
+                <a th:href="@{/}" class="text-slate-900 font-bold hover:text-primary transition-colors">Accueil</a>
+                <a th:each="category : ${categories}"
+                   th:href="@{/category/{id}(id=${category.id})}"
+                   th:text="${category.name}"
+                   class="text-slate-700 font-semibold capitalize hover:text-primary transition-colors"></a>
+                <a th:href="@{/promo}" class="text-rose-600 font-bold hover:text-rose-700">En Promotion</a>
+                <a th:href="@{/in-stock}" class="text-slate-700 font-semibold hover:text-primary transition-colors">En
+                    stock</a>
+            </nav>
+
+            <div class="md:hidden flex items-center">
+                <input type="checkbox" id="menu-toggle" class="hidden peer">
+
+                <label for="menu-toggle" class="flex items-center gap-2 cursor-pointer py-2">
+                    <i class="fa-solid fa-bars text-xl peer-checked:hidden"></i>
+                    <i class="fa-solid fa-xmark text-xl hidden peer-checked:block text-primary"></i>
+                    <span class="text-sm font-bold uppercase tracking-wider">Menu</span>
+                </label>
+
+                <div class="fixed inset-0 top-14 left-0 w-full h-screen z-40 translate-x-full peer-checked:translate-x-0 transition-transform duration-300 ease-in-out md:hidden">
+
+                    <label for="menu-toggle" class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"></label>
+
+                    <div class="relative w-4/5 max-w-sm h-full bg-white shadow-2xl overflow-y-auto">
+                        <div class="p-6 flex flex-col gap-6">
+                            <a th:href="@{/}" class="text-lg font-bold text-slate-900 border-b border-slate-50 pb-2">Accueil</a>
+
+                            <div class="space-y-4">
+                                <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Nos Rayons</p>
+                                <div class="grid grid-cols-1 gap-4">
+                                    <a th:each="category : ${categories}"
+                                       th:href="@{/category/{id}(id=${category.id})}"
+                                       th:text="${category.name}"
+                                       class="text-lg font-semibold text-slate-700 capitalize pl-2 border-l-4 border-primary/20"></a>
+                                </div>
+                            </div>
+
+                            <hr class="border-slate-100">
+
+                            <a th:href="@{/promo}" class="text-lg font-bold text-rose-600 flex items-center gap-3">
+                                <i class="fa-solid fa-percent"></i> En Promotion
+                            </a>
+                            <a th:href="@{/in-stock}" class="text-lg font-bold text-slate-700 flex items-center gap-3">
+                                <i class="fa-solid fa-check-circle text-slate-400"></i> En stock
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function onClickSearch() {
+        const query = document.getElementById('searchInput').value
+        if (query.trim() !== "") {
+            window.location.href = `/search?query=${encodeURIComponent(query)}`
+        }
+    }
+</script>

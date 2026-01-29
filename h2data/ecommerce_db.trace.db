@@ -1,0 +1,6 @@
+2026-01-21 10:16:24.610685Z jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * FROM USERS [*]`"; SQL statement:
+SELECT * FROM USERS ` [42000-232]
+2026-01-22 16:24:54.051833Z jdbc[14]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "[*]ORDERS"; SQL statement:
+ORDERS [42000-232]

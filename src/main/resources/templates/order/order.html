@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TechZone - Accueil</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+  <link rel="stylesheet" href="../../assets/css/style_global.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=AR+One+Sans:wght@400..700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#1057B9',
+            grey: '#'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-gray-50 font-['AR_One_Sans']">
+<div th:replace="~{component/navbar}"></div>
+
+<main class="flex flex-col justify-center items-center container m-auto px-4">
+  <h1 class="text-xl text-center md:text-2xl lg:text-4xl text-center my-3 font-bold px-4">
+    Votre achat à été effectué avec succés !
+  </h1>
+  <p class="text-base text-center md:text-lg mb-8 md:mb-12">Vous receverez bientôt chez vous vos produits.</p>
+  <div class="text-[#16A34A] text-5xl"><i class="fa-solid fa-circle-check"></i></div>
+</main>
+
+<div th:replace="~{component/footer}"></div>
+
+</body>
+</html>

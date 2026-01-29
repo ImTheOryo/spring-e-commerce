@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/admin-layout}"
+      lang="fr">
+<body>
+
+<div layout:fragment="content" x-data="{ openEditModal: false }">
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+    <div>
+      <a th:href="@{/admin/users}" class="text-cyan-600 hover:text-cyan-700 text-sm font-medium flex items-center gap-2 mb-2">
+        <i class="fa-solid fa-arrow-left"></i> Retour à la liste
+      </a>
+      <h1 class="text-3xl font-bold text-gray-900">
+        Profil de <span th:text="${user.firstname + ' ' + user.lastname}">John Doe</span>
+      </h1>
+      <p class="text-gray-500 text-sm" th:text="${'Client depuis le ' + #temporals.format(user.createdAt, 'dd MMMM yyyy')}">Membre depuis 2023</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2 space-y-6">
+      <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+        <h3 class="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
+          <i class="fa-solid fa-user text-cyan-500"></i> Informations Personnelles
+        </h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Prénom</p>
+            <p class="text-gray-700 font-medium" th:text="${user.firstname}">Jean</p>
+          </div>
+          <div>
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Nom</p>
+            <p class="text-gray-700 font-medium" th:text="${user.lastname}">Dupont</p>
+          </div>
+          <div>
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Adresse Email</p>
+            <p class="text-gray-700 font-medium" th:text="${user.email}">jean.dupont@email.com</p>
+          </div>
+          <div>
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Téléphone</p>
+            <p class="text-gray-700 font-medium" th:text="${user.phone}">06 01 02 03 04</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+        <h3 class="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
+          <i class="fa-solid fa-location-dot text-cyan-500"></i> Adresse de livraison
+        </h3>
+        <p class="text-gray-600 leading-relaxed" th:text="${user.address}">
+          123 Rue de la République<br>75001 Paris, France
+        </p>
+      </div>
+    </div>
+
+    <div class="space-y-6">
+      <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl p-8 text-white shadow-xl">
+        <h3 class="text-sm font-bold opacity-60 uppercase mb-4">ID Utilisateur</h3>
+        <p class="text-2xl font-mono mb-6" th:text="${'#' + user.id}">#8429</p>
+
+        <div class="pt-6 border-t border-white/10">
+          <p class="text-sm opacity-60">Statut du compte</p>
+          <span class="inline-flex items-center gap-2 text-green-400 font-bold mt-1">
+                        <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span> Actif
+                    </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<th:block layout:fragment="scripts">
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</th:block>
+
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/admin-layout}"
+      lang="en"
+>
+<body>
+
+<div layout:fragment="content">
+    <h1 class="text-3xl font-bold text-gray-900 mb-8">Dashboard</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <div class="flex justify-between items-start mb-4">
+                <div class="p-2 bg-blue-50 text-blue-500 rounded-lg"><i class="fa-solid fa-money-bill-wave"></i></div>
+                <span th:class="${revenueGrowth >= 0 ? 'text-green-500' : 'text-red-500'}" class="text-xs font-medium">
+                    <i th:class="${revenueGrowth >= 0 ? 'fa-solid fa-arrow-trend-up' : 'fa-solid fa-arrow-trend-down'}"></i>
+                    <span th:text="${#numbers.formatDecimal(revenueGrowth, 1, 2) + '% / 7j'}"></span>
+                </span>
+            </div>
+            <p class="text-sm text-gray-500">Chiffres d'affaire</p>
+            <h3 class="text-2xl font-bold text-gray-900" th:text="${#numbers.formatDecimal(totalRevenus, 1, 'POINT', 2, 'COMMA') + '€'}">724.239,34€</h3>
+        </div>
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <div class="flex justify-between items-start mb-4">
+                <div class="p-2 bg-green-50 text-green-500 rounded-lg"><i class="fa-solid fa-cart-shopping"></i></div>
+                <span th:class="${commandsGrowth >= 0 ? 'text-green-500' : 'text-red-500'}" class="text-xs font-medium">
+                    <i th:class="${commandsGrowth >= 0 ? 'fa-solid fa-arrow-trend-up' : 'fa-solid fa-arrow-trend-down'}"></i>
+                    <span th:text="${#numbers.formatDecimal(commandsGrowth, 1, 2) + '% / 7j'}"></span>
+                </span>
+            </div>
+            <p class="text-sm text-gray-500">Commandes</p>
+            <h3 class="text-2xl font-bold text-gray-900" th:text="${#numbers.formatInteger(totalCommandes, 0, 'POINT')}">1.521</h3>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <div class="flex justify-between items-start mb-4">
+                <div class="p-2 bg-orange-50 text-orange-500 rounded-lg"><i class="fa-solid fa-users"></i></div>
+                <span th:class="${userGrowth >= 0 ? 'text-green-500' : 'text-red-500'}" class="text-xs font-medium">
+                    <i th:class="${userGrowth >= 0 ? 'fa-solid fa-arrow-trend-up' : 'fa-solid fa-arrow-trend-down'}"></i>
+                    <span th:text="${#numbers.formatDecimal(userGrowth, 1, 2) + '% / 7j'}"></span>
+                </span>
+            </div>
+            <p class="text-sm text-gray-500">Utilisateurs</p>
+            <h3 class="text-2xl font-bold text-gray-900" th:text="${#numbers.formatInteger(totalUtilisateurs, 0, 'POINT')}">2.410</h3>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <div class="flex justify-between items-start mb-4">
+                <div class="p-2 bg-purple-50 text-purple-500 rounded-lg"><i class="fa-solid fa-box-open"></i></div>
+            </div>
+            <p class="text-sm text-gray-500">Produits</p>
+            <h3 class="text-2xl font-bold text-gray-900" th:text="${#numbers.formatInteger(totalProduits, 0, 'POINT')}">5.987</h3>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+            <h4 class="text-xl font-bold mb-8">Status des commandes</h4>
+
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-8">
+                <div class="relative w-full" style="max-width: 300px;">
+                    <canvas id="chart1"></canvas>
+                </div>
+
+                <div class="flex-1 space-y-4 w-full">
+                    <div th:each="entry : ${chartInfos}" class="flex justify-between items-center p-2">
+                        <div class="flex items-center gap-3">
+                            <span class="w-3 h-3 rounded-full"
+                                  th:style="'background-color: #' + ${colors.get(entry.key)}"></span>
+                            <span class="text-sm font-medium text-gray-700"
+                                  th:text="${entry.key.label}">Label</span>
+                        </div>
+                        <span class="text-sm font-bold text-gray-900" th:text="${entry.value}">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="scripts">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script th:inline="javascript">
+        const statsData = [[${chartInfos}]] || {};
+        const colorMap = [[${colors}]];
+
+        const labels = Object.keys(statsData).map(key => {
+            return statsData[key] && statsData[key].label ? statsData[key].label : key;
+        });
+
+        const backgroundColors = Object.keys(statsData).map(key => '#' + colorMap[key]);
+
+        const config = {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: Object.values(statsData),
+                    backgroundColor: backgroundColors,
+                    borderWidth: 0,
+                    cutout: '75%'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } }
+            }
+        };
+        new Chart(document.getElementById('chart1'), config);
+    </script>
+</th:block>
+
+</body>
+</html>
