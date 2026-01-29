@@ -171,8 +171,10 @@
                     const response = await fetch(`/cart/${productId}`, {method: "DELETE"})
 
                     if (response.ok) {
-                        showToast("success", "Produits supprimer", "Le produits à bien été supprimer du panier");
-                        window.location.reload()
+                        showToast("success", "Produits supprimer", "Le produits est supprimer du panier");
+                        setTimeout(() => {
+                            window.location.reload()
+                        }, 1200)
                     }
                 } catch (err) {
                     showToast("error", "Erreur", "L'article n'a pas pu être supprimer, veuillez réessayer.")
