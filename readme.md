@@ -1,4 +1,4 @@
-![logo.png](readme-assets/logo.png)
+![logo.png](readme-assets/Logo_TechZone.png)
 
 ## Description du projet et objectifs
 TechZone est une plateforme e-commerce conçue pour répondre aux besoins d'une boutique spécialisée dans les produits high-tech (PC, smartphones, accessoires). L'application gère un catalogue complexe de plusieurs centaines de références, tout en assurant le suivi des commandes et la gestion des stocks pour l'équipe interne.
