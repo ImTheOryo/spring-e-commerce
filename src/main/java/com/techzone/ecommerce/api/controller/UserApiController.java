@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -18,9 +19,9 @@ import org.springframework.web.bind.annotation.*;
 public class UserApiController {
     private final UserService userService;
 
-    @GetMapping()
-    public ResponseEntity<User> getUser(@AuthenticationPrincipal UserDetails userDetails) {
-        User user = userService.getUser(userDetails.getUsername());
+    @GetMapping
+    public ResponseEntity<User> getUser(@AuthenticationPrincipal Jwt jwt) {
+        User user = userService.getUser(jwt.getSubject());
 
         if (user == null) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -30,8 +31,8 @@ public class UserApiController {
     }
 
     @PostMapping("/update")
-    public ResponseEntity<User> updateUser(@AuthenticationPrincipal UserDetails userDetails, @ModelAttribute UserDTO userDTO) {
-        User user = userService.getUser(userDetails.getUsername());
+    public ResponseEntity<User> updateUser(@AuthenticationPrincipal Jwt jwt, @ModelAttribute UserDTO userDTO) {
+        User user = userService.getUser(jwt.getSubject());
         user.setLastname(userDTO.getLastname());
         user.setFirstname(userDTO.getFirstname());
         user.setAddress(userDTO.getAddress());

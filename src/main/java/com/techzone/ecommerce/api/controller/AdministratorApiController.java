@@ -1,25 +1,30 @@
 package com.techzone.ecommerce.api.controller;
 
+import com.techzone.ecommerce.api.service.AdministratorService;
 import com.techzone.ecommerce.shared.dto.ProductDTO;
 import com.techzone.ecommerce.shared.dto.UserDTO;
+import com.techzone.ecommerce.shared.entity.Order;
 import com.techzone.ecommerce.shared.entity.OrderStatus;
+import com.techzone.ecommerce.shared.entity.Product;
+import com.techzone.ecommerce.shared.entity.User;
 import com.techzone.ecommerce.shared.service.AdminService;
 import com.techzone.ecommerce.shared.service.CategoryService;
 import com.techzone.ecommerce.shared.service.OrderService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin")
 public class AdministratorApiController {
+
+    @Autowired
+    private AdministratorService adminServiceAPI;
 
     @Autowired
     private AdminService adminService;
@@ -30,96 +35,90 @@ public class AdministratorApiController {
     @Autowired
     private OrderService orderService;
 
-    @GetMapping("/infos")
-    public ResponseEntity<Map<String, Object>> getInfos() {
-        Map<String, Object> map = adminService.getDashboardInfos();
-        return new ResponseEntity<>(map, HttpStatus.OK);
-    }
-
     @GetMapping("/commands")
-    public ResponseEntity<Map<String, Object>> getCommands(
-            @RequestParam(required = false) String search,
-            @RequestParam(required = false) OrderStatus status
+    public ResponseEntity<List<Order>> getCommands(
     ) {
-        Map<String, Object> map = adminService.getCommandsInfos(search, status);
+        List<Order> map = adminServiceAPI.getCommands();
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
     @GetMapping("/commands/{id}")
-    public ResponseEntity<Map<String, Object>> getCommand(
+    public ResponseEntity<?> getCommand(
             @PathVariable Long id
     ) {
         if (orderService.getOrder(id) == null) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-
-        Map<String, Object> map = adminService.getCommandInfos(id);
-        return new ResponseEntity<>(map, HttpStatus.OK);
+        return new ResponseEntity<>(orderService.getOrder(id), HttpStatus.OK);
     }
 
     @PutMapping("/commands/{id}/status")
-    public ResponseEntity<Map<String, Object>> updateStatus(
+    public ResponseEntity<?> updateStatus(
             @PathVariable Long id,
             @RequestParam OrderStatus status
     ) {
         if (orderService.changeStatusApi(id, status)) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
 
-        return getCommand(id);
+        return new ResponseEntity<>(orderService.getOrder(id), HttpStatus.OK);
     }
 
     @GetMapping("/users")
-    public ResponseEntity<Map<String, Object>> getUsers(@RequestParam(required = false) String search) {
-        Map<String, Object> map = adminService.getUsersInfos(search);
+    public ResponseEntity<?> getUsers(
+    ) {
+        List<User> map = adminServiceAPI.getUsers();
 
         if (map == null) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
+        List<UserDTO> users = new ArrayList<>();
+        for (User user : map) {
+            users.add(adminServiceAPI.getUserDTO(user));
+        }
 
-        return new ResponseEntity<>(map, HttpStatus.OK);
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @GetMapping("/users/{id}")
-    public ResponseEntity<Map<String, Object>> getUser(@PathVariable Long id) {
-        Map<String, Object> map = adminService.userInfos(id);
+    public ResponseEntity<?> getUser(@PathVariable Long id) {
+        User map = adminServiceAPI.getUserById(id);
 
         if (map == null) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
 
-        return new ResponseEntity<>(map, HttpStatus.OK);
-    }
+        UserDTO userDTO = adminServiceAPI.getUserDTO(map);
 
-    @PutMapping("/users/{id}")
-    public ResponseEntity<Map<String, Object>> updateUser(@PathVariable Long id, UserDTO user) {
-        if (adminService.updateUser(id, user)) {
-            return getUser(id);
-        }
-
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
     @GetMapping("/products")
-    public ResponseEntity<Map<String, Object>> getProducts(@RequestParam(required = false) Long category, @RequestParam(required = false) String search) {
-        Map<String, Object> map = adminService.productsInfos(search, category);
+    public ResponseEntity<?> getProducts() {
+        List<Product> map = adminServiceAPI.getProducts();
 
         if (map == null) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
+        List<ProductDTO> products = new ArrayList<>();
+        for (Product product : map) {
+            products.add(adminServiceAPI.getproduct(product));
+        }
 
-        return new ResponseEntity<>(map, HttpStatus.OK);
+        return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
     @GetMapping("/products/{id}")
-    public ResponseEntity<Map<String, Object>> getProduct(
+    public ResponseEntity<?> getProduct(
             @PathVariable Long id
     ) {
-        Map<String, Object> map = adminService.productInfos(id);
+        Product map = adminServiceAPI.getProductById(id);
 
         if (map == null) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
 
-        return new ResponseEntity<>(map, HttpStatus.OK);
+        ProductDTO productDTO = adminServiceAPI.getproduct(map);
+
+        return new ResponseEntity<>(productDTO, HttpStatus.OK);
     }
 
     @PostMapping("/products/save")

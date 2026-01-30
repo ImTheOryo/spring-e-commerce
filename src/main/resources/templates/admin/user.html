@@ -16,13 +16,6 @@
       </h1>
       <p class="text-gray-500 text-sm" th:text="${'Client depuis le ' + #temporals.format(user.createdAt, 'dd MMMM yyyy')}">Membre depuis 2023</p>
     </div>
-
-    <div class="flex gap-3">
-      <button @click="openEditModal = true"
-              class="px-6 py-3 bg-cyan-600 hover:bg-cyan-700 text-white rounded-xl font-bold transition shadow-lg shadow-cyan-100 flex items-center gap-2">
-        <i class="fa-solid fa-pen-to-square"></i> Modifier les informations
-      </button>
-    </div>
   </div>
 
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -76,71 +69,6 @@
       </div>
     </div>
   </div>
-
-  <template x-teleport="body">
-    <div x-show="openEditModal"
-         class="fixed inset-0 z-[100] flex items-center justify-center bg-gray-900/50 backdrop-blur-sm"
-         x-transition.opacity
-         style="display: none;">
-
-      <div @click.away="openEditModal = false"
-           class="relative w-full max-w-2xl p-8 bg-white rounded-3xl shadow-2xl m-4 overflow-y-auto max-h-[90vh]">
-
-        <div class="flex justify-between items-center mb-8">
-          <h2 class="text-2xl font-bold text-gray-900">Éditer le profil</h2>
-          <button @click="openEditModal = false" class="text-gray-400 hover:text-gray-600">
-            <i class="fa-solid fa-xmark text-2xl"></i>
-          </button>
-        </div>
-
-        <form th:action="@{/admin/users/{id}(id=${user.id})}" method="post" class="space-y-6">
-          <input type="hidden" name="id" th:value="${user.id}">
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="text-left">
-              <label class="block text-sm font-semibold text-gray-700 mb-2">Prénom</label>
-              <input type="text" name="firstname" th:value="${user.firstname}"
-                     class="block w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-cyan-500 outline-none transition">
-            </div>
-            <div class="text-left">
-              <label class="block text-sm font-semibold text-gray-700 mb-2">Nom</label>
-              <input type="text" name="lastname" th:value="${user.lastname}"
-                     class="block w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-cyan-500 outline-none transition">
-            </div>
-          </div>
-
-          <div class="text-left">
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
-            <input type="email" name="email" th:value="${user.email}"
-                   class="block w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-cyan-500 outline-none transition">
-          </div>
-
-          <div class="text-left">
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Téléphone</label>
-            <input type="text" name="phone" th:value="${user.phone}"
-                   class="block w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-cyan-500 outline-none transition">
-          </div>
-
-          <div class="text-left">
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Adresse complète</label>
-            <textarea name="address" rows="4" th:text="${user.address}"
-                      class="block w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-cyan-500 outline-none transition"></textarea>
-          </div>
-
-          <div class="flex flex-col gap-3 pt-6">
-            <button type="submit"
-                    class="w-full py-4 bg-cyan-600 hover:bg-cyan-700 text-white rounded-xl font-bold transition shadow-lg shadow-cyan-100">
-              Sauvegarder les modifications
-            </button>
-            <button type="button" @click="openEditModal = false"
-                    class="w-full py-4 bg-white border border-gray-200 text-gray-600 rounded-xl font-semibold hover:bg-gray-50 transition">
-              Annuler
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </template>
 </div>
 
 <th:block layout:fragment="scripts">

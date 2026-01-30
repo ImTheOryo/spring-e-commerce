@@ -2,6 +2,7 @@ package com.techzone.ecommerce.config;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.techzone.ecommerce.app.handler.CustomSuccessHandler;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -45,16 +46,23 @@ public class SecurityConfig {
     public SecurityFilterChain securityWebFilterChain(HttpSecurity http) throws Exception {
 
         http
+                .csrf(AbstractHttpConfigurer::disable)
+
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/login", "/register", "/static/**", "/images/**", "/h2-console/**", "/error").permitAll()
+                        .requestMatchers("/login", "/register", "/static/**", "/images/**", "/h2-console/**", "/error", "/api/auth/**").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/admin/**", "/admin").hasRole("ADMIN")
-                        .requestMatchers("/", "/product/**").hasRole("USER")
+                        .requestMatchers("/api/admin/**").hasAuthority("SCOPE_ADMIN")
+                        .requestMatchers("/", "/product/**", "/api/user/**").hasRole("USER")
                         .anyRequest().authenticated()
                 )
-                .headers(
-                        headers -> headers
-                                .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
-                )
+
+                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+
+                // --- ICI : ON AJOUTE LE SUPPORT DU BASIC AUTH POUR POSTMAN ---
+                .httpBasic(Customizer.withDefaults())
+
+                // 2. PARTIE WEB : Formulaire Classique
                 .formLogin((form) -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/perform_login")
@@ -64,6 +72,20 @@ public class SecurityConfig {
                         .failureUrl("/login?error=true")
                         .permitAll()
                 )
+
+                // 3. PARTIE API : Resource Server (JWT)
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(Customizer.withDefaults())
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            if (request.getRequestURI().startsWith("/api/")) {
+                                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+                            } else {
+                                response.sendRedirect("/login");
+                            }
+                        })
+                )
+        // ... reste du code (logout, sessionManagement)
+
                 .logout((logout) -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login")
@@ -71,17 +93,12 @@ public class SecurityConfig {
                         .deleteCookies("JSESSIONID")
                         .permitAll()
                 )
-                .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(
-                        session -> session
-                                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                                .maximumSessions(1)
-                )
-                .oauth2ResourceServer(
-                        (oauth2) -> oauth2
-                                .jwt(Customizer.withDefaults())
-                )
-        ;
+
+                .sessionManagement(session -> session
+                        // Crucial: "IF_REQUIRED" permet au Web de créer une session,
+                        // mais l'API avec JWT restera techniquement sans état par requête.
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                );
 
         return http.build();
     }

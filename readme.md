@@ -78,10 +78,10 @@ classDiagram
  user "1" --> "1" roles : a un
     user "1" *-- "1" cart : possède
     user "1" <-- "*" order : appartient à
-    product "*" --> "1" categorie : appartient à
+    product "*" --> "1" categorie : possède
     cart "1" *-- "*" cart_product : contient
     product "1" <-- "*" cart_product : référence
-    order "1" *-- "1..*" order_product : est composée de
+    order "1" *-- "*" order_product : contient
     product "1" <-- "*" order_product : référence
     class user {
         -long id
@@ -184,5 +184,7 @@ https://dbdiagram.io/d/68f24d312e68d21b41ff0652
 ![bdd.png](readme-assets/bdd.png)
 
 ## Endpoint de l'api REST 
+![swagger1.png](readme-assets/swagger1.png)
+![swagger2.png](readme-assets/swagger2.png)
 
-
+https://web.postman.co/workspace/327b9255-72e5-4dfc-9364-e2948faaa2d5/documentation/6be26e24-14d3-4587-9dd2-a93d1a419b2c

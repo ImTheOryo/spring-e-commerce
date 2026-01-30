@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,8 +28,8 @@ public class CartApiController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<CartDTO> cart(@AuthenticationPrincipal UserDetails userDetails) {
-        User user = userService.getUser(userDetails.getUsername());
+    public ResponseEntity<CartDTO> cart(@AuthenticationPrincipal Jwt jwt) {
+        User user = userService.getUser(jwt.getSubject());
 
         if (user == null) {
             return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
@@ -40,11 +41,11 @@ public class CartApiController {
     }
 
     @PutMapping("/add")
-    public ResponseEntity<String> addProduct(@Valid @RequestBody CartProduct cartProduct, @AuthenticationPrincipal UserDetails userDetails) {
-        User user = userService.getUser(userDetails.getUsername());
+    public ResponseEntity<String> addProduct(@Valid @RequestBody CartProduct cartProduct, @AuthenticationPrincipal Jwt jwt) {
+        User user = userService.getUser(jwt.getSubject());
 
         if (user == null) {
-            return new ResponseEntity<>("Il y a eu un problème lors de l'ajout", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Il y a eu un problème lors de l'ajout", HttpStatus.UNAUTHORIZED);
         }
 
         Cart cart = cartService.addCartProduct(cartProduct, user.getCart());
@@ -57,8 +58,8 @@ public class CartApiController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<String> updateProduct(@Valid @RequestBody CartProduct cartProduct, @AuthenticationPrincipal UserDetails userDetails) {
-        User user = userService.getUser(userDetails.getUsername());
+    public ResponseEntity<String> updateProduct(@Valid @RequestBody CartProduct cartProduct, @AuthenticationPrincipal Jwt jwt) {
+        User user = userService.getUser(jwt.getSubject());
 
         if (user == null) {
             return new ResponseEntity<>("Il y a eu un problème lors de l'ajout", HttpStatus.NOT_FOUND);
@@ -72,8 +73,8 @@ public class CartApiController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> removeCartProduct(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id) {
-        User user = userService.getUser(userDetails.getUsername());
+    public ResponseEntity<String> removeCartProduct(@AuthenticationPrincipal Jwt jwt, @PathVariable Long id) {
+        User user = userService.getUser(jwt.getSubject());
 
         if (user == null) {
             return new ResponseEntity<>("Il y a eu un problème lors de l'ajout", HttpStatus.NOT_FOUND);

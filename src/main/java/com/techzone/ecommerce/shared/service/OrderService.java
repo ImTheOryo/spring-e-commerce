@@ -107,6 +107,10 @@ public class OrderService {
         return null;
     }
 
+    public List<Order> getOrders () {
+        return orderRepository.findAll();
+    }
+
     public Order getOrder(long id) {
         try {
             Optional<Order> order = orderRepository.findById(id);
@@ -166,7 +170,7 @@ public class OrderService {
 
     public List<Order> getAllByUser(User user) {
         try {
-            return orderRepository.findByUserId(user);
+            return orderRepository.findByUserId(user.getId());
         } catch (Exception e) {
             System.out.println(e.toString());
         }

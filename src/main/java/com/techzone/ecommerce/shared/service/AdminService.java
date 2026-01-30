@@ -90,7 +90,18 @@ public class AdminService {
     public Map<String, Object> getUsersInfos(String search) {
         Map<String, Object> usersInfos = new HashMap<>();
         List<User> allUsers = userService.findFilteredUsers(search);
-        usersInfos.put("allUsers", allUsers);
+        List<UserDTO> usersDTO = new ArrayList<>();
+        for (User user : allUsers) {
+            UserDTO userDTO = new UserDTO();
+            userDTO.setId(user.getId());
+            userDTO.setFirstname(user.getFirstname());
+            userDTO.setLastname(user.getLastname());
+            userDTO.setAddress(user.getAddress());
+            userDTO.setPhone(user.getPhone());
+            usersDTO.add(userDTO);
+        }
+        System.out.println(allUsers.size());
+        usersInfos.put("allUsers", usersDTO);
         return usersInfos;
     }
 
@@ -154,6 +165,12 @@ public class AdminService {
             ProductDTO productDTO
     ) {
         productService.createProduct(productDTO);
+    }
+
+    public Map<String, Object> getCategoriesInfos() {
+        Map<String, Object> categoriesInfos = new HashMap<>();
+        categoriesInfos.put("categories", categoryService.getAllCategory());
+        return  categoriesInfos;
     }
 
     public Map<OrderStatus, String> getStatusColor() {

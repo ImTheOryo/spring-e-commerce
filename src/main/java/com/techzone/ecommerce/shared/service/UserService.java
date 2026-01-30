@@ -18,7 +18,7 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public com.techzone.ecommerce.shared.entity.User getUser(String email){
+    public User getUser(String email){
         Optional<User> user = userRepository.findByEmail(email);
         return user.orElse(null);
     }
@@ -97,5 +97,9 @@ public class UserService {
             System.out.println(e.toString());
         }
         return null;
+    }
+
+    public List<User> findAllUsers() {
+        return userRepository.findAll();
     }
 }
